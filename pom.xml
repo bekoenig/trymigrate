@@ -57,7 +57,8 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-bom</artifactId>
-                <version>${mockito-bom.version}</version>
+                <version>${mockito.version}</version>
+                <scope>import</scope>
                 <type>pom</type>
             </dependency>
         </dependencies>
