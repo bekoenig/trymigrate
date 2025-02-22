@@ -34,6 +34,7 @@
 
         <testcontainers.version>1.20.4</testcontainers.version>
         <liquibase.version>4.30.0</liquibase.version>
+        <mockito.version>5.14.0</mockito.version>
     </properties>
 
     <dependencyManagement>
@@ -50,6 +51,13 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
                 <version>${testcontainers.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>${mockito-bom.version}</version>
                 <type>pom</type>
             </dependency>
         </dependencies>
