@@ -7,8 +7,8 @@ import java.lang.annotation.*;
 @Repeatable(AcceptLints.class)
 public @interface AcceptLint {
 
-    String linterId();
+    String linterId() default ".*";
 
-    String objectName();
+    String objectName() default ".*";
 
 }
