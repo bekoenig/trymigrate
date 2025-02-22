@@ -62,10 +62,10 @@ public class MigrateExecutor implements BeforeEachCallback {
             flyway.clean();
         }
 
-        flywayMigrateWrapper.migrate(flyway, ignoredLintsFromAnnotation(extensionContext));
+        flywayMigrateWrapper.migrate(flyway, acceptedLintsFromAnnotation(extensionContext));
     }
 
-    private LintPatterns ignoredLintsFromAnnotation(ExtensionContext extensionContext) {
+    private LintPatterns acceptedLintsFromAnnotation(ExtensionContext extensionContext) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         extensionContext.getElement().orElseThrow(), AcceptLint.class).stream()
                 .map(acceptLint -> new LintPattern(acceptLint.linterId(), acceptLint.objectName())).toList());
