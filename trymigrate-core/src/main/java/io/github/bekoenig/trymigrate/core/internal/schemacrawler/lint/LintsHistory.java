@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 
 public class LintsHistory {
 
-    private final List<LintPattern> ignoredLints;
+    private final LintPatterns ignoredLints;
 
     private final Map<String, Lints> lints;
 
     private final List<String> order;
 
-    public LintsHistory(List<LintPattern> ignoredLints) {
+    public LintsHistory(LintPatterns ignoredLints) {
         this.ignoredLints = ignoredLints;
         this.lints = new HashMap<>();
         this.order = new ArrayList<>();
@@ -43,7 +43,7 @@ public class LintsHistory {
                 // drop known lints
                 .filter(l -> !beforeMigrate.getLints().contains(l))
                 // drop ignored lints
-                .filter(l -> ignoredLints.stream().noneMatch(x -> x.matches(l)))
+                .filter(ignoredLints::notMatches)
                 .collect(Collectors.toList()));
     }
 

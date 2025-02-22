@@ -16,23 +16,16 @@ public class LintsAssert {
         this.failOn = failOn;
     }
 
-    public void assertLints(Lints lints, List<LintPattern> lintPatterns) {
-        List<Lint<? extends Serializable>> assertLints =
-                lints
-                        .stream()
-                        .filter(lint -> isNotAccepted(lint, lintPatterns))
-                        // TODO: Write test to ensure stable ordinal
-                        .filter(x -> x.getSeverity().ordinal() >= failOn.ordinal())
-                        .toList();
+    public void assertLints(Lints lints, LintPatterns lintPatterns) {
+        List<Lint<? extends Serializable>> assertLints = lints.stream()
+                .filter(lintPatterns::notMatches)
+                // TODO: Write test to ensure stable ordinal
+                .filter(x -> x.getSeverity().ordinal() >= failOn.ordinal())
+                .toList();
 
         if (!assertLints.isEmpty()) {
             throw new AssertionError("Fix or accept lints:\n\n" + format(assertLints));
         }
-    }
-
-    private boolean isNotAccepted(Lint<? extends Serializable> lint, List<LintPattern> lintPatterns) {
-        return lintPatterns.stream()
-                .noneMatch(lintPattern -> lintPattern.matches(lint));
     }
 
     private String format(List<Lint<? extends Serializable>> newLintsOverLimit) {

@@ -2,14 +2,12 @@ package io.github.bekoenig.trymigrate.core.internal.flyway;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
-import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPattern;
+import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.output.MigrateResult;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import schemacrawler.tools.lint.Lints;
-
-import java.util.List;
 
 public class FlywayMigrateWrapper {
 
@@ -23,7 +21,7 @@ public class FlywayMigrateWrapper {
         return MigrationVersion.LATEST.equals(StoreSupport.getMigrationVersion(extensionContext));
     }
 
-    public void migrate(Flyway flyway, List<LintPattern> lintPatterns) {
+    public void migrate(Flyway flyway, LintPatterns lintPatterns) {
         MigrationVersion lastVersion = StoreSupport.getMigrationVersion(extensionContext);
 
         MigrateResult migrate = flyway.migrate();

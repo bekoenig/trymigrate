@@ -1,11 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.jupiter.extension;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateDataLoadHandle;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.config.TrymigrateDataLoadHandle;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayMigrateWrapper;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPattern;
+import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.lint.AcceptLint;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
@@ -61,10 +62,13 @@ public class MigrateExecutor implements BeforeEachCallback {
             flyway.clean();
         }
 
-        List<LintPattern> lintPatterns = AnnotationSupport.findRepeatableAnnotations(
+        flywayMigrateWrapper.migrate(flyway, ignoredLintsFromAnnotation(extensionContext));
+    }
+
+    private LintPatterns ignoredLintsFromAnnotation(ExtensionContext extensionContext) {
+        return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         extensionContext.getElement().orElseThrow(), AcceptLint.class).stream()
-                .map(acceptLint -> new LintPattern(acceptLint.linterId(), acceptLint.objectName())).toList();
-        flywayMigrateWrapper.migrate(flyway, lintPatterns);
+                .map(acceptLint -> new LintPattern(acceptLint.linterId(), acceptLint.objectName())).toList());
     }
 
 }

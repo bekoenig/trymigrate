@@ -10,9 +10,10 @@ import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPattern;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;
+import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
+import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
 import io.github.bekoenig.trymigrate.core.lint.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.LintsReporter;
-import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -40,13 +41,12 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         MigrationVersion initialVersion = MigrationVersion.EMPTY;
         StoreSupport.putMigrationVersion(extensionContext, initialVersion);
 
-        List<LintPattern> lintPatterns = AnnotationSupport.findRepeatableAnnotations(annotatedElement, IgnoreLint.class)
-                .stream().map(x -> new LintPattern(x.linterId(), x.objectName())).toList();
-        LintsHistory lintsHistory = new LintsHistory(lintPatterns);
+        LintsHistory lintsHistory = new LintsHistory(ignoredLintsFromAnnotation(annotatedElement));
         lintsHistory.putLints(initialVersion.getVersion(), new Lints(List.of()));
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
-        SchemaLinter schemaLinter = new SchemaLinter(beanProvider.all(LintersCustomizer.class), catalog -> StoreSupport.putCatalog(extensionContext, catalog),
+        SchemaLinter schemaLinter = new SchemaLinter(beanProvider.all(LintersCustomizer.class),
+                catalog -> StoreSupport.putCatalog(extensionContext, catalog),
                 lintsHistory, beanProvider.all(LintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
                 testConfiguration.flywayProperties(), () -> beanProvider.all(TrymigrateFlywayConfigurer.class), schemaLinter);
@@ -57,6 +57,12 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putDataSource(extensionContext, flyway.getConfiguration().getDataSource());
 
         StoreSupport.putLintsAssert(extensionContext, new LintsAssert(testConfiguration.failOn()));
+    }
+
+    private LintPatterns ignoredLintsFromAnnotation(AnnotatedElement annotatedElement) {
+        return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
+                        annotatedElement, IgnoreLint.class).stream()
+                .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
     }
 
 }
