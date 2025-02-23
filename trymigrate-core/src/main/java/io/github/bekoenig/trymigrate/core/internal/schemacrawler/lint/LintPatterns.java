@@ -4,6 +4,7 @@ import schemacrawler.tools.lint.Lint;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class LintPatterns {
 
@@ -23,4 +24,7 @@ public class LintPatterns {
         return !matches(lint);
     }
 
+    public Stream<Lint<? extends Serializable>> dropMatching(Stream<Lint<? extends Serializable>> lints) {
+        return lints.filter(this::notMatches);
+    }
 }

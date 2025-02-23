@@ -17,8 +17,7 @@ public class LintsAssert {
     }
 
     public void assertLints(Lints lints, LintPatterns acceptedLints) {
-        List<Lint<? extends Serializable>> assertLints = lints.stream()
-                .filter(acceptedLints::notMatches)
+        List<Lint<? extends Serializable>> assertLints = acceptedLints.dropMatching(lints.getLints().stream())
                 // TODO: Write test to ensure stable ordinal
                 .filter(x -> x.getSeverity().ordinal() >= failOn.ordinal())
                 .toList();

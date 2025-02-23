@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class LintsHistory {
 
@@ -39,12 +38,10 @@ public class LintsHistory {
         Lints beforeMigrate = getLints(fromDescriptor);
         Lints afterMigrate = getLints(toDescriptor);
 
-        return new Lints(afterMigrate.stream()
+        return new Lints(ignoredLints.dropMatching(afterMigrate.getLints().stream()
                 // drop known lints
-                .filter(l -> !beforeMigrate.getLints().contains(l))
-                // drop ignored lints
-                .filter(ignoredLints::notMatches)
-                .collect(Collectors.toList()));
+                .filter(l -> !beforeMigrate.getLints().contains(l)))
+                .toList());
     }
 
     public String getLastAnalyzedVersion() {
