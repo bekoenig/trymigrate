@@ -5,6 +5,7 @@ import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,21 +18,21 @@ public class LintsAssert {
     }
 
     public void assertLints(Lints lints, LintPatterns acceptedLints) {
-        List<Lint<? extends Serializable>> assertLints = acceptedLints.dropMatching(lints.getLints().stream())
+        List<Lint<? extends Serializable>> assertLints = acceptedLints
+                .dropMatching(lints.getLints().stream())
                 // TODO: Write test to ensure stable ordinal
                 .filter(x -> x.getSeverity().ordinal() >= failOn.ordinal())
                 .toList();
 
-        if (!assertLints.isEmpty()) {
-            throw new AssertionError("Fix or accept lints:\n\n" + format(assertLints));
+        if (assertLints.isEmpty()) {
+            return;
         }
-    }
 
-    private String format(List<Lint<? extends Serializable>> newLintsOverLimit) {
-        return newLintsOverLimit.stream()
-                .map(x -> x.getLinterId() + ": " + x.getObjectName())
-                .collect(Collectors.joining("\n"));
+        throw new AssertionError(MessageFormat.format("Fix or accept lints: {0}{1}",
+                System.lineSeparator(),
+                lints.stream()
+                        .map(x -> x.getLinterId() + ": " + x)
+                        .collect(Collectors.joining(System.lineSeparator()))));
     }
-
 
 }
