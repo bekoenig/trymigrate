@@ -1,7 +1,8 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report;
 
-import io.github.bekoenig.trymigrate.core.lint.LintsReporter;
-import io.github.bekoenig.trymigrate.core.lint.LintsReportResolver;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.IdentifiersBuilder;
 import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
@@ -23,7 +24,7 @@ public class LintsHtmlReporter implements LintsReporter {
         this.lintsReportResolver = lintsReportResolver;
     }
 
-    public void report(Catalog catalog, Lints lints, MigrateInfo migrateInfo) {
+    public void report(Catalog catalog, Lints lints, LintsMigrateInfo migrateInfo) {
         Optional<Path> outputFile = lintsReportResolver.resolve(migrateInfo);
         if (outputFile.isEmpty()) {
             return;

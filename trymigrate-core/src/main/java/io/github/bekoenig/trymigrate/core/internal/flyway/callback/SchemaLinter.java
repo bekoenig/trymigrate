@@ -4,9 +4,9 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.catalog.Catalog
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.LinterConfigBuilder;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.LintersBuilder;
-import io.github.bekoenig.trymigrate.core.lint.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.LintsReporter;
-import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.MigrateInfo;
+import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -70,7 +70,7 @@ public class SchemaLinter implements Callback {
         lintsHistory.putLints(context.getMigrationInfo().getVersion().getVersion(), currentLints);
         Lints newLints = lintsHistory.diff(lastAnalyzedVersion, context.getMigrationInfo().getVersion().getVersion());
 
-        MigrateInfo migrateInfo = new MigrateInfo(
+        LintsMigrateInfo migrateInfo = new LintsMigrateInfo(
                 context.getMigrationInfo().getVersion().getVersion(), context.getConfiguration().getDefaultSchema()
         );
         lintsReporters.forEach(x -> x.report(catalog, newLints, migrateInfo));

@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.LintersConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
 import schemacrawler.tools.linter.*;
 
 import java.util.function.Consumer;

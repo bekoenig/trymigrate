@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.LinterConfiguration;
-import io.github.bekoenig.trymigrate.core.lint.LintersConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.LinterConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.LinterProvider;
 import schemacrawler.tools.lint.Linters;

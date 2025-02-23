@@ -1,6 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report;
 
-import io.github.bekoenig.trymigrate.core.lint.LintsReportResolver;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ public class DefaultLintsReportResolver implements LintsReportResolver {
     }
 
     @Override
-    public Optional<Path> resolve(MigrateInfo migrateInfo) {
+    public Optional<Path> resolve(LintsMigrateInfo migrateInfo) {
         Path reportFolder = resolveOutputDirectory()
                 .resolve("trymigrate-lint-reports")
                 .resolve(Objects.requireNonNullElse(migrateInfo.schema(), "schema-undefined"));

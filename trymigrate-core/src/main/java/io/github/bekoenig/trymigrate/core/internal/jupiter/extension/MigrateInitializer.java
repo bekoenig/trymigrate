@@ -12,8 +12,8 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsAsser
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
-import io.github.bekoenig.trymigrate.core.lint.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.extension.ExtensionContext;

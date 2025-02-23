@@ -1,6 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report;
 
-import io.github.bekoenig.trymigrate.core.lint.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import schemacrawler.schema.Catalog;
@@ -18,7 +19,7 @@ public class LintsLogReporter implements LintsReporter {
 
     private final Logger logger = LoggerFactory.getLogger(LintsLogReporter.class);
 
-    public void report(Catalog catalog, Lints lints, MigrateInfo migrateInfo) {
+    public void report(Catalog catalog, Lints lints, LintsMigrateInfo migrateInfo) {
         logger.atInfo().setMessage(() -> createTextReport(catalog, lints)).log();
     }
 

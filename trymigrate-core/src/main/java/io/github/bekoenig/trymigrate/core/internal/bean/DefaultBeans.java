@@ -7,9 +7,9 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.Def
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.LintsReporter;
-import io.github.bekoenig.trymigrate.core.lint.LintsReportResolver;
+import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.testcontainers.containers.JdbcDatabaseContainer;
