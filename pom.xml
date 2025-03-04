@@ -19,26 +19,36 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <junit-api.version>5.11.4</junit-api.version>
-        <junit-platform.version>1.11.4</junit-platform.version>
+        <junit-jupiter.version>5.12.0</junit-jupiter.version>
+        <junit-platform.version>1.12.0</junit-platform.version>
         <junit-pioneer.version>2.3.0</junit-pioneer.version>
 
-        <flyway.version>11.1.0</flyway.version>
+        <slf4j.version>2.0.17</slf4j.version>
+        <logback.version>1.5.17</logback.version>
+
+        <jackson.version>2.18.3</jackson.version>
+        <testcontainers.version>1.20.5</testcontainers.version>
+
+        <mockito.version>5.16.0</mockito.version>
+        <assertj.version>3.27.3</assertj.version>
+        <assertj-schemacrawler.version>1.1.0</assertj-schemacrawler.version>
+
+        <flyway.version>11.3.4</flyway.version>
         <schemacrawler.version>16.25.2</schemacrawler.version>
-        <slf4j.version>2.0.16</slf4j.version>
 
-        <assertj.version>3.27.0</assertj.version>
-        <assertj-schemacrawler.version>1.0.7</assertj-schemacrawler.version>
-        <jackson.version>2.18.2</jackson.version>
-        <logback.version>1.5.15</logback.version>
-
-        <testcontainers.version>1.20.4</testcontainers.version>
-        <liquibase.version>4.30.0</liquibase.version>
-        <mockito.version>5.14.0</mockito.version>
+        <db2.version>12.1.0.0</db2.version>
+        <postgresql.version>42.7.5</postgresql.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>io.github.bekoenig.trymigrate</groupId>
+                <artifactId>trymigrate-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- bill of materials -->
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
@@ -51,6 +61,7 @@
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
                 <version>${testcontainers.version}</version>
+                <scope>import</scope>
                 <type>pom</type>
             </dependency>
 
@@ -61,27 +72,150 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+
+            <!-- schemacrawler -->
+            <dependency>
+                <groupId>us.fatehi</groupId>
+                <artifactId>schemacrawler</artifactId>
+                <version>${schemacrawler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.fatehi</groupId>
+                <artifactId>schemacrawler-api</artifactId>
+                <version>${schemacrawler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.fatehi</groupId>
+                <artifactId>schemacrawler-db2</artifactId>
+                <version>${schemacrawler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.fatehi</groupId>
+                <artifactId>schemacrawler-postgresql</artifactId>
+                <version>${schemacrawler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.fatehi</groupId>
+                <artifactId>schemacrawler-lint</artifactId>
+                <version>${schemacrawler.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>us.fatehi</groupId>
+                <artifactId>schemacrawler-utility</artifactId>
+                <version>${schemacrawler.version}</version>
+            </dependency>
+
+            <!-- flyway -->
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-core</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-postgresql</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-database-db2</artifactId>
+                <version>${flyway.version}</version>
+            </dependency>
+
+            <!-- drivers -->
+            <dependency>
+                <groupId>com.ibm.db2</groupId>
+                <artifactId>jcc</artifactId>
+                <version>${db2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <!-- logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+            <!-- junit-platform -->
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-commons</artifactId>
+                <version>${junit-platform.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
-        <!-- Test-Abhängigkeiten -->
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- test -->
+        <dependency>
+            <groupId>org.junit-pioneer</groupId>
+            <artifactId>junit-pioneer</artifactId>
+            <version>${junit-pioneer.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.bekoenig</groupId>
+            <artifactId>assertj-schemacrawler</artifactId>
+            <version>${assertj-schemacrawler.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback.version}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit-pioneer</groupId>
-            <artifactId>junit-pioneer</artifactId>
-            <version>${junit-pioneer.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
