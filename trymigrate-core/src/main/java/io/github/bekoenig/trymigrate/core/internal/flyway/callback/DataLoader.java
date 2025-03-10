@@ -12,7 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 public class DataLoader implements Callback {
 
@@ -49,15 +49,12 @@ public class DataLoader implements Callback {
             Connection connection = context.getConnection();
             String fileExtension = IOUtility.getFileExtension(currentData);
 
-            List<TrymigrateDataLoadHandle> list = handles.stream()
+            Optional<TrymigrateDataLoadHandle> dataLoadHandle = handles.stream()
                     .filter(h -> h.supports(currentData, fileExtension))
-                    .toList();
+                    .findFirst();
 
-            if (list.size() > 1) {
-                throw new UnsupportedOperationException("Expected single handle to load " + currentData +
-                        " but found: \n" + list.stream().map(x -> x.getClass().getName()).collect(Collectors.joining("\n")));
-            } else if (list.size() == 1) {
-                list.get(0).handle(currentData);
+            if (dataLoadHandle.isPresent()) {
+                dataLoadHandle.get().handle(currentData);
             } else if (fileExtension.equalsIgnoreCase("sql")) {
                 SqlScript.executeScriptFromResource(currentData, connection);
             } else {
