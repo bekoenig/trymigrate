@@ -14,6 +14,15 @@ public class PluginFactory {
     }
 
     public static TrymigratePlugin instantiatePlugin(Class<? extends TrymigratePlugin> clazz, TrymigrateBeanProvider beanProvider) {
+        TrymigratePlugin plugin = newInstance(clazz, beanProvider);
+        if (plugin instanceof PluginServiceLoader) {
+            return ((PluginServiceLoader) plugin).load();
+        }
+
+        return plugin;
+    }
+
+    private static TrymigratePlugin newInstance(Class<? extends TrymigratePlugin> clazz, TrymigrateBeanProvider beanProvider) {
         Optional<Constructor<?>> beanProviderConstructor = Arrays.stream(clazz.getConstructors())
                 .filter(c -> c.getParameters().length == 1
                         && TrymigrateBeanProvider.class.isAssignableFrom(c.getParameters()[0].getType()))

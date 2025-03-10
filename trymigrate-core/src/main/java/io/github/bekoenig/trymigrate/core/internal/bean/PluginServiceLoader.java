@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class PluginServiceLoader implements TrymigratePlugin {
 
-    public TrymigratePlugin get() {
+    public TrymigratePlugin load() {
         ServiceLoader<TrymigratePlugin> serviceLoader = ServiceLoader.load(TrymigratePlugin.class);
 
         Iterator<TrymigratePlugin> iterator = serviceLoader.iterator();
