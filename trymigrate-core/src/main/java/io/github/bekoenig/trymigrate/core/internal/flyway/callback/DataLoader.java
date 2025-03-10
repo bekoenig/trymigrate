@@ -8,6 +8,7 @@ import org.flywaydb.core.api.callback.Event;
 import us.fatehi.utility.IOUtility;
 import us.fatehi.utility.database.SqlScript;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
@@ -46,31 +47,29 @@ public class DataLoader implements Callback {
     @Override
     public void handle(Event event, Context context) {
         for (String currentData : data) {
-
+            Connection connection = context.getConnection();
             String fileExtension = IOUtility.getFileExtension(currentData);
 
-            List<TrymigrateDataLoadHandle> list = handles.stream().filter(h -> h.supports(currentData, fileExtension)).toList();
+            List<TrymigrateDataLoadHandle> list = handles.stream()
+                    .filter(h -> h.supports(currentData, fileExtension))
+                    .toList();
+
             if (list.size() > 1) {
                 throw new UnsupportedOperationException("Expected single handle to load " + currentData +
                         " but found: \n" + list.stream().map(x -> x.getClass().getName()).collect(Collectors.joining("\n")));
             } else if (list.size() == 1) {
                 list.get(0).handle(currentData);
-                applied = true;
-            }
-
-            if (!applied) {
-                if (fileExtension.equalsIgnoreCase("sql")) {
-                    SqlScript.executeScriptFromResource(currentData, context.getConnection());
-                } else {
-                    try (Statement statement = context.getConnection().createStatement()) {
-                        statement.execute(currentData);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+            } else if (fileExtension.equalsIgnoreCase("sql")) {
+                SqlScript.executeScriptFromResource(currentData, connection);
+            } else {
+                try (Statement statement = connection.createStatement()) {
+                    statement.execute(currentData);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
                 }
-                applied = true;
             }
         }
+        applied = true;
     }
 
     @Override
