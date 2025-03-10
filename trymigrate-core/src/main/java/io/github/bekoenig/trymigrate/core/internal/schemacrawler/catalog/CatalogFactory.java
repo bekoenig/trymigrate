@@ -28,28 +28,18 @@ public class CatalogFactory {
 
     private final LimitOptions limitOptions;
 
-    public CatalogFactory(LimitOptions limitOptions) {
+    private final LoadOptions loadOptions;
+
+    public CatalogFactory(LimitOptions limitOptions, LoadOptions loadOptions) {
         this.limitOptions = limitOptions;
+        this.loadOptions = loadOptions;
     }
 
     public Catalog crawl(Connection connection) {
         return SchemaCrawlerUtility.getCatalog(wrap(connection),
                 SchemaCrawlerOptionsBuilder.newSchemaCrawlerOptions()
                         .withLimitOptions(limitOptions)
-                        .withLoadOptions(LoadOptionsBuilder.builder()
-                                .withSchemaInfoLevel(SchemaInfoLevelBuilder.builder()
-                                        .withInfoLevel(InfoLevel.maximum)
-                                        // ignore database instance and server details
-                                        .setRetrieveAdditionalJdbcDriverInfo(false)
-                                        .setRetrieveAdditionalDatabaseInfo(false)
-                                        .setRetrieveDatabaseInfo(false)
-                                        .setRetrieveDatabaseUsers(false)
-                                        .setRetrieveServerInfo(false)
-                                        // ignore privileges
-                                        .setRetrieveTablePrivileges(false)
-                                        .setRetrieveTableColumnPrivileges(false)
-                                        .toOptions())
-                                .toOptions()));
+                        .withLoadOptions(loadOptions));
     }
 
     private DatabaseConnectionSource wrap(Connection connection) {

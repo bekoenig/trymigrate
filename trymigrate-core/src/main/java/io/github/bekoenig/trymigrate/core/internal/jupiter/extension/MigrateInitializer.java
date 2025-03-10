@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import schemacrawler.schemacrawler.LimitOptions;
+import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.Lints;
 
 import java.lang.reflect.AnnotatedElement;
@@ -48,7 +49,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
         SchemaLinter schemaLinter = new SchemaLinter(beanProvider.all(LintersCustomizer.class),
-                new CatalogFactory(beanProvider.first(LimitOptions.class)),
+                new CatalogFactory(beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class)),
                 catalog -> StoreSupport.putCatalog(extensionContext, catalog),
                 lintsHistory, beanProvider.all(LintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(

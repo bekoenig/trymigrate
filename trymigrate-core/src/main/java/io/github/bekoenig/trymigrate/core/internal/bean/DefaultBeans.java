@@ -15,8 +15,7 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.Order;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import schemacrawler.schemacrawler.LimitOptions;
-import schemacrawler.schemacrawler.LimitOptionsBuilder;
+import schemacrawler.schemacrawler.*;
 import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
@@ -28,6 +27,23 @@ public class DefaultBeans {
     @TrymigrateBean
     @Order(Integer.MAX_VALUE)
     private final LimitOptions limitOptions = LimitOptionsBuilder.newLimitOptions();
+
+    @TrymigrateBean
+    @Order(Integer.MAX_VALUE)
+    private final LoadOptions loadOptions = LoadOptionsBuilder.builder()
+            .withSchemaInfoLevel(SchemaInfoLevelBuilder.builder()
+                    .withInfoLevel(InfoLevel.maximum)
+                    // ignore database instance and server details
+                    .setRetrieveAdditionalJdbcDriverInfo(false)
+                    .setRetrieveAdditionalDatabaseInfo(false)
+                    .setRetrieveDatabaseInfo(false)
+                    .setRetrieveDatabaseUsers(false)
+                    .setRetrieveServerInfo(false)
+                    // ignore privileges
+                    .setRetrieveTablePrivileges(false)
+                    .setRetrieveTableColumnPrivileges(false)
+                    .toOptions())
+            .toOptions();
 
     @TrymigrateBean
     private final TrymigrateFlywayConfigurer additionalBeanConfigurer;
