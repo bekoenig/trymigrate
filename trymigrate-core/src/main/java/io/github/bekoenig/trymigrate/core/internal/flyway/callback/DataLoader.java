@@ -6,7 +6,6 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
 import us.fatehi.utility.IOUtility;
-import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,22 +15,22 @@ import java.util.Optional;
 
 public class DataLoader implements Callback {
 
-    private final MigrationVersion target;
-    private final List<String> data;
     private final List<TrymigrateDataLoadHandle> handles;
+    private final MigrationVersion target;
+    private final List<String> resources;
+
     private boolean applied;
 
-    public DataLoader(MigrationVersion target, List<String> data, List<TrymigrateDataLoadHandle> handles) {
-        this.target = target;
-        this.data = data;
+    public DataLoader(List<TrymigrateDataLoadHandle> handles, MigrationVersion target, List<String> resources) {
         this.handles = handles;
+        this.target = target;
+        this.resources = resources;
     }
 
     @Override
     public boolean supports(Event event, Context context) {
         if (event == Event.AFTER_MIGRATE && !applied) {
-            throw new IllegalStateException("Data '" + data +
-                    "' was not be proceeded because schema is above version " + target);
+            throw new IllegalStateException("Data was not be proceeded because schema is above version " + target);
         }
 
         return event == Event.BEFORE_EACH_MIGRATE
@@ -45,27 +44,24 @@ public class DataLoader implements Callback {
 
     @Override
     public void handle(Event event, Context context) {
-        for (String currentData : data) {
-            Connection connection = context.getConnection();
-            String fileExtension = IOUtility.getFileExtension(currentData);
+        resources.forEach(resource -> load(resource, context.getConnection()));
+        applied = true;
+    }
 
-            Optional<TrymigrateDataLoadHandle> dataLoadHandle = handles.stream()
-                    .filter(h -> h.supports(currentData, fileExtension))
-                    .findFirst();
+    private void load(String resource, Connection connection) {
+        Optional<TrymigrateDataLoadHandle> handle = handles.stream()
+                .filter(h -> h.supports(resource, IOUtility.getFileExtension(resource)))
+                .findFirst();
 
-            if (dataLoadHandle.isPresent()) {
-                dataLoadHandle.get().handle(currentData);
-            } else if (fileExtension.equalsIgnoreCase("sql")) {
-                SqlScript.executeScriptFromResource(currentData, connection);
-            } else {
-                try (Statement statement = connection.createStatement()) {
-                    statement.execute(currentData);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
+        if (handle.isPresent()) {
+            handle.get().handle(resource, connection);
+        } else {
+            try (Statement statement = connection.createStatement()) {
+                statement.execute(resource);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
-        applied = true;
     }
 
     @Override

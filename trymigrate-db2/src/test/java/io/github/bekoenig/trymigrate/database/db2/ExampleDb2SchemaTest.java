@@ -6,9 +6,9 @@ import ch.qos.logback.core.read.ListAppender;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
+import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateDataLoadHandle;
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +24,7 @@ import schemacrawler.tools.lint.Lints;
 
 import javax.sql.DataSource;
 import java.nio.file.Path;
+import java.sql.Connection;
 
 import static java.util.function.Predicate.isEqual;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,15 +49,15 @@ public class ExampleDb2SchemaTest {
     private final TrymigrateDataLoadHandle dataLoadHandle = new TrymigrateDataLoadHandle() {
 
         @Override
-        public boolean supports(String classpathResource, String fileExtension) {
-            if (classpathResource.equalsIgnoreCase("db/testdata/db2/initial.sql")) {
+        public boolean supports(String resource, String extension) {
+            if (resource.equalsIgnoreCase("db/testdata/db2/initial.sql")) {
                 trymigrateDataLoadHandleInvoked = true;
             }
             return false;
         }
 
         @Override
-        public void handle(String classpathResource) {
+        public void handle(String classpathResource, Connection connection) {
         }
     };
 

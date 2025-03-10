@@ -2,6 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.bean;
 
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.config.TrymigrateDataLoadHandle;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.DefaultLinters;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
@@ -12,7 +13,11 @@ import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
+import org.junit.jupiter.api.Order;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import us.fatehi.utility.database.SqlScript;
+
+import java.sql.Connection;
 
 import static io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer.addCallbacks;
 
@@ -32,6 +37,20 @@ public class DefaultBeans {
 
     @TrymigrateBean
     private final LintersCustomizer lintersCustomizer = linterConfiguration -> linterConfiguration.merge(new DefaultLinters());
+
+    @TrymigrateBean
+    @Order(Integer.MAX_VALUE)
+    private final TrymigrateDataLoadHandle sqlDataLoadHandle = new TrymigrateDataLoadHandle() {
+        @Override
+        public boolean supports(String resource, String extension) {
+            return extension.equalsIgnoreCase("sql");
+        }
+
+        @Override
+        public void handle(String resource, Connection connection) {
+            SqlScript.executeScriptFromResource(resource, connection);
+        }
+    };
 
     public DefaultBeans(TrymigrateBeanProvider beanProvider) {
         this.additionalBeanConfigurer = configuration -> {
