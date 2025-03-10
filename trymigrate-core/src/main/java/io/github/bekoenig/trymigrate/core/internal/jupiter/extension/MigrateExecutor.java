@@ -42,7 +42,7 @@ public class MigrateExecutor implements BeforeEachCallback {
             if (flywayMigrationTest.get().givenData().length > 0) {
                 Callback callback = new DataLoader(
                         MigrationVersion.fromVersion(flywayMigrationTest.get().whenTarget()),
-                        flywayMigrationTest.get().givenData(),
+                        List.of(flywayMigrationTest.get().givenData()),
                         StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoadHandle.class));
                 addCallbacks(fluentConfiguration, List.of(callback));
             }

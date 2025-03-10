@@ -11,18 +11,17 @@ import us.fatehi.utility.database.SqlScript;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DataLoader implements Callback {
 
     private final MigrationVersion target;
-    private final String[] data;
+    private final List<String> data;
     private final List<TrymigrateDataLoadHandle> handles;
     private boolean applied;
 
-    public DataLoader(MigrationVersion target, String[] data, List<TrymigrateDataLoadHandle> handles) {
+    public DataLoader(MigrationVersion target, List<String> data, List<TrymigrateDataLoadHandle> handles) {
         this.target = target;
         this.data = data;
         this.handles = handles;
@@ -31,7 +30,7 @@ public class DataLoader implements Callback {
     @Override
     public boolean supports(Event event, Context context) {
         if (event == Event.AFTER_MIGRATE && !applied) {
-            throw new IllegalStateException("Data '" + Arrays.toString(data) +
+            throw new IllegalStateException("Data '" + data +
                     "' was not be proceeded because schema is above version " + target);
         }
 
