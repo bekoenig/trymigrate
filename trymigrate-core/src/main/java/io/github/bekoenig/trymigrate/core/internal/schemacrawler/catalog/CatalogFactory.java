@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.LogManager;
 
@@ -27,15 +26,16 @@ public class CatalogFactory {
         }
     }
 
-    private CatalogFactory() {
+    private final LimitOptions limitOptions;
+
+    public CatalogFactory(LimitOptions limitOptions) {
+        this.limitOptions = limitOptions;
     }
 
-    public static Catalog crawl(Connection connection, List<String> schemas) {
+    public Catalog crawl(Connection connection) {
         return SchemaCrawlerUtility.getCatalog(wrap(connection),
                 SchemaCrawlerOptionsBuilder.newSchemaCrawlerOptions()
-                        .withLimitOptions(LimitOptionsBuilder.builder()
-                                .includeSchemas(schemas::contains)
-                                .build())
+                        .withLimitOptions(limitOptions)
                         .withLoadOptions(LoadOptionsBuilder.builder()
                                 .withSchemaInfoLevel(SchemaInfoLevelBuilder.builder()
                                         .withInfoLevel(InfoLevel.maximum)
@@ -52,7 +52,7 @@ public class CatalogFactory {
                                 .toOptions()));
     }
 
-    private static DatabaseConnectionSource wrap(Connection connection) {
+    private DatabaseConnectionSource wrap(Connection connection) {
         return new DatabaseConnectionSource() {
             @Override
             public Connection get() {

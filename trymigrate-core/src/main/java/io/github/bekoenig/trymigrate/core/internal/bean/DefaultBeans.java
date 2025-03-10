@@ -15,6 +15,8 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.Order;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import schemacrawler.schemacrawler.LimitOptions;
+import schemacrawler.schemacrawler.LimitOptionsBuilder;
 import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
@@ -22,6 +24,10 @@ import java.sql.Connection;
 import static io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer.addCallbacks;
 
 public class DefaultBeans {
+
+    @TrymigrateBean
+    @Order(Integer.MAX_VALUE)
+    private final LimitOptions limitOptions = LimitOptionsBuilder.newLimitOptions();
 
     @TrymigrateBean
     private final TrymigrateFlywayConfigurer additionalBeanConfigurer;

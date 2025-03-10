@@ -21,13 +21,15 @@ import java.util.function.Consumer;
 public class SchemaLinter implements Callback {
 
     private final List<LintersCustomizer> lintersCustomizers;
+    private final CatalogFactory catalogFactory;
     private final Consumer<Catalog> catalogCache;
     private final LintsHistory lintsHistory;
     private final List<LintsReporter> lintsReporters;
 
-    public SchemaLinter(List<LintersCustomizer> lintersCustomizers, Consumer<Catalog> catalogCache,
-                        LintsHistory lintsHistory, List<LintsReporter> lintsReporters) {
+    public SchemaLinter(List<LintersCustomizer> lintersCustomizers, CatalogFactory catalogFactory,
+                        Consumer<Catalog> catalogCache, LintsHistory lintsHistory, List<LintsReporter> lintsReporters) {
         this.lintersCustomizers = lintersCustomizers;
+        this.catalogFactory = catalogFactory;
         this.catalogCache = catalogCache;
         this.lintsHistory = lintsHistory;
         this.lintsReporters = lintsReporters;
@@ -59,7 +61,7 @@ public class SchemaLinter implements Callback {
                 .runLinter(true));
         lintersCustomizers.forEach(lintersCustomizer -> lintersCustomizer.accept(lintersBuilder));
 
-        Catalog catalog = CatalogFactory.crawl(context.getConnection(), schemas);
+        Catalog catalog = catalogFactory.crawl(context.getConnection());
         catalogCache.accept(catalog);
 
         Linters linters = lintersBuilder.build();

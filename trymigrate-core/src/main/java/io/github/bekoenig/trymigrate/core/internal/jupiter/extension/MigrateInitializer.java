@@ -7,6 +7,7 @@ import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderSupport;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayConfigurationFactory;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.SchemaLinter;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
+import io.github.bekoenig.trymigrate.core.internal.schemacrawler.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPattern;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.tools.lint.Lints;
 
 import java.lang.reflect.AnnotatedElement;
@@ -46,6 +48,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
         SchemaLinter schemaLinter = new SchemaLinter(beanProvider.all(LintersCustomizer.class),
+                new CatalogFactory(beanProvider.first(LimitOptions.class)),
                 catalog -> StoreSupport.putCatalog(extensionContext, catalog),
                 lintsHistory, beanProvider.all(LintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
