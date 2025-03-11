@@ -9,12 +9,14 @@ import org.junit.jupiter.api.extension.TestInstancePreDestroyCallback;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.lifecycle.Startable;
 
+import java.util.Objects;
+
 public class MigrateCompleter implements TestInstancePreDestroyCallback {
 
     @Override
     public void preDestroyTestInstance(ExtensionContext extensionContext) {
         FlywayConfigurationFactory flywayConfigurationFactory = StoreSupport.getFlywayConfigurationFactory(extensionContext);
-        if (flywayConfigurationFactory != null) {
+        if (Objects.nonNull(flywayConfigurationFactory )) {
             FlywayMigrateWrapper flywayMigrateWrapper = new FlywayMigrateWrapper(extensionContext);
             if (!flywayMigrateWrapper.isLatest()) {
                 flywayMigrateWrapper.migrate(flywayConfigurationFactory.get().load(), LintPatterns.EMPTY);

@@ -6,12 +6,14 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import schemacrawler.schema.Catalog;
 
+import java.util.Objects;
+
 public class CatalogParameterResolver implements ParameterResolver {
 
     @Override
     public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
         return parameterContext.getParameter().getType().equals(Catalog.class)
-                && StoreSupport.getCatalog(extensionContext) != null;
+                && Objects.nonNull(StoreSupport.getCatalog(extensionContext));
     }
 
     @Override
