@@ -1,21 +1,9 @@
 package io.github.bekoenig.trymigrate.database.db2;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
-import schemacrawler.inclusionrule.ListExclusionRule;
-import schemacrawler.schemacrawler.LimitOptions;
-import schemacrawler.schemacrawler.LimitOptionsBuilder;
 
-import java.util.List;
-
-public class Db2Plugin implements TrymigratePlugin {
-
-    private static final List<String> SYSTEM_SCHEMAS = List.of("NULLID", "SQLJ", "SYSFUN", "SYSIBM",
-            "SYSIBMADM", "SYSIBMINTERNAL", "SYSIBMTS", "SYSPROC", "SYSPUBLIC", "SYSSTAT", "SYSTOOLS");
-
-    @TrymigrateBean
-    private final LimitOptions limitOptions = LimitOptionsBuilder.builder()
-            .includeSchemas(new ListExclusionRule(SYSTEM_SCHEMAS))
-            .build();
-
+/**
+ * Marker interface for all DB2 plugins.
+ */
+public interface Db2Plugin extends TrymigratePlugin {
 }

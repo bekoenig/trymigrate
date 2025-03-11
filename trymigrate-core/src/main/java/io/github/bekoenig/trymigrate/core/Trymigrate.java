@@ -1,7 +1,6 @@
 package io.github.bekoenig.trymigrate.core;
 
 import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
-import io.github.bekoenig.trymigrate.core.internal.bean.PluginServiceLoader;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateExecutor;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateInitializer;
@@ -38,7 +37,7 @@ public @interface Trymigrate {
 
     String[] flywayProperties() default {};
 
-    Class<? extends TrymigratePlugin> plugin() default PluginServiceLoader.class;
+    Class<? extends TrymigratePlugin> plugin() default TrymigratePlugin.class;
 
     LintSeverity failOn() default LintSeverity.low;
 

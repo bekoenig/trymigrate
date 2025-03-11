@@ -5,7 +5,7 @@ import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 
 import java.util.Map;
 
-public class ExamplePostgreSQLSchemaTestPlugin extends PostgreSQLPlugin {
+public class ExamplePostgreSQLSchemaTestPlugin implements PostgreSQLPlugin {
 
     @TrymigrateBean
     private final LintersCustomizer lintersCustomizer = linterConfiguration ->

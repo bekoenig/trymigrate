@@ -14,8 +14,9 @@ public class BeanProviderSupport {
     public static BeanProvider createHierarchy(Object testInstance, Class<? extends TrymigratePlugin> pluginClass) {
         BeanProvider beanProvider = fromAnnotatedFields(testInstance, BeanHierarchy.INSTANCE);
 
-        TrymigratePlugin plugin = PluginFactory.instantiatePlugin(pluginClass, beanProvider);
-        beanProvider = beanProvider.append(plugin, BeanHierarchy.PLUGIN);
+        for (TrymigratePlugin plugin : PluginLoader.load(pluginClass)) {
+            beanProvider = beanProvider.append(plugin, BeanHierarchy.PLUGIN);
+        }
 
         DefaultBeans defaultBeans = new DefaultBeans(beanProvider);
         beanProvider = beanProvider.append(defaultBeans, BeanHierarchy.DEFAULT);
