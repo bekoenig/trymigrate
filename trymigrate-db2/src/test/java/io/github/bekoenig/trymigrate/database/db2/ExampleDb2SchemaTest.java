@@ -32,7 +32,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Trymigrate(
         flywayProperties = {
                 "defaultSchema=EXAMPLE_SCHEMA",
-                "locations=classpath:db/migration/example/db2"
+                "locations=classpath:db/migration/example/db2",
+                "cleanDisabled=false"
         }, failOn = LintSeverity.critical)
 public class ExampleDb2SchemaTest {
 

@@ -37,7 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Trymigrate(
         flywayProperties = {
                 "defaultSchema=example_schema",
-                "locations=classpath:db/migration/example/postgresql"
+                "locations=classpath:db/migration/example/postgresql",
+                "cleanDisabled=false"
 //                "url=jdbc:postgresql://localhost:5432/test",
 //                "user=test",
 //                "password=test",

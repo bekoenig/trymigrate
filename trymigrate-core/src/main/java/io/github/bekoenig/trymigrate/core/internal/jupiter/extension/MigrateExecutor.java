@@ -54,11 +54,7 @@ public class MigrateExecutor implements BeforeEachCallback {
             cleanBefore = false;
         }
 
-        Flyway flyway;
-        if (cleanBefore) {
-            fluentConfiguration.cleanDisabled(false);
-        }
-        flyway = fluentConfiguration.load();
+        Flyway flyway = fluentConfiguration.load();
         if (cleanBefore) {
             flyway.clean();
         }
