@@ -14,9 +14,7 @@ import java.util.Objects;
 public class BeanDefinition implements Comparable<BeanDefinition> {
 
     private final Object instance;
-
     private final Field field;
-
     private final BeanHierarchy hierarchy;
 
     public BeanDefinition(Object instance, Field field, BeanHierarchy hierarchy) {
@@ -25,30 +23,35 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
         this.hierarchy = hierarchy;
     }
 
-    private Integer getOrder() {
+    public int getOrder() {
         Order annotation = field.getAnnotation(Order.class);
-        if (annotation == null) {
+        if (Objects.isNull(annotation)) {
             return Order.DEFAULT;
         }
-
         return annotation.value();
     }
 
     @Override
     public int compareTo(BeanDefinition other) {
-        Integer thisOrder = this.getOrder();
-        Integer otherOrder = other.getOrder();
-
-        // compare priority on same order
-        if (Objects.equals(thisOrder, otherOrder)) {
-            return this.hierarchy.compareTo(other.hierarchy);
+        int compareOrder = Integer.compare(this.getOrder(), other.getOrder());
+        if (compareOrder != 0) {
+            return compareOrder;
         }
 
-        return Integer.compare(thisOrder, otherOrder);
+        int compareHierarchy = this.hierarchy.compareTo(other.hierarchy);
+        if (compareHierarchy != 0) {
+            return compareHierarchy;
+        }
+
+        return Boolean.compare(this.nonNullable(), other.nonNullable());
     }
 
-    private boolean isNullable() {
-        return field.getAnnotation(TrymigrateBean.class).nullable();
+    public boolean isNullable() {
+        TrymigrateBean annotation = field.getAnnotation(TrymigrateBean.class);
+        if (Objects.isNull(annotation)) {
+            return TrymigrateBean.NULLABLE_DEFAULT;
+        }
+        return annotation.nullable();
     }
 
     public boolean nonNullable() {
@@ -64,8 +67,15 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
             return false;
         }
 
-        ParameterizedType genericType = (ParameterizedType) field.getGenericType();
-        return genericType.getActualTypeArguments().length == 1 && genericType.getActualTypeArguments()[0].equals(clazz);
+        if (!(field.getGenericType() instanceof ParameterizedType genericType)) {
+            throw new UnsupportedOperationException("Expects generic for collection type '" + field.getName());
+        }
+
+        if (genericType.getActualTypeArguments().length != 1) {
+            throw new UnsupportedOperationException("Expects single generic for collection type '" + field.getName());
+        }
+
+        return genericType.getActualTypeArguments()[0].equals(clazz);
     }
 
     public <T> T get(Class<T> clazz) {
