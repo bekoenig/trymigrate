@@ -3,15 +3,15 @@ package io.github.bekoenig.trymigrate.core.internal.jupiter.extension;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
-import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderSupport;
+import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderBuilder;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayConfigurationFactory;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.SchemaLinter;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPattern;
+import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;
-import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
@@ -36,7 +36,8 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         Trymigrate testConfiguration = AnnotationSupport.findAnnotation(annotatedElement,
                 Trymigrate.class).orElseThrow();
 
-        TrymigrateBeanProvider beanProvider = BeanProviderSupport.createHierarchy(o, testConfiguration.plugin());
+        TrymigrateBeanProvider beanProvider = new BeanProviderBuilder(o)
+                .loadPlugins(testConfiguration.plugin()).build();
         StoreSupport.putBeanProvider(extensionContext, beanProvider);
 
         beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(JdbcDatabaseContainer::start);
