@@ -43,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 //                "user=test",
 //                "password=test",
         },
-        plugin = PostgreSQLPlugin.class)
+        plugins = PostgreSQLPlugin.class)
 @IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableSql", objectName = ".*")
 public class ExamplePostgreSQLSchemaTest {
 

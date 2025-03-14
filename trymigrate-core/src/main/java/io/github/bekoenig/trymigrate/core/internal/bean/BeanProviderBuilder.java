@@ -2,6 +2,8 @@ package io.github.bekoenig.trymigrate.core.internal.bean;
 
 import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
 
+import java.util.List;
+
 public class BeanProviderBuilder {
 
     private final BeanProvider testInstanceBeanProvider;
@@ -12,12 +14,15 @@ public class BeanProviderBuilder {
         testInstanceBeanProvider = fluentBeanProvider;
     }
 
-    public BeanProviderBuilder loadPlugins(Class<? extends TrymigratePlugin> pluginClass) {
-        for (TrymigratePlugin plugin : PluginLoader.load(pluginClass)) {
-            plugin.populate(testInstanceBeanProvider);
-            fluentBeanProvider = fluentBeanProvider.append(plugin, BeanHierarchy.PLUGIN);
-        }
+    public BeanProviderBuilder loadPlugins(List<PluginProvider> providers) {
+        providers.forEach(this::loadPlugin);
         return this;
+    }
+
+    private void loadPlugin(PluginProvider provider) {
+        TrymigratePlugin plugin = provider.get();
+        plugin.populate(testInstanceBeanProvider);
+        fluentBeanProvider = fluentBeanProvider.append(plugin, BeanHierarchy.PLUGIN);
     }
 
     public BeanProvider build() {

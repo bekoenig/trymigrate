@@ -4,6 +4,8 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderBuilder;
+import io.github.bekoenig.trymigrate.core.internal.bean.PluginDiscovery;
+import io.github.bekoenig.trymigrate.core.internal.bean.PluginProvider;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayConfigurationFactory;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.SchemaLinter;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
@@ -36,8 +38,8 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         Trymigrate testConfiguration = AnnotationSupport.findAnnotation(annotatedElement,
                 Trymigrate.class).orElseThrow();
 
-        TrymigrateBeanProvider beanProvider = new BeanProviderBuilder(o)
-                .loadPlugins(testConfiguration.plugin()).build();
+        List<PluginProvider> pluginProviders = new PluginDiscovery().discover(List.of(testConfiguration.plugins()));
+        TrymigrateBeanProvider beanProvider = new BeanProviderBuilder(o).loadPlugins(pluginProviders).build();
         StoreSupport.putBeanProvider(extensionContext, beanProvider);
 
         beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(JdbcDatabaseContainer::start);
@@ -54,7 +56,9 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 catalog -> StoreSupport.putCatalog(extensionContext, catalog),
                 lintsHistory, beanProvider.all(LintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
-                testConfiguration.flywayProperties(), () -> beanProvider.all(TrymigrateFlywayConfigurer.class), schemaLinter);
+                testConfiguration.flywayProperties(),
+                () -> beanProvider.all(TrymigrateFlywayConfigurer.class),
+                schemaLinter);
         StoreSupport.putFlywayConfigurationFactory(extensionContext, flywayConfigurationFactory);
 
         Flyway flyway = flywayConfigurationFactory.get().load();
