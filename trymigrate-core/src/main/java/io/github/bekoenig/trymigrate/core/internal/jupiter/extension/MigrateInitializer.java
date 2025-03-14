@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core.internal.jupiter.extension;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
-import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderBuilder;
+import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginProvider;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayConfigurationFactory;
@@ -39,7 +39,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 Trymigrate.class).orElseThrow();
 
         List<PluginProvider> pluginProviders = new PluginDiscovery().discover(List.of(testConfiguration.plugins()));
-        TrymigrateBeanProvider beanProvider = new BeanProviderBuilder(o).loadPlugins(pluginProviders).build();
+        TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o, pluginProviders);
         StoreSupport.putBeanProvider(extensionContext, beanProvider);
 
         beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(JdbcDatabaseContainer::start);

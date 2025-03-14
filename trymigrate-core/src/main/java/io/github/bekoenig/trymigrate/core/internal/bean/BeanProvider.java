@@ -2,7 +2,6 @@ package io.github.bekoenig.trymigrate.core.internal.bean;
 
 import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -13,14 +12,11 @@ public class BeanProvider implements TrymigrateBeanProvider {
     private final List<BeanDefinition> beanDefinitions;
 
     public BeanProvider(List<BeanDefinition> beanDefinitions) {
-        this.beanDefinitions = beanDefinitions.stream().sorted().toList();
+        this.beanDefinitions = beanDefinitions;
     }
 
-    public BeanProvider append(Object instance, BeanHierarchy priority) {
-        List<BeanDefinition> list = new ArrayList<>();
-        list.addAll(this.beanDefinitions);
-        list.addAll(BeanDefinitions.fromAnnotatedFields(instance, priority));
-        return new BeanProvider(list);
+    public List<BeanDefinition> getBeanDefinitions() {
+        return beanDefinitions;
     }
 
     private <T> Stream<T> stream(Class<T> clazz) {
