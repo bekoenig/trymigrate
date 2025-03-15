@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateExecutor;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateInitializer;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.order.TargetVersionOrderer;
+import io.github.bekoenig.trymigrate.core.internal.jupiter.order.TargetOrder;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.resolver.CatalogParameterResolver;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.resolver.DataSourceParameterResolver;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.resolver.LintsParameterResolver;
@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
         CatalogParameterResolver.class,
         LintsParameterResolver.class
 })
-@TestMethodOrder(TargetVersionOrderer.class)
+@TestMethodOrder(TargetOrder.class)
 public @interface Trymigrate {
 
     String[] flywayProperties() default {};

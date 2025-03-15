@@ -12,9 +12,9 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TargetVersionComparatorTest {
+class TargetOrderTest {
 
-    private final TargetVersionComparator comparator = new TargetVersionComparator();
+    private final TargetOrder bean = new TargetOrder();
 
     @Test
     void compare_same() {
@@ -23,7 +23,7 @@ class TargetVersionComparatorTest {
         MethodDescriptor md2 = mock();
 
         // WHEN
-        int result = comparator.compare(md1, md2);
+        int result = bean.compare(md1, md2);
 
         // THEN
         assertThat(result).isZero();
@@ -43,7 +43,7 @@ class TargetVersionComparatorTest {
         when(md2.findAnnotation(eq(Order.class))).thenReturn(Optional.of(order2));
 
         // WHEN
-        int result = comparator.compare(md1, md2);
+        int result = bean.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
@@ -59,7 +59,7 @@ class TargetVersionComparatorTest {
         MethodDescriptor md2 = mock();
 
         // WHEN
-        int result = comparator.compare(md1, md2);
+        int result = bean.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
@@ -75,7 +75,7 @@ class TargetVersionComparatorTest {
                 .thenReturn(Optional.ofNullable(mock()));
 
         // WHEN
-        int result = comparator.compare(md1, md2);
+        int result = bean.compare(md1, md2);
 
         // THEN
         assertThat(result).isGreaterThan(0);
@@ -95,7 +95,7 @@ class TargetVersionComparatorTest {
         when(md2.findAnnotation(eq(TrymigrateTest.class))).thenReturn(Optional.of(trymigrateTest2));
 
         // WHEN
-        int result = comparator.compare(md1, md2);
+        int result = bean.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
@@ -121,7 +121,7 @@ class TargetVersionComparatorTest {
         when(md2.findAnnotation(eq(Order.class))).thenReturn(Optional.of(order2));
 
         // WHEN
-        int result = comparator.compare(md1, md2);
+        int result = bean.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);

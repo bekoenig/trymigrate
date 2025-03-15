@@ -3,12 +3,20 @@ package io.github.bekoenig.trymigrate.core.internal.jupiter.order;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.MethodDescriptor;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.MethodOrdererContext;
 import org.junit.jupiter.api.Order;
 
 import java.util.Comparator;
 import java.util.Optional;
 
-public class TargetVersionComparator implements Comparator<MethodDescriptor> {
+
+public class TargetOrder implements MethodOrderer, Comparator<MethodDescriptor> {
+
+    @Override
+    public void orderMethods(MethodOrdererContext context) {
+        context.getMethodDescriptors().sort(this);
+    }
 
     @Override
     public int compare(MethodDescriptor m1, MethodDescriptor m2) {
@@ -30,11 +38,14 @@ public class TargetVersionComparator implements Comparator<MethodDescriptor> {
     }
 
     private Optional<MigrationVersion> getMigrationVersion(MethodDescriptor m) {
-        return m.findAnnotation(TrymigrateTest.class).map(x -> MigrationVersion.fromVersion(x.whenTarget()));
+        return m.findAnnotation(TrymigrateTest.class)
+                .map(x -> MigrationVersion.fromVersion(x.whenTarget()));
     }
 
     private static Integer getOrder(MethodDescriptor m) {
-        return m.findAnnotation(Order.class).map(Order::value).orElse(Order.DEFAULT);
+        return m.findAnnotation(Order.class)
+                .map(Order::value)
+                .orElse(Order.DEFAULT);
     }
 
 }
