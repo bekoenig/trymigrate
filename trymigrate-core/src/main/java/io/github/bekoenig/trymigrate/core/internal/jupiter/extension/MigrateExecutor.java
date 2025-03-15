@@ -26,7 +26,8 @@ public class MigrateExecutor implements BeforeEachCallback {
     @Override
     public void beforeEach(ExtensionContext extensionContext) {
         // store global state in parent
-        FlywayMigrateWrapper flywayMigrateWrapper = new FlywayMigrateWrapper(extensionContext.getParent().orElseThrow());
+        FlywayMigrateWrapper flywayMigrateWrapper = new FlywayMigrateWrapper(extensionContext.getParent()
+                .orElseThrow());
         if (flywayMigrateWrapper.isLatest()) {
             return;
         }

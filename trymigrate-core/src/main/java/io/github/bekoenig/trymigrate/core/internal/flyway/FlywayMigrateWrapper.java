@@ -9,6 +9,9 @@ import org.flywaydb.core.api.output.MigrateResult;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import schemacrawler.tools.lint.Lints;
 
+import static org.flywaydb.core.api.MigrationVersion.LATEST;
+import static org.flywaydb.core.api.MigrationVersion.fromVersion;
+
 public class FlywayMigrateWrapper {
 
     private final ExtensionContext extensionContext;
@@ -18,20 +21,21 @@ public class FlywayMigrateWrapper {
     }
 
     public boolean isLatest() {
-        return MigrationVersion.LATEST.equals(StoreSupport.getMigrationVersion(extensionContext));
+        return LATEST.equals(StoreSupport.getMigrationVersion(extensionContext));
     }
 
     public void migrate(Flyway flyway, LintPatterns acceptedLints) {
         MigrationVersion lastVersion = StoreSupport.getMigrationVersion(extensionContext);
 
         MigrateResult migrate = flyway.migrate();
-        if (MigrationVersion.fromVersion(migrate.initialSchemaVersion).isNewerThan(flyway.getConfiguration().getTarget())) {
+        if (fromVersion(migrate.initialSchemaVersion).isNewerThan(flyway.getConfiguration().getTarget())) {
             throw new IllegalStateException("Schema version " + migrate.initialSchemaVersion +
                     " is newer than target " + flyway.getConfiguration().getTarget() +
-                    " for test. Dispose database or set " + TrymigrateTest.class.getSimpleName() + "#cleanBefore=true on first migrate test.");
+                    " for test. Dispose database or set " + TrymigrateTest.class.getSimpleName() +
+                    "#cleanBefore=true on first migrate test.");
         }
 
-        MigrationVersion currentVersion = MigrationVersion.fromVersion(migrate.targetSchemaVersion);
+        MigrationVersion currentVersion = fromVersion(migrate.targetSchemaVersion);
 
         if (currentVersion.isNewerThan(lastVersion)) {
             StoreSupport.putMigrationVersion(extensionContext, currentVersion);

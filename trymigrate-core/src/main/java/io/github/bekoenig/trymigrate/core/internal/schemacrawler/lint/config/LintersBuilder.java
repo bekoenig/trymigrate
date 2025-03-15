@@ -60,7 +60,8 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
     public LintersConfiguration removeAllConfigs(String linterId) {
         endLinterConfig();
         if (this.configs.stream().noneMatch(x -> x.getLinterId().equals(linterId))) {
-            throw new IllegalStateException("Linter with id <%s> not configured. Remove unnecessary method call.".formatted(linterId));
+            throw new IllegalStateException("Linter with id <%s> not configured. Remove unnecessary method call."
+                    .formatted(linterId));
         }
         this.configs.removeIf(linterConfig -> linterConfig.getLinterId().equals(linterId));
         return this;
@@ -88,7 +89,8 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
     public LinterConfiguration addConfig(String linterId) {
         endLinterConfig();
         if (!registry.isRegistered(linterId)) {
-            throw new IllegalStateException("No provider for linter with id <%s> registered. Configure using provider instance.".formatted(linterId));
+            throw new IllegalStateException(("No provider for linter with id <%s> registered. " +
+                    "Configure using provider instance.").formatted(linterId));
         }
         startLinterConfig(linterId);
         return this;

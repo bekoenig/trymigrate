@@ -59,7 +59,8 @@ public class StoreSupport {
         return getStore(extensionContext).get(FLUENT_CONFIGURATION_FACTORY, FlywayConfigurationFactory.class);
     }
 
-    public static void putFlywayConfigurationFactory(ExtensionContext extensionContext, FlywayConfigurationFactory flywayConfigurationFactory) {
+    public static void putFlywayConfigurationFactory(ExtensionContext extensionContext,
+                                                     FlywayConfigurationFactory flywayConfigurationFactory) {
         getStore(extensionContext).put(FLUENT_CONFIGURATION_FACTORY, flywayConfigurationFactory);
     }
 

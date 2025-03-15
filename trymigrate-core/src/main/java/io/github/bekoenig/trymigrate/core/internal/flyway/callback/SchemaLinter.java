@@ -5,8 +5,8 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHisto
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.LinterConfigBuilder;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.LintersBuilder;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -57,7 +57,8 @@ public class SchemaLinter implements Callback {
                 // include tables from managed schemas
                 .tableInclusionPattern("(" + String.join("|", schemas) + ")\\..*")
                 // exclude history table
-                .tableExclusionPattern(context.getConfiguration().getDefaultSchema() + "\\." + context.getConfiguration().getTable())
+                .tableExclusionPattern(context.getConfiguration().getDefaultSchema() + "\\." +
+                        context.getConfiguration().getTable())
                 .runLinter(true));
         lintersCustomizers.forEach(lintersCustomizer -> lintersCustomizer.accept(lintersBuilder));
 

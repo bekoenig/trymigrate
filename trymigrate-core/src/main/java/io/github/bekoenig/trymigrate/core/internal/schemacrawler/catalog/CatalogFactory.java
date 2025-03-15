@@ -19,7 +19,8 @@ public class CatalogFactory {
             "io/github/bekoenig/trymigrate/core/internal/schemacrawler/catalog/log.properties";
 
     static {
-        try (InputStream is = ClassLoaderUtils.getClassLoader(CatalogFactory.class).getResourceAsStream(LOG_PROPERTIES)) {
+        try (InputStream is = ClassLoaderUtils.getClassLoader(CatalogFactory.class)
+                .getResourceAsStream(LOG_PROPERTIES)) {
             LogManager.getLogManager().readConfiguration(is);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed loading log configuration", e);

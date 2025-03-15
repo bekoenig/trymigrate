@@ -35,7 +35,8 @@ public class FlywayConfigurationFactory implements Supplier<FluentConfiguration>
                 .map(property -> {
                     String[] tokens = property.split("=");
                     if (tokens.length != 2) {
-                        throw new IllegalArgumentException("Property '%s' does not match format 'key=value'".formatted(property));
+                        throw new IllegalArgumentException("Property '%s' does not match format 'key=value'"
+                                .formatted(property));
                     }
                     return tokens;
                 })

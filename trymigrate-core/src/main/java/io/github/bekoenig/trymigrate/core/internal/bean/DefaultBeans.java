@@ -9,8 +9,8 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.Def
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
+import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -44,7 +44,8 @@ public class DefaultBeans {
     private final LintsReporter lintsHtmlReporter;
 
     @TrymigrateBean
-    private final LintersCustomizer lintersCustomizer = linterConfiguration -> linterConfiguration.merge(new DefaultLinters());
+    private final LintersCustomizer lintersCustomizer =
+            linterConfiguration -> linterConfiguration.merge(new DefaultLinters());
 
     @TrymigrateBean
     private final TrymigrateDataLoadHandle sqlDataLoadHandle = new TrymigrateDataLoadHandle() {
@@ -65,8 +66,9 @@ public class DefaultBeans {
             configuration.javaMigrations(beanProvider.all(JavaMigration.class).toArray(new JavaMigration[0]));
         };
 
-        this.containerDataSourceConfigurer = configuration -> beanProvider.findOne(JdbcDatabaseContainer.class)
-                .ifPresent(c -> configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
+        this.containerDataSourceConfigurer = configuration ->
+                beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(c ->
+                        configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
 
         this.lintsHtmlReporter = new LintsHtmlReporter(
                 beanProvider.findFirst(LintsReportResolver.class).orElseGet(DefaultLintsReportResolver::new));

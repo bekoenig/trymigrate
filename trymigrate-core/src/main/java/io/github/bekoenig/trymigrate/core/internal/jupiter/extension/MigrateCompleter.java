@@ -15,7 +15,8 @@ public class MigrateCompleter implements TestInstancePreDestroyCallback {
 
     @Override
     public void preDestroyTestInstance(ExtensionContext extensionContext) {
-        FlywayConfigurationFactory flywayConfigurationFactory = StoreSupport.getFlywayConfigurationFactory(extensionContext);
+        FlywayConfigurationFactory flywayConfigurationFactory = StoreSupport.getFlywayConfigurationFactory(
+                extensionContext);
         if (Objects.nonNull(flywayConfigurationFactory )) {
             FlywayMigrateWrapper flywayMigrateWrapper = new FlywayMigrateWrapper(extensionContext);
             if (!flywayMigrateWrapper.isLatest()) {
