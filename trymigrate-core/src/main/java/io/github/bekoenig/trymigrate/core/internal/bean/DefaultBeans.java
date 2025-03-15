@@ -31,18 +31,7 @@ public class DefaultBeans {
     @TrymigrateBean
     @Order(Integer.MAX_VALUE)
     private final LoadOptions loadOptions = LoadOptionsBuilder.builder()
-            .withSchemaInfoLevel(SchemaInfoLevelBuilder.builder()
-                    .withInfoLevel(InfoLevel.maximum)
-                    // ignore database instance and server details
-                    .setRetrieveAdditionalJdbcDriverInfo(false)
-                    .setRetrieveAdditionalDatabaseInfo(false)
-                    .setRetrieveDatabaseInfo(false)
-                    .setRetrieveDatabaseUsers(false)
-                    .setRetrieveServerInfo(false)
-                    // ignore privileges
-                    .setRetrieveTablePrivileges(false)
-                    .setRetrieveTableColumnPrivileges(false)
-                    .toOptions())
+            .withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum())
             .toOptions();
 
     @TrymigrateBean
