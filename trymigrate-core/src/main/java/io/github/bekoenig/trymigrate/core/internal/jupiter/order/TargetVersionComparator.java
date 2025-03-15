@@ -15,17 +15,17 @@ public class TargetVersionComparator implements Comparator<MethodDescriptor> {
         Optional<MigrationVersion> version1 = getMigrationVersion(m1);
         Optional<MigrationVersion> version2 = getMigrationVersion(m2);
 
-        // Tests mit Target werden vor denen ohne Target einsortiert.
+        // target before non target
         if (Boolean.logicalXor(version1.isPresent(), version2.isPresent())) {
             return version1.isEmpty() ? 1 : -1;
         }
 
-        // Tests mit unterschiedlichem Target werden nach der Version sortiert.
+        // targets ascending version
         if (version1.isPresent() && !version1.get().equals(version2.get())) {
             return version1.get().compareTo(version2.get());
         }
 
-        // Alle übrigen Tests werden nach der Order sortiert.
+        // same target or without target ascending order
         return Integer.compare(getOrder(m1), getOrder(m2));
     }
 
