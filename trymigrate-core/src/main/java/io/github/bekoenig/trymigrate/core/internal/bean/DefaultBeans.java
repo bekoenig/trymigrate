@@ -13,7 +13,6 @@ import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
-import org.junit.jupiter.api.Order;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import schemacrawler.schemacrawler.*;
 import us.fatehi.utility.database.SqlScript;
@@ -25,11 +24,9 @@ import static io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigur
 public class DefaultBeans {
 
     @TrymigrateBean
-    @Order(Integer.MAX_VALUE)
     private final LimitOptions limitOptions = LimitOptionsBuilder.newLimitOptions();
 
     @TrymigrateBean
-    @Order(Integer.MAX_VALUE)
     private final LoadOptions loadOptions = LoadOptionsBuilder.builder()
             .withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum())
             .toOptions();
@@ -50,7 +47,6 @@ public class DefaultBeans {
     private final LintersCustomizer lintersCustomizer = linterConfiguration -> linterConfiguration.merge(new DefaultLinters());
 
     @TrymigrateBean
-    @Order(Integer.MAX_VALUE)
     private final TrymigrateDataLoadHandle sqlDataLoadHandle = new TrymigrateDataLoadHandle() {
         @Override
         public boolean supports(String resource, String extension) {
