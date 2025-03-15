@@ -14,8 +14,6 @@ import static org.mockito.Mockito.when;
 
 class TargetOrderTest {
 
-    private final TargetOrder bean = new TargetOrder();
-
     @Test
     void compare_same() {
         // GIVEN
@@ -23,7 +21,7 @@ class TargetOrderTest {
         MethodDescriptor md2 = mock();
 
         // WHEN
-        int result = bean.compare(md1, md2);
+        int result = TargetOrder.COMPARATOR.compare(md1, md2);
 
         // THEN
         assertThat(result).isZero();
@@ -43,7 +41,7 @@ class TargetOrderTest {
         when(md2.findAnnotation(eq(Order.class))).thenReturn(Optional.of(order2));
 
         // WHEN
-        int result = bean.compare(md1, md2);
+        int result = TargetOrder.COMPARATOR.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
@@ -59,7 +57,7 @@ class TargetOrderTest {
         MethodDescriptor md2 = mock();
 
         // WHEN
-        int result = bean.compare(md1, md2);
+        int result = TargetOrder.COMPARATOR.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
@@ -75,7 +73,7 @@ class TargetOrderTest {
                 .thenReturn(Optional.ofNullable(mock()));
 
         // WHEN
-        int result = bean.compare(md1, md2);
+        int result = TargetOrder.COMPARATOR.compare(md1, md2);
 
         // THEN
         assertThat(result).isGreaterThan(0);
@@ -95,7 +93,7 @@ class TargetOrderTest {
         when(md2.findAnnotation(eq(TrymigrateTest.class))).thenReturn(Optional.of(trymigrateTest2));
 
         // WHEN
-        int result = bean.compare(md1, md2);
+        int result = TargetOrder.COMPARATOR.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
@@ -121,7 +119,7 @@ class TargetOrderTest {
         when(md2.findAnnotation(eq(Order.class))).thenReturn(Optional.of(order2));
 
         // WHEN
-        int result = bean.compare(md1, md2);
+        int result = TargetOrder.COMPARATOR.compare(md1, md2);
 
         // THEN
         assertThat(result).isLessThan(0);
