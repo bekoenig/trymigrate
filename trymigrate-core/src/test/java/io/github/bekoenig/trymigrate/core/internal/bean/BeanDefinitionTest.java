@@ -57,10 +57,10 @@ class BeanDefinitionTest {
         // GIVEN
         BeanDefinition beanDefinition1 = getBeanDefinition(new Object() {
             private final String attribute = null;
-        }, BeanHierarchy.DEFAULT);
+        }, BeanHierarchy.INSTANCE);
         BeanDefinition beanDefinition2 = getBeanDefinition(new Object() {
             private final String attribute = null;
-        }, BeanHierarchy.INSTANCE);
+        }, BeanHierarchy.DEFAULT);
 
         // WHEN
         int compareTo = beanDefinition1.compareTo(beanDefinition2);

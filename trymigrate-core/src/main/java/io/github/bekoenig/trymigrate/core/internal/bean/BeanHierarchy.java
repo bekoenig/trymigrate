@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.bean;
 
 public enum BeanHierarchy {
-    DEFAULT,
+    INSTANCE,
     PLUGIN,
-    INSTANCE
+    DEFAULT
 }

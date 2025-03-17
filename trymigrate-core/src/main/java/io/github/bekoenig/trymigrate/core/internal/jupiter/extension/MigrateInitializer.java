@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.shaded.com.google.common.collect.Lists;
 import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.Lints;
@@ -51,7 +52,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         lintsHistory.putLints(initialVersion.getVersion(), new Lints(List.of()));
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
-        SchemaLinter schemaLinter = new SchemaLinter(beanProvider.all(LintersCustomizer.class),
+        SchemaLinter schemaLinter = new SchemaLinter(compositeLintersCustomizer(beanProvider),
                 new CatalogFactory(beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class)),
                 catalog -> StoreSupport.putCatalog(extensionContext, catalog),
                 lintsHistory, beanProvider.all(LintsReporter.class));
@@ -72,6 +73,12 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         annotatedElement, IgnoreLint.class).stream()
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
+    }
+
+    private LintersCustomizer compositeLintersCustomizer(TrymigrateBeanProvider beanProvider) {
+        // to redefine or overwrite linters configuration customizers with high priority will be applied at last
+        return lintersBuilder -> Lists.reverse(beanProvider.all(LintersCustomizer.class))
+                .forEach(x -> x.accept(lintersBuilder));
     }
 
 }
