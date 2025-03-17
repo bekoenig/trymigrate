@@ -29,7 +29,7 @@ public class LintsAssert {
 
         throw new AssertionError(MessageFormat.format("Fix or accept lints: {0}{1}",
                 System.lineSeparator(),
-                lints.stream()
+                assertLints.stream()
                         .map(x -> x.getLinterId() + ": " + x)
                         .collect(Collectors.joining(System.lineSeparator()))));
     }
