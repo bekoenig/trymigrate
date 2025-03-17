@@ -15,10 +15,6 @@ public class PluginProvider implements Supplier<TrymigratePlugin> {
         this.supplier = supplier;
     }
 
-    public Class<? extends TrymigratePlugin> type() {
-        return type;
-    }
-
     @Override
     public TrymigratePlugin get() {
         return supplier.get();
