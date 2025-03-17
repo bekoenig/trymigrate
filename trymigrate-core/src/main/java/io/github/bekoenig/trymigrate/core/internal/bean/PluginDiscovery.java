@@ -24,13 +24,13 @@ public class PluginDiscovery {
 
     private Set<PluginProvider> discover(Class<? extends TrymigratePlugin> pluginType) {
         Stream<ServiceLoader.Provider<TrymigratePlugin>> providerStream = serviceLoader.stream();
+        // no filtering on base interface (wildcard for all available plugins)
         if (!pluginType.equals(TrymigratePlugin.class)) {
             // all implicit referenced plugin interfaces by current plugin type
             Set<Class<? extends TrymigratePlugin>> allPluginInterfaces = allPluginInterfaces(pluginType);
             providerStream = providerStream.filter(pluginProvider ->
                     isReferenced(pluginProvider, allPluginInterfaces));
         }
-
 
         // lockup all spi registered implementations which are implicit referenced
         Set<PluginProvider> providers = providerStream
