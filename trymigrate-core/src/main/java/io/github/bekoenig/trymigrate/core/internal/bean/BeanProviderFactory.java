@@ -6,6 +6,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static io.github.bekoenig.trymigrate.core.internal.bean.BeanHierarchy.*;
 
@@ -19,7 +20,7 @@ public class BeanProviderFactory {
         return new BeanProvider(beanDefinitions.stream().sorted().toList());
     }
 
-    public BeanProvider create(Object testInstance, List<PluginProvider> providers) {
+    public BeanProvider create(Object testInstance, Set<PluginProvider> providers) {
         BeanProvider testInstanceBeanProvider = append(new BeanProvider(List.of()), testInstance, INSTANCE);
         BeanProvider fluentBeanProvider = testInstanceBeanProvider;
 
