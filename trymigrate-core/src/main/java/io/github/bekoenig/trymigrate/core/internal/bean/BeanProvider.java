@@ -7,17 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class BeanProvider implements TrymigrateBeanProvider {
-
-    private final List<BeanDefinition> beanDefinitions;
-
-    public BeanProvider(List<BeanDefinition> beanDefinitions) {
-        this.beanDefinitions = beanDefinitions;
-    }
-
-    public List<BeanDefinition> getBeanDefinitions() {
-        return beanDefinitions;
-    }
+public record BeanProvider(List<BeanDefinition> beanDefinitions) implements TrymigrateBeanProvider {
 
     private <T> Stream<T> stream(Class<T> clazz) {
         return beanDefinitions.stream()

@@ -13,7 +13,7 @@ public class BeanProviderFactory {
 
     private BeanProvider append(BeanProvider beanProvider, Object instance, BeanHierarchy hierarchy) {
         List<BeanDefinition> beanDefinitions = new ArrayList<>();
-        beanDefinitions.addAll(beanProvider.getBeanDefinitions());
+        beanDefinitions.addAll(beanProvider.beanDefinitions());
         beanDefinitions.addAll(AnnotationSupport.findAnnotatedFields(instance.getClass(), TrymigrateBean.class)
                 .stream().map(field -> new BeanDefinition(instance, field, hierarchy)).toList());
         return new BeanProvider(beanDefinitions.stream().sorted().toList());
