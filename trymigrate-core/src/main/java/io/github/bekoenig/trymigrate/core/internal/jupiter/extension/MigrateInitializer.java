@@ -59,7 +59,8 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 lintsHistory, beanProvider.all(LintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
                 testConfiguration.flywayProperties(),
-                () -> beanProvider.all(TrymigrateFlywayConfigurer.class),
+                configuration -> beanProvider.all(TrymigrateFlywayConfigurer.class)
+                        .forEach(configurer -> configurer.accept(configuration)),
                 schemaLinter);
         StoreSupport.putFlywayConfigurationFactory(extensionContext, flywayConfigurationFactory);
 

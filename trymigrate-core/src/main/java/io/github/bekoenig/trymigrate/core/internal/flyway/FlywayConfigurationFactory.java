@@ -18,12 +18,12 @@ public class FlywayConfigurationFactory implements Supplier<FluentConfiguration>
 
     private final Map<String, String> properties;
 
-    private final Supplier<List<TrymigrateFlywayConfigurer>> flywayConfigurerSupplier;
+    private final TrymigrateFlywayConfigurer flywayConfigurerSupplier;
 
     private final Callback additionalCallback;
 
     public FlywayConfigurationFactory(
-            String[] properties, Supplier<List<TrymigrateFlywayConfigurer>> flywayConfigurerSupplier,
+            String[] properties, TrymigrateFlywayConfigurer flywayConfigurerSupplier,
             SchemaLinter additionalCallback) {
         this.properties = splitProperties(properties);
         this.flywayConfigurerSupplier = flywayConfigurerSupplier;
@@ -56,8 +56,7 @@ public class FlywayConfigurationFactory implements Supplier<FluentConfiguration>
     @Override
     public FluentConfiguration get() {
         FluentConfiguration configuration = new FluentConfiguration().configuration(properties);
-        flywayConfigurerSupplier.get()
-                .forEach(customizer -> customizer.accept(configuration));
+        flywayConfigurerSupplier.accept(configuration);
 
         addCallbacks(configuration, List.of(additionalCallback));
 
