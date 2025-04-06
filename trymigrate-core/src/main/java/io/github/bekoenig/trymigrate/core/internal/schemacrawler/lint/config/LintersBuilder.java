@@ -57,17 +57,6 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
     }
 
     @Override
-    public LintersConfiguration removeAllConfigs(String linterId) {
-        endLinterConfig();
-        if (this.configs.stream().noneMatch(x -> x.getLinterId().equals(linterId))) {
-            throw new IllegalStateException("Linter with id <%s> not configured. Remove unnecessary method call."
-                    .formatted(linterId));
-        }
-        this.configs.removeIf(linterConfig -> linterConfig.getLinterId().equals(linterId));
-        return this;
-    }
-
-    @Override
     public LintersConfiguration merge(Consumer<LintersConfiguration> configuration) {
         endLinterConfig();
         configuration.accept(this);
@@ -94,11 +83,6 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
         }
         startLinterConfig(linterId);
         return this;
-    }
-
-    @Override
-    public LinterConfiguration replaceAll(String linterId) {
-        return removeAllConfigs(linterId).addConfig(linterId);
     }
 
     @Override

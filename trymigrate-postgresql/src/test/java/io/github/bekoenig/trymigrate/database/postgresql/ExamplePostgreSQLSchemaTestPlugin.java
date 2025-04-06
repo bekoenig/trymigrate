@@ -18,8 +18,5 @@ public class ExamplePostgreSQLSchemaTestPlugin implements PostgreSQLPlugin {
                     .addConfig("schemacrawler.tools.linter.LinterTableSql")
                     .config(Map.of(
                             "message", "other message for custom SQL lint",
-                            "sql", "SELECT COUNT(1)+4711 FROM ${table}"))
-                    .removeAllConfigs("schemacrawler.tools.linter.LinterTableEmpty")
-                    .removeAllConfigs("schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns");
-
+                            "sql", "SELECT COUNT(1)+4711 FROM ${table}"));
 }

@@ -8,13 +8,10 @@ public interface LintersConfiguration {
 
     LintersConfiguration register(LinterProvider linterProvider);
 
-    LintersConfiguration removeAllConfigs(String linterId);
-
     LintersConfiguration merge(Consumer<LintersConfiguration> configuration);
 
     LinterConfiguration addConfig(LinterProvider linterProvider);
 
     LinterConfiguration addConfig(String linterId);
 
-    LinterConfiguration replaceAll(String linterId);
 }

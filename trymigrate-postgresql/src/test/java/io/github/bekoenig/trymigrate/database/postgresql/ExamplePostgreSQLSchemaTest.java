@@ -44,6 +44,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 //                "password=test",
         }, plugins = ExamplePostgreSQLSchemaTestPlugin.class)
 @IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableSql", objectName = ".*")
+@IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns", objectName = ".*")
+@IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty", objectName = ".*")
 public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateBean
