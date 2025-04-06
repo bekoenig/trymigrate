@@ -10,8 +10,8 @@ public interface LintersConfiguration {
 
     LintersConfiguration include(Consumer<LintersConfiguration> configuration);
 
-    LinterConfiguration configure(LinterProvider linterProvider);
+    LinterConfiguration enable(LinterProvider linterProvider);
 
-    LinterConfiguration configure(String linterId);
+    LinterConfiguration enable(String linterId);
 
 }

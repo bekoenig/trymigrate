@@ -10,12 +10,12 @@ public class ExamplePostgreSQLSchemaTestPlugin implements PostgreSQLPlugin {
     @TrymigrateBean
     private final LintersCustomizer lintersCustomizer = linterConfiguration ->
             linterConfiguration
-                    .configure(new DummyLinterProvider())
-                    .configure("schemacrawler.tools.linter.LinterTableSql")
+                    .enable(new DummyLinterProvider())
+                    .enable("schemacrawler.tools.linter.LinterTableSql")
                     .config(Map.of(
                             "message", "message for custom SQL lint",
                             "sql", "SELECT COUNT(1) FROM ${table}"))
-                    .configure("schemacrawler.tools.linter.LinterTableSql")
+                    .enable("schemacrawler.tools.linter.LinterTableSql")
                     .config(Map.of(
                             "message", "other message for custom SQL lint",
                             "sql", "SELECT COUNT(1)+4711 FROM ${table}"));

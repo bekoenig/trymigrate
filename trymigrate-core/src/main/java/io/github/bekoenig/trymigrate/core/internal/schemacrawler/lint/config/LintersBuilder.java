@@ -64,7 +64,7 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
     }
 
     @Override
-    public LinterConfiguration configure(LinterProvider linterProvider) {
+    public LinterConfiguration enable(LinterProvider linterProvider) {
         endLinterConfig();
         if (registry.isRegistered(linterProvider.getLinterId())) {
             throw new IllegalStateException("Provider <%s> already registered. Configure using linter id <%s>."
@@ -75,7 +75,7 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
         return this;
     }
 
-    public LinterConfiguration configure(String linterId) {
+    public LinterConfiguration enable(String linterId) {
         endLinterConfig();
         if (!registry.isRegistered(linterId)) {
             throw new IllegalStateException(("No provider for linter with id <%s> registered. " +
