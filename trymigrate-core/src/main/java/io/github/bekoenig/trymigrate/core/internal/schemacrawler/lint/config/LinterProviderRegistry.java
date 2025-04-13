@@ -18,10 +18,6 @@ public class LinterProviderRegistry implements LinterInitializer {
         linterProviders.put(linterProvider.getLinterId(), linterProvider);
     }
 
-    public boolean isRegistered(String linterId) {
-        return linterProviders.containsKey(linterId);
-    }
-
     @Override
     public Set<String> getRegisteredLinters() {
         return new HashSet<>(linterProviders.keySet());
