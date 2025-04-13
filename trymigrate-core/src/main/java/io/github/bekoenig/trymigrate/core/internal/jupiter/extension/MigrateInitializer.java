@@ -24,7 +24,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.shaded.com.google.common.collect.Lists;
 import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.LinterInitializer;
@@ -83,8 +82,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
     }
 
     private LintersCustomizer compositeLintersCustomizer(TrymigrateBeanProvider beanProvider) {
-        // to redefine or overwrite linters configuration customizers with high priority will be applied at last
-        return lintersBuilder -> Lists.reverse(beanProvider.all(LintersCustomizer.class))
+        return lintersBuilder -> beanProvider.all(LintersCustomizer.class)
                 .forEach(x -> x.accept(lintersBuilder));
     }
 
