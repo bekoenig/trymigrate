@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class LintersBuilder implements LintersConfiguration, LinterConfiguration {
@@ -53,13 +52,6 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
                     .formatted(linterProvider.getClass().getName(), linterProvider.getLinterId()));
         }
         registry.register(linterProvider);
-        return this;
-    }
-
-    @Override
-    public LintersConfiguration include(Consumer<LintersConfiguration> configuration) {
-        endLinterConfig();
-        configuration.accept(this);
         return this;
     }
 

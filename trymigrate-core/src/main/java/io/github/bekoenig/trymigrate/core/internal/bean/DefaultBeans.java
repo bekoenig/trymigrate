@@ -44,8 +44,7 @@ public class DefaultBeans {
     private final LintsReporter lintsHtmlReporter;
 
     @TrymigrateBean
-    private final LintersCustomizer lintersCustomizer =
-            linterConfiguration -> linterConfiguration.include(new DefaultLinters());
+    private final LintersCustomizer lintersCustomizer = new DefaultLinters();
 
     @TrymigrateBean
     private final TrymigrateDataLoadHandle sqlDataLoadHandle = new TrymigrateDataLoadHandle() {

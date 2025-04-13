@@ -1,11 +1,10 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config;
 
 import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import schemacrawler.tools.linter.*;
 
-import java.util.function.Consumer;
-
-public class DefaultLinters implements Consumer<LintersConfiguration> {
+public class DefaultLinters implements LintersCustomizer {
 
     @Override
     public void accept(LintersConfiguration configuration) {
