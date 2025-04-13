@@ -11,6 +11,7 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
 import schemacrawler.schema.Catalog;
+import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.Lints;
 
@@ -20,14 +21,17 @@ import java.util.function.Consumer;
 
 public class SchemaLinter implements Callback {
 
+    private final LinterInitializer linterInitializer;
     private final LintersCustomizer lintersCustomizer;
     private final CatalogFactory catalogFactory;
     private final Consumer<Catalog> catalogCache;
     private final LintsHistory lintsHistory;
     private final List<LintsReporter> lintsReporters;
 
-    public SchemaLinter(LintersCustomizer lintersCustomizer, CatalogFactory catalogFactory,
-                        Consumer<Catalog> catalogCache, LintsHistory lintsHistory, List<LintsReporter> lintsReporters) {
+    public SchemaLinter(LinterInitializer linterInitializer, LintersCustomizer lintersCustomizer,
+                        CatalogFactory catalogFactory, Consumer<Catalog> catalogCache, LintsHistory lintsHistory,
+                        List<LintsReporter> lintsReporters) {
+        this.linterInitializer = linterInitializer;
         this.lintersCustomizer = lintersCustomizer;
         this.catalogFactory = catalogFactory;
         this.catalogCache = catalogCache;
@@ -65,7 +69,7 @@ public class SchemaLinter implements Callback {
         Catalog catalog = catalogFactory.crawl(context.getConnection());
         catalogCache.accept(catalog);
 
-        Linters linters = lintersBuilder.build();
+        Linters linters = lintersBuilder.build(linterInitializer);
         linters.lint(catalog, context.getConnection());
         Lints currentLints = linters.getLints();
 

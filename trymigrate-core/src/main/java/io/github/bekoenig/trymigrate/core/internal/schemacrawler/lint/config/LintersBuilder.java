@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config;
 import io.github.bekoenig.trymigrate.core.lint.config.LinterConfiguration;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
 import schemacrawler.tools.lint.LintSeverity;
-import schemacrawler.tools.lint.LinterProvider;
+import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.config.LinterConfig;
 import schemacrawler.tools.lint.config.LinterConfigs;
@@ -16,8 +16,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class LintersBuilder implements LintersConfiguration, LinterConfiguration {
-
-    private final LinterProviderRegistry registry = new LinterProviderRegistry();
 
     private final List<LinterConfig> configs = new ArrayList<>();
 
@@ -44,21 +42,6 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
         }
     }
 
-    @Override
-    public LintersConfiguration register(LinterProvider linterProvider) {
-        endLinterConfig();
-        registry.register(linterProvider);
-        return this;
-    }
-
-    @Override
-    public LinterConfiguration enable(LinterProvider linterProvider) {
-        endLinterConfig();
-        registry.register(linterProvider);
-        startLinterConfig(linterProvider.getLinterId());
-        return this;
-    }
-
     public LinterConfiguration enable(String linterId) {
         endLinterConfig();
         startLinterConfig(linterId);
@@ -83,14 +66,14 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
         return this;
     }
 
-    public Linters build() {
+    public Linters build(LinterInitializer linterInitializer) {
         endLinterConfig();
 
         LinterConfigs linterConfigs = new LinterConfigs(new Config());
         this.configs.forEach(linterConfigs::add);
 
         Linters linters = new Linters(linterConfigs, false);
-        linters.initialize(registry);
+        linters.initialize(linterInitializer);
         return linters;
     }
 }

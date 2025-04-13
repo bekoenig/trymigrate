@@ -14,6 +14,7 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatter
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;
+import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.CompositeLinterRegistry;
 import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
@@ -26,6 +27,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.shaded.com.google.common.collect.Lists;
 import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.schemacrawler.LoadOptions;
+import schemacrawler.tools.lint.LinterInitializer;
+import schemacrawler.tools.lint.LinterProvider;
 import schemacrawler.tools.lint.Lints;
 
 import java.lang.reflect.AnnotatedElement;
@@ -53,7 +56,9 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         lintsHistory.putLints(initialVersion.getVersion(), new Lints(List.of()));
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
-        SchemaLinter schemaLinter = new SchemaLinter(compositeLintersCustomizer(beanProvider),
+        SchemaLinter schemaLinter = new SchemaLinter(
+                compositeLinterRegistry(beanProvider),
+                compositeLintersCustomizer(beanProvider),
                 new CatalogFactory(beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class)),
                 catalog -> StoreSupport.putCatalog(extensionContext, catalog),
                 lintsHistory, beanProvider.all(LintsReporter.class));
@@ -81,6 +86,12 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         // to redefine or overwrite linters configuration customizers with high priority will be applied at last
         return lintersBuilder -> Lists.reverse(beanProvider.all(LintersCustomizer.class))
                 .forEach(x -> x.accept(lintersBuilder));
+    }
+
+    private LinterInitializer compositeLinterRegistry(TrymigrateBeanProvider beanProvider) {
+        CompositeLinterRegistry compositeLinterRegistry = new CompositeLinterRegistry();
+        beanProvider.all(LinterProvider.class).forEach(compositeLinterRegistry::register);
+        return compositeLinterRegistry;
     }
 
 }

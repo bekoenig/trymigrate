@@ -2,35 +2,32 @@ package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config;
 
 import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import schemacrawler.tools.linter.*;
 
 public class DefaultLinters implements LintersCustomizer {
 
     @Override
     public void accept(LintersConfiguration configuration) {
         configuration
-                .register(new LinterProviderCatalogSql())
-                .enable(new LinterProviderColumnTypes())
-                .enable(new LinterProviderForeignKeyMismatch())
-                .enable(new LinterProviderForeignKeySelfReference())
-                .enable(new LinterProviderForeignKeyWithNoIndexes())
-                .enable(new LinterProviderNullColumnsInIndex())
-                .enable(new LinterProviderNullIntendedColumns())
-                .enable(new LinterProviderRedundantIndexes())
-                .enable(new LinterProviderTableAllNullableColumns())
-                .enable(new LinterProviderTableCycles())
-                .enable(new LinterProviderTableEmpty())
-                .register(new LinterProviderTableSql())
-                .enable(new LinterProviderTableWithBadlyNamedColumns())
-                .enable(new LinterProviderTableWithIncrementingColumns())
-                .enable(new LinterProviderTableWithNoIndexes())
-                .enable(new LinterProviderTableWithNoPrimaryKey())
-                .enable(new LinterProviderTableWithNoRemarks())
-                .enable(new LinterProviderTableWithNoSurrogatePrimaryKey())
-                .enable(new LinterProviderTableWithPrimaryKeyNotFirst())
-                .enable(new LinterProviderTableWithQuotedNames())
-                .enable(new LinterProviderTableWithSingleColumn())
-                .enable(new LinterProviderTooManyLobs());
+                .enable("schemacrawler.tools.linter.LinterColumnTypes")
+                .enable("schemacrawler.tools.linter.LinterForeignKeyMismatch")
+                .enable("schemacrawler.tools.linter.LinterForeignKeySelfReference")
+                .enable("schemacrawler.tools.linter.LinterForeignKeyWithNoIndexes")
+                .enable("schemacrawler.tools.linter.LinterNullColumnsInIndex")
+                .enable("schemacrawler.tools.linter.LinterNullIntendedColumns")
+                .enable("schemacrawler.tools.linter.LinterRedundantIndexes")
+                .enable("schemacrawler.tools.linter.LinterTableAllNullableColumns")
+                .enable("schemacrawler.tools.linter.LinterTableCycles")
+                .enable("schemacrawler.tools.linter.LinterTableEmpty")
+                .enable("schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
+                .enable("schemacrawler.tools.linter.LinterTableWithIncrementingColumns")
+                .enable("schemacrawler.tools.linter.LinterTableWithNoIndexes")
+                .enable("schemacrawler.tools.linter.LinterTableWithNoPrimaryKey")
+                .enable("schemacrawler.tools.linter.LinterTableWithNoRemarks")
+                .enable("schemacrawler.tools.linter.LinterTableWithNoSurrogatePrimaryKey")
+                .enable("schemacrawler.tools.linter.LinterTableWithPrimaryKeyNotFirst")
+                .enable("schemacrawler.tools.linter.LinterTableWithQuotedNames")
+                .enable("schemacrawler.tools.linter.LinterTableWithSingleColumn")
+                .enable("schemacrawler.tools.linter.LinterTooManyLobs");
     }
 
 }
