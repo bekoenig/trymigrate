@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 //                "url=jdbc:postgresql://localhost:5432/test",
 //                "user=test",
 //                "password=test",
-        }, plugins = ExamplePostgreSQLSchemaTestPlugin.class)
+        })
 @IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableSql", objectName = ".*")
 @IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns", objectName = ".*")
 @IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty", objectName = ".*")

@@ -32,7 +32,6 @@ import schemacrawler.tools.lint.Lints;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
-import java.util.Set;
 
 public class MigrateInitializer implements TestInstancePostProcessor {
 
@@ -42,7 +41,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         Trymigrate testConfiguration = AnnotationSupport.findAnnotation(annotatedElement,
                 Trymigrate.class).orElseThrow();
 
-        Set<PluginProvider> pluginProviders = new PluginDiscovery().discover(List.of(testConfiguration.plugins()));
+        List<PluginProvider> pluginProviders = new PluginDiscovery().discover(testConfiguration.plugin());
         TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o, pluginProviders);
         StoreSupport.putBeanProvider(extensionContext, beanProvider);
 

@@ -57,10 +57,10 @@ class BeanDefinitionTest {
         // GIVEN
         BeanDefinition beanDefinition1 = getBeanDefinition(new Object() {
             private final String attribute = null;
-        }, BeanHierarchy.INSTANCE);
+        }, 2);
         BeanDefinition beanDefinition2 = getBeanDefinition(new Object() {
             private final String attribute = null;
-        }, BeanHierarchy.DEFAULT);
+        }, 0);
 
         // WHEN
         int compareTo = beanDefinition1.compareTo(beanDefinition2);
@@ -392,11 +392,11 @@ class BeanDefinitionTest {
     }
 
     private static BeanDefinition getBeanDefinition(Object instance) {
-        return getBeanDefinition(instance, BeanHierarchy.DEFAULT);
+        return getBeanDefinition(instance, 0);
     }
 
     private static @NotNull BeanDefinition getBeanDefinition(
-            Object instance, BeanHierarchy hierarchy) {
+            Object instance, Integer pluginPriority) {
         Field field;
         try {
             field = instance.getClass().getDeclaredField("attribute");
@@ -404,7 +404,7 @@ class BeanDefinitionTest {
             throw new RuntimeException(e);
         }
         field.setAccessible(true);
-        return new BeanDefinition(instance, field, hierarchy);
+        return new BeanDefinition(instance, field, pluginPriority);
     }
 
 }

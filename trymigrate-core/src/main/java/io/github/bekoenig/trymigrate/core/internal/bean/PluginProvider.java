@@ -2,37 +2,24 @@ package io.github.bekoenig.trymigrate.core.internal.bean;
 
 import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
-public class PluginProvider implements Supplier<TrymigratePlugin> {
+public class PluginProvider {
 
-    private final Class<? extends TrymigratePlugin> type;
-    private final Supplier<TrymigratePlugin> supplier;
+    private final Supplier<TrymigratePlugin> factory;
+    private final Integer priority;
 
-    public PluginProvider(Class<? extends TrymigratePlugin> type, Supplier<TrymigratePlugin> supplier) {
-        this.type = type;
-        this.supplier = supplier;
+    public PluginProvider(Supplier<TrymigratePlugin> factory, Integer priority) {
+        this.factory = factory;
+        this.priority = priority;
     }
 
-    public Class<? extends TrymigratePlugin> type() {
-        return type;
+    public TrymigratePlugin newInstance() {
+        return factory.get();
     }
 
-    @Override
-    public TrymigratePlugin get() {
-        return supplier.get();
+    public Integer getPriority() {
+        return priority;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        return Objects.equals(type, ((PluginProvider) o).type);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(type);
-    }
 }

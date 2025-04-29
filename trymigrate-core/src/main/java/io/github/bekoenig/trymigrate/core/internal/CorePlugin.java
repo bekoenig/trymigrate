@@ -1,9 +1,6 @@
-package io.github.bekoenig.trymigrate.core.internal.bean;
+package io.github.bekoenig.trymigrate.core.internal;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateDataLoadHandle;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
+import io.github.bekoenig.trymigrate.core.config.*;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.DefaultLinters;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
@@ -21,7 +18,7 @@ import java.sql.Connection;
 
 import static io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer.addCallbacks;
 
-public class DefaultBeans {
+public class CorePlugin implements TrymigratePlugin {
 
     @TrymigrateBean
     private final LimitOptions limitOptions = LimitOptionsBuilder.newLimitOptions();
@@ -32,16 +29,16 @@ public class DefaultBeans {
             .toOptions();
 
     @TrymigrateBean
-    private final TrymigrateFlywayConfigurer additionalBeanConfigurer;
+    private TrymigrateFlywayConfigurer additionalBeanConfigurer;
 
     @TrymigrateBean
-    private final TrymigrateFlywayConfigurer containerDataSourceConfigurer;
+    private TrymigrateFlywayConfigurer containerDataSourceConfigurer;
 
     @TrymigrateBean
     private final LintsReporter lintsLogReporter = new LintsLogReporter();
 
     @TrymigrateBean
-    private final LintsReporter lintsHtmlReporter;
+    private LintsReporter lintsHtmlReporter;
 
     @TrymigrateBean
     private final LintersCustomizer lintersCustomizer = new DefaultLinters();
@@ -59,7 +56,8 @@ public class DefaultBeans {
         }
     };
 
-    public DefaultBeans(TrymigrateBeanProvider beanProvider) {
+    @Override
+    public void populate(TrymigrateBeanProvider beanProvider) {
         this.additionalBeanConfigurer = configuration -> {
             addCallbacks(configuration, beanProvider.all(Callback.class));
             configuration.javaMigrations(beanProvider.all(JavaMigration.class).toArray(new JavaMigration[0]));
@@ -72,6 +70,4 @@ public class DefaultBeans {
         this.lintsHtmlReporter = new LintsHtmlReporter(
                 beanProvider.findFirst(LintsReportResolver.class).orElseGet(DefaultLintsReportResolver::new));
     }
-
-
 }

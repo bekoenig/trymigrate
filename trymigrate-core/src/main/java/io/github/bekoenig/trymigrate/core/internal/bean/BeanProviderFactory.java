@@ -4,33 +4,42 @@ import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
 import org.junit.platform.commons.support.AnnotationSupport;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import static io.github.bekoenig.trymigrate.core.internal.bean.BeanHierarchy.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BeanProviderFactory {
 
-    private BeanProvider append(BeanProvider beanProvider, Object instance, BeanHierarchy hierarchy) {
+    public BeanProvider create(Object testInstance, List<PluginProvider> pluginProviders) {
+        Map<Integer, List<PluginProvider>> layers = pluginProviders.stream()
+                .collect(Collectors.groupingBy(PluginProvider::getPriority, Collectors.toList()));
+
+        List<Integer> layerNumbers = layers.keySet().stream()
+                .sorted((i, j) -> -Integer.compare(i, j))
+                .toList();
+
+        int firstLayer = layerNumbers.isEmpty() ? 0 : layerNumbers.get(0) + 1;
+        BeanProvider superior = create(new BeanProvider(List.of()), testInstance, firstLayer);
+        for(Integer currentLayerNumber : layerNumbers) {
+            BeanProvider current = superior;
+
+            for (PluginProvider provider : layers.get(currentLayerNumber)) {
+                TrymigratePlugin plugin = provider.newInstance();
+                plugin.populate(superior);
+                current = create(current, plugin, currentLayerNumber);
+            }
+
+            superior = current;
+        }
+
+        return superior;
+    }
+
+    private BeanProvider create(BeanProvider beanProvider, Object instance, Integer pluginPriority) {
         List<BeanDefinition> beanDefinitions = new ArrayList<>();
         beanDefinitions.addAll(beanProvider.beanDefinitions());
         beanDefinitions.addAll(AnnotationSupport.findAnnotatedFields(instance.getClass(), TrymigrateBean.class)
-                .stream().map(field -> new BeanDefinition(instance, field, hierarchy)).toList());
+                .stream().map(field -> new BeanDefinition(instance, field, pluginPriority)).toList());
         return new BeanProvider(beanDefinitions.stream().sorted().toList());
-    }
-
-    public BeanProvider create(Object testInstance, Set<PluginProvider> providers) {
-        BeanProvider testInstanceBeanProvider = append(new BeanProvider(List.of()), testInstance, INSTANCE);
-        BeanProvider fluentBeanProvider = testInstanceBeanProvider;
-
-        for (PluginProvider provider : providers) {
-            TrymigratePlugin plugin = provider.get();
-            plugin.populate(testInstanceBeanProvider);
-            fluentBeanProvider = append(fluentBeanProvider, plugin, PLUGIN);
-        }
-
-        return append(fluentBeanProvider, new DefaultBeans(fluentBeanProvider), DEFAULT);
     }
 
 }

@@ -37,7 +37,7 @@ public @interface Trymigrate {
 
     String[] flywayProperties() default {};
 
-    Class<? extends TrymigratePlugin>[] plugins() default TrymigratePlugin.class;
+    Class<? extends TrymigratePlugin> plugin() default TrymigratePlugin.class;
 
     LintSeverity failOn() default LintSeverity.low;
 

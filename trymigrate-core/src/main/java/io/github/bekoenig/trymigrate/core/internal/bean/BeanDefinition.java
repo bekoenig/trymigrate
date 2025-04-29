@@ -15,12 +15,12 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
 
     private final Object instance;
     private final Field field;
-    private final BeanHierarchy hierarchy;
+    private final Integer pluginPriority;
 
-    public BeanDefinition(Object instance, Field field, BeanHierarchy hierarchy) {
+    public BeanDefinition(Object instance, Field field, Integer pluginPriority) {
         this.instance = instance;
         this.field = field;
-        this.hierarchy = hierarchy;
+        this.pluginPriority = pluginPriority;
     }
 
     public int getOrder() {
@@ -38,9 +38,9 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
             return compareOrder;
         }
 
-        int compareHierarchy = this.hierarchy.compareTo(other.hierarchy);
-        if (compareHierarchy != 0) {
-            return compareHierarchy;
+        int comparePluginPriority = -Integer.compare(this.pluginPriority, other.pluginPriority);
+        if (comparePluginPriority != 0) {
+            return comparePluginPriority;
         }
 
         return Boolean.compare(this.nonNullable(), other.nonNullable());
