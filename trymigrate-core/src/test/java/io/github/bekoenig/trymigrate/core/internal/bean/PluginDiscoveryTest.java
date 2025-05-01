@@ -14,20 +14,26 @@ class PluginDiscoveryTest {
 
     @Test
     void hasCompatibleSuperinterface() {
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(TrymigratePlugin.class, P1.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1.class, P2.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P2.class, P3.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1.class, P3.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1.class, O1.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P2.class, O1.class)).isFalse();
+        class P0Impl implements TrymigratePlugin {}
+        class P1Impl implements P1 {}
+        class P2Impl implements P2 {}
+        class P3Impl implements P3 {}
+        class O1Impl implements O1 {}
 
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1.class, TrymigratePlugin.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P2.class, TrymigratePlugin.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P3.class, TrymigratePlugin.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(O1.class, TrymigratePlugin.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P3.class, P2.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(O1.class, P1.class)).isTrue();
-        assertThat(PluginDiscovery.hasCompatibleSuperinterface(O1.class, P2.class)).isFalse();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P0Impl.class, P1.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1Impl.class, P2.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P2Impl.class, P3.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1Impl.class, P3.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1Impl.class, O1.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P2Impl.class, O1.class)).isFalse();
+
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P1Impl.class, TrymigratePlugin.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P2Impl.class, TrymigratePlugin.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P3Impl.class, TrymigratePlugin.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(O1Impl.class, TrymigratePlugin.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(P3Impl.class, P2.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(O1Impl.class, P1.class)).isTrue();
+        assertThat(PluginDiscovery.hasCompatibleSuperinterface(O1Impl.class, P2.class)).isFalse();
     }
 
     @Test
