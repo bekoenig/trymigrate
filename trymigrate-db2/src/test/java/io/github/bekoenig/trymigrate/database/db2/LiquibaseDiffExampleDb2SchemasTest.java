@@ -1,8 +1,8 @@
 package io.github.bekoenig.trymigrate.database.db2;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
 import liquibase.GlobalConfiguration;
 import liquibase.Scope;
@@ -13,6 +13,7 @@ import liquibase.command.core.DiffCommandStep;
 import liquibase.command.core.helpers.DbUrlConnectionArgumentsCommandStep;
 import liquibase.command.core.helpers.PreCompareCommandStep;
 import liquibase.command.core.helpers.ReferenceDbUrlConnectionCommandStep;
+import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.diff.DiffResult;
@@ -49,37 +50,37 @@ public class LiquibaseDiffExampleDb2SchemasTest {
         // Der Tests wird nach Anwendung aller Migrationen durchgeführt.
     void test_latest(DataSource dataSource) throws Exception {
         // GIVEN
-        liquibase.database.Database referenceDatabase;
-        try (Connection referenceConnection = dataSource.getConnection()) {
+        // WHEN
+        DiffResult diffResult;
+        try (Connection referenceConnection = dataSource.getConnection();
+             JdbcConnection referenceJdbcConnection = new JdbcConnection(referenceConnection);
+             Connection connection = dataSource.getConnection();
+             JdbcConnection jdbcConnection = new JdbcConnection(connection)) {
+
             referenceConnection.setSchema(FLYWAY_SCHEMA + "_DUMP");
             SqlScript.executeScriptFromResource("example_schema_1_4.sql", referenceConnection);
-            referenceDatabase = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-                    new JdbcConnection(referenceConnection));
-        }
+            Database referenceDatabase = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(referenceJdbcConnection);
 
-        // WHEN
-        liquibase.database.Database targetDatabase;
-        try (Connection connection = dataSource.getConnection()) {
             connection.setSchema(FLYWAY_SCHEMA);
-            targetDatabase = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-                    new JdbcConnection(connection));
-        }
+            Database targetDatabase = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
+                    jdbcConnection);
 
-        CommandResults execute = Scope.child(
-                // Beispiel: Überschreiben von globalen Properties für den lokalen Scope.
-                Map.of(GlobalConfiguration.DIFF_COLUMN_ORDER.getKey(), true),
-                () -> new CommandScope(DiffChangelogCommandStep.COMMAND_NAME)
-                        .addArgumentValue(ReferenceDbUrlConnectionCommandStep.REFERENCE_DATABASE_ARG, referenceDatabase)
-                        .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, targetDatabase)
-                        .addArgumentValue(DiffChangelogCommandStep.CHANGELOG_FILE_ARG, " ")
-                        .addArgumentValue(PreCompareCommandStep.EXCLUDE_OBJECTS_ARG, "flyway_schema_history")
-                        .addArgumentValue(PreCompareCommandStep.DIFF_TYPES_ARG,
-                                "catalog,tables,views,columns,indexes,foreignkeys,primarykeys,sequence,uniqueconstraints")
-                        .execute());
+            CommandResults execute = Scope.child(
+                    // Beispiel: Überschreiben von globalen Properties für den lokalen Scope.
+                    Map.of(GlobalConfiguration.DIFF_COLUMN_ORDER.getKey(), true),
+                    () -> new CommandScope(DiffChangelogCommandStep.COMMAND_NAME)
+                            .addArgumentValue(ReferenceDbUrlConnectionCommandStep.REFERENCE_DATABASE_ARG, referenceDatabase)
+                            .addArgumentValue(DbUrlConnectionArgumentsCommandStep.DATABASE_ARG, targetDatabase)
+                            .addArgumentValue(DiffChangelogCommandStep.CHANGELOG_FILE_ARG, " ")
+                            .addArgumentValue(PreCompareCommandStep.EXCLUDE_OBJECTS_ARG, "flyway_schema_history")
+                            .addArgumentValue(PreCompareCommandStep.DIFF_TYPES_ARG,
+                                    "catalog,tables,views,columns,indexes,foreignkeys,primarykeys,sequence,uniqueconstraints")
+                            .execute());
+
+            diffResult = execute.getResult(DiffCommandStep.DIFF_RESULT);
+        }
 
         // THEN
-        DiffResult diffResult = execute.getResult(DiffCommandStep.DIFF_RESULT);
-
         assertThat(diffResult.getUnexpectedObjects()).as("Keine unerwarteten Objekte").isEmpty();
         assertThat(diffResult.getMissingObjects()).as("Keine fehlenden Objekte").isEmpty();
         assertThat(diffResult.getChangedObjects()).as("Keine abweichenden Objekte").isEmpty();
