@@ -1,9 +1,9 @@
 package io.github.bekoenig.trymigrate.core.internal.jupiter.extension;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateContainerCustomizer;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateContainerCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginProvider;

@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.config;
+package io.github.bekoenig.trymigrate.core.plugin.customize;
 
 import java.sql.Connection;
 

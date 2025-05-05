@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.testcontainers;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateContainerCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateContainerCustomizer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.Objects;
  * Only for debugging purposes recommended!
  * <p>
  * Usage:
- * {@link ContainerPortCustomizer#PROPERTY_NAME}={@code [host_port]:[container_port]}
+ * {@link StaticPortBinding#PROPERTY_NAME}={@code [host_port]:[container_port]}
  * <ul>
  *     <li>host_port: target port for host system</li>
  *     <li>container_port: optional source port of container</li>
@@ -25,7 +25,7 @@ import java.util.Objects;
  *     <li>20000:40000 (the container port 40000 will be bound to host port 20000)</li>
  * </ul>
  */
-public class ContainerPortCustomizer implements TrymigrateContainerCustomizer {
+public class StaticPortBinding implements TrymigrateContainerCustomizer {
 
     public static final String PROPERTY_NAME = "trymigrate.db-port";
 

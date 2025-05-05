@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.config;
+package io.github.bekoenig.trymigrate.core.plugin;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

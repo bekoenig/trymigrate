@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.bean;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
-import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.*;

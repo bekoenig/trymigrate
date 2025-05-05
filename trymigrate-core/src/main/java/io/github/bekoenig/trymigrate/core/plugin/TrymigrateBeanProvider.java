@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.config;
+package io.github.bekoenig.trymigrate.core.plugin;
 
 import java.util.List;
 import java.util.Optional;

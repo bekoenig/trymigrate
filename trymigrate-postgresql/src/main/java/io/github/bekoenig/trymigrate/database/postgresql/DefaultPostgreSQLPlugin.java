@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import schemacrawler.inclusionrule.ListExclusionRule;
 import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.schemacrawler.LimitOptionsBuilder;

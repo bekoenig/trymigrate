@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 
 /**
  * Marker interface for all PostgreSQL plugins.

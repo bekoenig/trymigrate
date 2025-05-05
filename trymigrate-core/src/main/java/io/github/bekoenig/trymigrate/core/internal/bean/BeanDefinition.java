@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.bean;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import org.junit.jupiter.api.Order;
 import org.junit.platform.commons.support.ReflectionSupport;
 

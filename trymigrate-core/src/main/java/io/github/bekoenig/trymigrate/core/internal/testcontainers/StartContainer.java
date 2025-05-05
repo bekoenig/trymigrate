@@ -1,12 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.testcontainers;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateContainerCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateContainerCustomizer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 /**
  * Customizer for start container.
  */
-public class ContainerStartCustomizer implements TrymigrateContainerCustomizer {
+public class StartContainer implements TrymigrateContainerCustomizer {
 
     @Override
     public void accept(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {

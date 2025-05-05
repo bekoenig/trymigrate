@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.database.db2;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
 import liquibase.GlobalConfiguration;
 import liquibase.Scope;

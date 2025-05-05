@@ -6,7 +6,7 @@ import ch.qos.logback.core.read.ListAppender;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.AcceptLint;

@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.jupiter;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayConfigurationFactory;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHistory;

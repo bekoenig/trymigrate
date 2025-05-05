@@ -10,12 +10,12 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
-class ContainerPortCustomizerTest {
+class StaticPortBindingTest {
 
-    private final ContainerPortCustomizer customizer = new ContainerPortCustomizer();
+    private final StaticPortBinding customizer = new StaticPortBinding();
 
     @Test
-    @ClearSystemProperty(key = ContainerPortCustomizer.PROPERTY_NAME)
+    @ClearSystemProperty(key = StaticPortBinding.PROPERTY_NAME)
     void accept_onUndefined() {
         // GIVEN
         JdbcDatabaseContainer<?> container = mock();
@@ -28,7 +28,7 @@ class ContainerPortCustomizerTest {
     }
 
     @Test
-    @SetSystemProperty(key = ContainerPortCustomizer.PROPERTY_NAME, value = "20000")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "20000")
     void accept_hostPort() {
         // GIVEN
         JdbcDatabaseContainer<?> container = mock();
@@ -42,7 +42,7 @@ class ContainerPortCustomizerTest {
     }
 
     @Test
-    @SetSystemProperty(key = ContainerPortCustomizer.PROPERTY_NAME, value = "20000:40000")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "20000:40000")
     void accept_hostAndContainerPort() {
         // GIVEN
         JdbcDatabaseContainer<?> container = mock();
@@ -55,7 +55,7 @@ class ContainerPortCustomizerTest {
     }
 
     @Test
-    @SetSystemProperty(key = ContainerPortCustomizer.PROPERTY_NAME, value = "abc:20000")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "abc:20000")
     void accept_failOnWrongFormat() {
         // GIVEN
         JdbcDatabaseContainer<?> container = mock();
@@ -65,7 +65,7 @@ class ContainerPortCustomizerTest {
     }
 
     @Test
-    @SetSystemProperty(key = ContainerPortCustomizer.PROPERTY_NAME, value = "40000")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "40000")
     void accept_failOnNonExposedPort() {
         // GIVEN
         JdbcDatabaseContainer<?> container = mock();
@@ -76,7 +76,7 @@ class ContainerPortCustomizerTest {
     }
 
     @Test
-    @SetSystemProperty(key = ContainerPortCustomizer.PROPERTY_NAME, value = "40000")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "40000")
     void accept_failOnMultipleExposedPort() {
         // GIVEN
         JdbcDatabaseContainer<?> container = mock();

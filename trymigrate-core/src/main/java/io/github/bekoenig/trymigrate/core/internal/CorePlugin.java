@@ -1,12 +1,14 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
-import io.github.bekoenig.trymigrate.core.config.*;
+import io.github.bekoenig.trymigrate.core.plugin.*;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoadHandle;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.DefaultLinters;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerStartCustomizer;
-import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerPortCustomizer;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.StartContainer;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
@@ -19,7 +21,7 @@ import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
 
-import static io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer.addCallbacks;
 
 public class CorePlugin implements TrymigratePlugin {
 
@@ -60,11 +62,11 @@ public class CorePlugin implements TrymigratePlugin {
     };
 
     @TrymigrateBean
-    private final ContainerPortCustomizer containerPortCustomizer = new ContainerPortCustomizer();
+    private final StaticPortBinding staticPortBinding = new StaticPortBinding();
 
     @Order(Order.DEFAULT + 1)
     @TrymigrateBean
-    private final ContainerStartCustomizer containerStartCustomizer = new ContainerStartCustomizer();
+    private final StartContainer startContainer = new StartContainer();
 
     @Override
     public void populate(TrymigrateBeanProvider beanProvider) {

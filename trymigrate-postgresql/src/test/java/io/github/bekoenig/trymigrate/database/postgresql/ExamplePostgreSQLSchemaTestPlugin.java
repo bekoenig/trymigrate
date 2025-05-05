@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 
 import java.util.Map;

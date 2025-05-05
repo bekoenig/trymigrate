@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.flyway;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.SchemaLinter;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.github.bekoenig.trymigrate.core.config.TrymigrateFlywayConfigurer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer.addCallbacks;
 
 public class FlywayConfigurationFactory implements Supplier<FluentConfiguration> {
 

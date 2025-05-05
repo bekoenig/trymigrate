@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateExecutor;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateInitializer;

@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.bean;
 
-import io.github.bekoenig.trymigrate.core.config.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 
 import java.util.List;
 import java.util.Objects;
