@@ -8,18 +8,25 @@ https://www.red-gate.com/hub/product-learning/flyway/testing-databases-whats-req
 
 https://www.codecentric.de/wissens-hub/blog/testing-your-database-migrations-with-flyway-and-testcontainers
 
-## See also
+## further recommendations
+
+### assert database model
 
 ```xml
-
 <dependency>
     <groupId>io.github.bekoenig</groupId>
     <artifactId>assertj-schemacrawler</artifactId>
+    <version>...</version>
     <scope>test</scope>
 </dependency>
 ```
+### assert data content
 
-## Feature work
-
-- Support for liquibase migration
-- Push lints to sonar qube 
+```xml
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-db</artifactId>
+    <version>...</version>
+    <scope>test</scope>
+</dependency>
+```
