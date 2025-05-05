@@ -5,11 +5,14 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.Def
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerStartCustomizer;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerPortCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
+import org.junit.jupiter.api.Order;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import schemacrawler.schemacrawler.*;
 import us.fatehi.utility.database.SqlScript;
@@ -55,6 +58,13 @@ public class CorePlugin implements TrymigratePlugin {
             SqlScript.executeScriptFromResource(resource, connection);
         }
     };
+
+    @TrymigrateBean
+    private final ContainerPortCustomizer containerPortCustomizer = new ContainerPortCustomizer();
+
+    @Order(Order.DEFAULT + 1)
+    @TrymigrateBean
+    private final ContainerStartCustomizer containerStartCustomizer = new ContainerStartCustomizer();
 
     @Override
     public void populate(TrymigrateBeanProvider beanProvider) {
