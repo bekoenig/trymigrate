@@ -7,19 +7,19 @@ import java.util.function.Supplier;
 public class PluginProvider {
 
     private final Supplier<TrymigratePlugin> factory;
-    private final Integer priority;
+    private final Integer hierarchy;
 
-    public PluginProvider(Supplier<TrymigratePlugin> factory, Integer priority) {
+    public PluginProvider(Supplier<TrymigratePlugin> factory, Integer hierarchy) {
         this.factory = factory;
-        this.priority = priority;
+        this.hierarchy = hierarchy;
     }
 
     public TrymigratePlugin newInstance() {
         return factory.get();
     }
 
-    public Integer getPriority() {
-        return priority;
+    public Integer getHierarchy() {
+        return hierarchy;
     }
 
 }

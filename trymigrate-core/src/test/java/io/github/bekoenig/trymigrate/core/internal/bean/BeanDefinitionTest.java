@@ -1,7 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.bean;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
@@ -395,8 +394,7 @@ class BeanDefinitionTest {
         return getBeanDefinition(instance, 0);
     }
 
-    private static @NotNull BeanDefinition getBeanDefinition(
-            Object instance, Integer pluginPriority) {
+    private static BeanDefinition getBeanDefinition(Object instance, Integer hierarchy) {
         Field field;
         try {
             field = instance.getClass().getDeclaredField("attribute");
@@ -404,7 +402,7 @@ class BeanDefinitionTest {
             throw new RuntimeException(e);
         }
         field.setAccessible(true);
-        return new BeanDefinition(instance, field, pluginPriority);
+        return new BeanDefinition(instance, field, hierarchy);
     }
 
 }
