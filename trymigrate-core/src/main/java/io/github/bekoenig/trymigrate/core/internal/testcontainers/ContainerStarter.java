@@ -6,7 +6,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 /**
  * Customizer for start container.
  */
-public class StartContainer implements TrymigrateContainerConfigurer {
+public class ContainerStarter implements TrymigrateContainerConfigurer {
 
     @Override
     public void accept(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {

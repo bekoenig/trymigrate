@@ -7,7 +7,7 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.Def
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.internal.testcontainers.StartContainer;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerStarter;
 import io.github.bekoenig.trymigrate.core.internal.testcontainers.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
@@ -66,7 +66,7 @@ public class CorePlugin implements TrymigratePlugin {
 
     @Order(Order.DEFAULT + 1)
     @TrymigrateBean
-    private final StartContainer startContainer = new StartContainer();
+    private final ContainerStarter containerStarter = new ContainerStarter();
 
     @Override
     public void populate(TrymigrateBeanProvider beanProvider) {
