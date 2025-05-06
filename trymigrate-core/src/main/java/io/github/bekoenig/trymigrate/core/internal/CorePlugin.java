@@ -56,7 +56,7 @@ public class CorePlugin implements TrymigratePlugin {
         }
 
         @Override
-        public void handle(String resource, Connection connection) {
+        public void load(String resource, Connection connection) {
             SqlScript.executeScriptFromResource(resource, connection);
         }
     };

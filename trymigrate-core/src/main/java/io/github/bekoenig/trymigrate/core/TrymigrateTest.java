@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Diese Annotation markiert eine Methode als Test zu einer Flyway-Migration.
+ * Enables database migration lifecycle management for a test method.
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,26 +16,23 @@ import java.lang.annotation.Target;
 public @interface TrymigrateTest {
 
     /**
-     * Erwartetes Flyway-Target für die Durchführung des Tests.
+     * Target version of database model.
      *
-     * @return Target als Version
+     * @return Version for {@link org.flywaydb.core.api.MigrationVersion#fromVersion(String)}
      */
     String whenTarget();
 
     /**
-     * Schalter zur Aktivierung der Bereinigung durch Flyway-Clean vor dem Start der Migration.
+     * Run clean before migration.
      *
-     * @return {@code true} sofern eine Bereinigung erfolgen soll (Default ist {@code false})
+     * @return {@code true} for clean; default is {@code false}
      */
     boolean cleanBefore() default false;
 
     /**
-     * Definition von Daten die vor der Ausführung des Flyway-Targets eingespielt werden.
-     * <p>
-     * Dumps als Zip-Datei werden über {@link TrymigrateDatabase#loadDump(String)} geladen.
-     * SQL-Dateien oder einfache SQLs werden per JDBC ausgeführt.
+     * Scenario data applied before execution of migration to target.
      *
-     * @return Datei mit SQLs, Zip mit Dump, SQLs
+     * @return resources for {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader}
      */
     String[] givenData() default {};
 

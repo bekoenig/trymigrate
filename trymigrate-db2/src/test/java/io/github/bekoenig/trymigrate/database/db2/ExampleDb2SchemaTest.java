@@ -58,7 +58,7 @@ public class ExampleDb2SchemaTest {
         }
 
         @Override
-        public void handle(String classpathResource, Connection connection) {
+        public void load(String classpathResource, Connection connection) {
         }
     };
 

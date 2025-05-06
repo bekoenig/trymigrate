@@ -54,7 +54,7 @@ public class DataLoader implements Callback {
                 .findFirst();
 
         if (handle.isPresent()) {
-            handle.get().handle(resource, connection);
+            handle.get().load(resource, connection);
         } else {
             try (Statement statement = connection.createStatement()) {
                 statement.execute(resource);
