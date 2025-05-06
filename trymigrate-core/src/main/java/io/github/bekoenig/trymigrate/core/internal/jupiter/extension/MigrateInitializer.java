@@ -1,8 +1,9 @@
 package io.github.bekoenig.trymigrate.core.internal.jupiter.extension;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerStarter;
+import io.github.bekoenig.trymigrate.core.internal.testcontainers.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateContainerConfigurer;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginDiscovery;
@@ -47,8 +48,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putBeanProvider(extensionContext, beanProvider);
 
         beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(jdbcDatabaseContainer ->
-                beanProvider.all(TrymigrateContainerConfigurer.class)
-                        .forEach(customizer -> customizer.accept(jdbcDatabaseContainer)));
+                new StaticPortBinding().andThen(new ContainerStarter()).accept(jdbcDatabaseContainer));
 
         MigrationVersion initialVersion = MigrationVersion.EMPTY;
         StoreSupport.putMigrationVersion(extensionContext, initialVersion);

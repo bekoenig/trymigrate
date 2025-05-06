@@ -1,10 +1,10 @@
 package io.github.bekoenig.trymigrate.core.internal.testcontainers;
 
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateContainerConfigurer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Customizer to define a static port binding for container database by jvm property.
@@ -25,7 +25,7 @@ import java.util.Objects;
  *     <li>20000:40000 (the container port 40000 will be bound to host port 20000)</li>
  * </ul>
  */
-public class StaticPortBinding implements TrymigrateContainerConfigurer {
+public class StaticPortBinding implements Consumer<JdbcDatabaseContainer<?>> {
 
     public static final String PROPERTY_NAME = "trymigrate.db-port";
 

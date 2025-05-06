@@ -17,8 +17,8 @@ public class BeanProviderFactory {
                 .sorted((i, j) -> -Integer.compare(i, j))
                 .toList();
 
-        int firstLayerIndex = layerIndex.isEmpty() ? 0 : layerIndex.get(0) + 1;
-        BeanProvider lastLayerBeans = create(new BeanProvider(List.of()), testInstance, firstLayerIndex);
+        int testInstanceHierarchy = layerIndex.isEmpty() ? 0 : layerIndex.get(0) + 1;
+        BeanProvider lastLayerBeans = create(new BeanProvider(List.of()), testInstance, testInstanceHierarchy);
         for(Integer currentLayerNumber : layerIndex) {
             BeanProvider currentLayerBeans = lastLayerBeans;
 
