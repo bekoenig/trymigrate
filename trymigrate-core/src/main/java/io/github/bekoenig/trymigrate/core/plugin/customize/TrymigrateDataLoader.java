@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.core.plugin.customize;
 
 import java.sql.Connection;
 
-public interface TrymigrateDataLoadHandle {
+public interface TrymigrateDataLoader {
 
     boolean supports(String resource, String extension);
 

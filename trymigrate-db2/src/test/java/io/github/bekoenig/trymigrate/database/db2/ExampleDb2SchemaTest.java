@@ -8,7 +8,7 @@ import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoadHandle;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +47,7 @@ public class ExampleDb2SchemaTest {
                     .acceptLicense();
 
     @TrymigrateBean
-    private final TrymigrateDataLoadHandle dataLoadHandle = new TrymigrateDataLoadHandle() {
+    private final TrymigrateDataLoader dataLoadHandle = new TrymigrateDataLoader() {
 
         @Override
         public boolean supports(String resource, String extension) {

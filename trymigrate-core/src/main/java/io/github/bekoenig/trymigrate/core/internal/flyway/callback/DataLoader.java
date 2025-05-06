@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.flyway.callback;
 
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoadHandle;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
@@ -15,13 +15,13 @@ import java.util.Optional;
 
 public class DataLoader implements Callback {
 
-    private final List<TrymigrateDataLoadHandle> handles;
+    private final List<TrymigrateDataLoader> handles;
     private final MigrationVersion target;
     private final List<String> resources;
 
     private boolean applied;
 
-    public DataLoader(List<TrymigrateDataLoadHandle> handles, MigrationVersion target, List<String> resources) {
+    public DataLoader(List<TrymigrateDataLoader> handles, MigrationVersion target, List<String> resources) {
         this.handles = handles;
         this.target = target;
         this.resources = resources;
@@ -49,7 +49,7 @@ public class DataLoader implements Callback {
     }
 
     private void load(String resource, Connection connection) {
-        Optional<TrymigrateDataLoadHandle> handle = handles.stream()
+        Optional<TrymigrateDataLoader> handle = handles.stream()
                 .filter(h -> h.supports(resource, IOUtility.getFileExtension(resource)))
                 .findFirst();
 

@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.jupiter.extension;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoadHandle;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.internal.flyway.FlywayMigrateWrapper;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.jupiter.StoreSupport;
@@ -42,7 +42,7 @@ public class MigrateExecutor implements BeforeEachCallback {
 
             if (flywayMigrationTest.get().givenData().length > 0) {
                 Callback callback = new DataLoader(
-                        StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoadHandle.class),
+                        StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoader.class),
                         MigrationVersion.fromVersion(flywayMigrationTest.get().whenTarget()),
                         List.of(flywayMigrationTest.get().givenData())
                 );

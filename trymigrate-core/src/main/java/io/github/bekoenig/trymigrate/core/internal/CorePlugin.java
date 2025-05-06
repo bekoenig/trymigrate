@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
 import io.github.bekoenig.trymigrate.core.plugin.*;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoadHandle;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.DefaultLinters;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
@@ -49,7 +49,7 @@ public class CorePlugin implements TrymigratePlugin {
     private final LintersCustomizer lintersCustomizer = new DefaultLinters();
 
     @TrymigrateBean
-    private final TrymigrateDataLoadHandle sqlDataLoadHandle = new TrymigrateDataLoadHandle() {
+    private final TrymigrateDataLoader sqlDataLoadHandle = new TrymigrateDataLoader() {
         @Override
         public boolean supports(String resource, String extension) {
             return extension.equalsIgnoreCase("sql");
