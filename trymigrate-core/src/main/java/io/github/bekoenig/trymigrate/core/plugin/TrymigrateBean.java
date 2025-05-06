@@ -9,12 +9,9 @@ import java.lang.annotation.Target;
  * Annotation to mark a field (each visibility) as injectable bean to configure or customize
  * {@link io.github.bekoenig.trymigrate.core.Trymigrate}.
  * <p>
- * Supported for fields in
- * <ul>
- *     <li>test instances (highest priority)</li>
- *     <li>plugins (medium priority; see {@link TrymigratePlugin})</li>
- *     <li>built-in defaults (lowest priority)</li>
- * </ul>
+ * Supported for fields in test instances or {@link TrymigratePlugin}.
+ * <p>
+ * Use {@link org.junit.jupiter.api.Order} to explicit the priority in test instance or same plugin hierarchy.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

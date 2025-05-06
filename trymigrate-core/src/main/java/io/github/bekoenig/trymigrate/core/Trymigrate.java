@@ -20,6 +20,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Root annotation to activate database migration testing for test instance.
+ * <p>
+ * Enables support for {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean} on test instance.
+ */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -35,10 +40,27 @@ import java.lang.annotation.Target;
 @TestMethodOrder(TargetOrder.class)
 public @interface Trymigrate {
 
+    /**
+     * Properties for flyway. Format is {@code [key]=[value]}. Prefix {@code flyway.*} is optional for keys.
+     *
+     * @return array of properties for flyway
+     */
     String[] flywayProperties() default {};
 
+    /**
+     * Allows explicit plugin selection for multiple plugin branches.
+     *
+     * @return interface extension of {@link TrymigratePlugin}
+     */
     Class<? extends TrymigratePlugin> plugin() default TrymigratePlugin.class;
 
+    /**
+     * Threshold to fail on lints. Indicates mistakes in database model.
+     *
+     * @see io.github.bekoenig.trymigrate.core.lint.IgnoreLint
+     * @see io.github.bekoenig.trymigrate.core.lint.AcceptLint
+     * @return lower boundary
+     */
     LintSeverity failOn() default LintSeverity.low;
 
 }
