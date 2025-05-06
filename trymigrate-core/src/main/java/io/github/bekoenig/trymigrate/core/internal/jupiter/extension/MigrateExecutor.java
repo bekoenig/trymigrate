@@ -19,7 +19,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 
 public class MigrateExecutor implements BeforeEachCallback {
 

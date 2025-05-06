@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-public interface TrymigrateFlywayConfigurer extends Consumer<FluentConfiguration> {
+public interface TrymigrateFlywayCustomizer extends Consumer<FluentConfiguration> {
 
     static void addCallbacks(FluentConfiguration configuration, List<Callback> callback) {
         List<Callback> callbacks = new ArrayList<>();

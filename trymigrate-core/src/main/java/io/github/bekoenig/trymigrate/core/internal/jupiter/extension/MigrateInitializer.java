@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.internal.testcontainers.ContainerStarter;
 import io.github.bekoenig.trymigrate.core.internal.testcontainers.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.bean.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.internal.bean.PluginProvider;
@@ -65,7 +65,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 lintsHistory, beanProvider.all(LintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
                 testConfiguration.flywayProperties(),
-                configuration -> beanProvider.all(TrymigrateFlywayConfigurer.class)
+                configuration -> beanProvider.all(TrymigrateFlywayCustomizer.class)
                         .forEach(configurer -> configurer.accept(configuration)),
                 schemaLinter);
         StoreSupport.putFlywayConfigurationFactory(extensionContext, flywayConfigurationFactory);

@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal;
 
 import io.github.bekoenig.trymigrate.core.plugin.*;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.DefaultLinters;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsHtmlReporter;
@@ -18,7 +18,7 @@ import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
 
-import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 
 public class CorePlugin implements TrymigratePlugin {
 
@@ -31,10 +31,10 @@ public class CorePlugin implements TrymigratePlugin {
             .toOptions();
 
     @TrymigrateBean
-    private TrymigrateFlywayConfigurer additionalBeanConfigurer;
+    private TrymigrateFlywayCustomizer additionalBeanConfigurer;
 
     @TrymigrateBean
-    private TrymigrateFlywayConfigurer containerDataSourceConfigurer;
+    private TrymigrateFlywayCustomizer containerDataSourceConfigurer;
 
     @TrymigrateBean
     private final LintsReporter lintsLogReporter = new LintsLogReporter();

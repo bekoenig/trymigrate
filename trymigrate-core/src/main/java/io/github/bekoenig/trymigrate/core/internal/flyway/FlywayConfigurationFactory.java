@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.flyway;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.flyway.callback.SchemaLinter;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
@@ -12,18 +12,18 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayConfigurer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 
 public class FlywayConfigurationFactory implements Supplier<FluentConfiguration> {
 
     private final Map<String, String> properties;
 
-    private final TrymigrateFlywayConfigurer flywayConfigurerSupplier;
+    private final TrymigrateFlywayCustomizer flywayConfigurerSupplier;
 
     private final Callback additionalCallback;
 
     public FlywayConfigurationFactory(
-            String[] properties, TrymigrateFlywayConfigurer flywayConfigurerSupplier,
+            String[] properties, TrymigrateFlywayCustomizer flywayConfigurerSupplier,
             SchemaLinter additionalCallback) {
         this.properties = splitProperties(properties);
         this.flywayConfigurerSupplier = flywayConfigurerSupplier;
