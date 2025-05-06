@@ -4,5 +4,5 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import java.util.function.Consumer;
 
-public interface TrymigrateContainerCustomizer extends Consumer<JdbcDatabaseContainer<?>> {
+public interface TrymigrateContainerConfigurer extends Consumer<JdbcDatabaseContainer<?>> {
 }
