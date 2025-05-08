@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * Customizer for additional configurations on flyway using {@link FluentConfiguration}.
+ */
 public interface TrymigrateFlywayCustomizer extends Consumer<FluentConfiguration> {
 
     static void addCallbacks(FluentConfiguration configuration, List<Callback> callback) {

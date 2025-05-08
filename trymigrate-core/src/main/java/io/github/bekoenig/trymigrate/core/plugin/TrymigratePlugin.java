@@ -18,6 +18,14 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
  */
 public interface TrymigratePlugin {
 
+    /**
+     * Populates all beans from plugins with higher hierarchy and the current test instance to this plugin. Will be
+     * invoked after plugin initialisation in test instance post-processing. All fields annotated with
+     * {@link TrymigrateBean} of this plugin are collected after method call.
+     *
+     * @param beanProvider {@link TrymigrateBeanProvider} with beans from plugin with higher priority
+     *                                                   or the current test instance
+     */
     default void populate(TrymigrateBeanProvider beanProvider) {
     }
 
