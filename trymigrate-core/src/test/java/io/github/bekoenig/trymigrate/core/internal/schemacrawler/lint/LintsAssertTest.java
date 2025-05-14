@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class LintSupportTest {
+class LintsAssertTest {
 
     public static Stream<Arguments> hasOrExceedsSeverityArguments() {
         List<LintSeverity> matchingThresholds = List.of(LintSeverity.low, LintSeverity.medium);
@@ -30,7 +30,7 @@ class LintSupportTest {
         when(lint.getSeverity()).thenReturn(LintSeverity.medium);
 
         // WHEN
-        boolean result = LintSupport.hasOrExceedsSeverity(lint, threshold);
+        boolean result = LintsAssert.hasOrExceedsSeverity(lint, threshold);
 
         // THEN
         assertThat(result).isEqualTo(expected);

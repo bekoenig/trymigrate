@@ -20,7 +20,7 @@ public class LintsAssert {
     public void assertLints(Lints lints, LintPatterns acceptedLints) {
         List<Lint<? extends Serializable>> assertLints = acceptedLints
                 .dropMatching(lints.getLints().stream())
-                .filter(x -> LintSupport.hasOrExceedsSeverity(x, failOn))
+                .filter(x -> hasOrExceedsSeverity(x, failOn))
                 .toList();
 
         if (assertLints.isEmpty()) {
@@ -32,6 +32,10 @@ public class LintsAssert {
                 assertLints.stream()
                         .map(x -> x.getLinterId() + ": " + x)
                         .collect(Collectors.joining(System.lineSeparator()))));
+    }
+
+    protected static boolean hasOrExceedsSeverity(Lint<? extends Serializable> lint, LintSeverity threshold) {
+        return lint.getSeverity().ordinal() >= threshold.ordinal();
     }
 
 }
