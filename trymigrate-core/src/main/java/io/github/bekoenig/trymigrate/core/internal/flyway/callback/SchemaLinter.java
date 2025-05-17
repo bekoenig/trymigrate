@@ -5,8 +5,8 @@ import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.LintsHisto
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.LinterConfigBuilder;
 import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.config.LintersBuilder;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -41,8 +41,7 @@ public class SchemaLinter implements Callback {
 
     @Override
     public boolean supports(Event event, Context context) {
-        return event == Event.AFTER_EACH_MIGRATE
-                && !lintsHistory.isAnalysed(context.getMigrationInfo().getVersion().getVersion());
+        return event == Event.AFTER_EACH_MIGRATE && !lintsHistory.isAnalysed(context.getMigrationInfo().getVersion());
     }
 
     @Override
@@ -52,8 +51,10 @@ public class SchemaLinter implements Callback {
 
     @Override
     public void handle(Event event, Context context) {
+        String defaultSchema = context.getConfiguration().getDefaultSchema();
+
         List<String> schemas = new ArrayList<>();
-        schemas.add(context.getConfiguration().getDefaultSchema());
+        schemas.add(defaultSchema);
         schemas.addAll(List.of(context.getConfiguration().getSchemas()));
 
         LintersBuilder lintersBuilder = LintersBuilder.builder(linterId -> LinterConfigBuilder.builder()
@@ -61,7 +62,7 @@ public class SchemaLinter implements Callback {
                 // include tables from managed schemas
                 .tableInclusionPattern("(" + String.join("|", schemas) + ")\\..*")
                 // exclude history table
-                .tableExclusionPattern(context.getConfiguration().getDefaultSchema() + "\\." +
+                .tableExclusionPattern(defaultSchema + "\\." +
                         context.getConfiguration().getTable())
                 .runLinter(true));
         lintersCustomizer.accept(lintersBuilder);
@@ -73,14 +74,12 @@ public class SchemaLinter implements Callback {
         linters.lint(catalog, context.getConnection());
         Lints currentLints = linters.getLints();
 
-        String lastAnalyzedVersion = lintsHistory.getLastAnalyzedVersion();
-        lintsHistory.putLints(context.getMigrationInfo().getVersion().getVersion(), currentLints);
-        Lints newLints = lintsHistory.diff(lastAnalyzedVersion, context.getMigrationInfo().getVersion().getVersion());
+        MigrationVersion lastAnalyzedVersion = lintsHistory.getLastAnalyzedVersion();
+        MigrationVersion migrationVersion = context.getMigrationInfo().getVersion();
+        lintsHistory.putLints(migrationVersion, currentLints);
+        Lints newLints = lintsHistory.diff(lastAnalyzedVersion, migrationVersion);
 
-        LintsMigrateInfo migrateInfo = new LintsMigrateInfo(
-                context.getMigrationInfo().getVersion().getVersion(), context.getConfiguration().getDefaultSchema()
-        );
-        lintsReporters.forEach(x -> x.report(catalog, newLints, migrateInfo));
+        lintsReporters.forEach(x -> x.report(catalog, newLints, defaultSchema, migrationVersion));
     }
 
     @Override

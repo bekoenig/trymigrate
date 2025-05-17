@@ -54,7 +54,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putMigrationVersion(extensionContext, initialVersion);
 
         LintsHistory lintsHistory = new LintsHistory(ignoredLintsFromAnnotation(annotatedElement));
-        lintsHistory.putLints(initialVersion.getVersion(), new Lints(List.of()));
+        lintsHistory.putLints(initialVersion, new Lints(List.of()));
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
         SchemaLinter schemaLinter = new SchemaLinter(

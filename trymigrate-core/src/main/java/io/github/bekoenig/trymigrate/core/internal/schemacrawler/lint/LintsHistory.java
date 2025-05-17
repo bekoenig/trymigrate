@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint;
 
+import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.tools.lint.Lints;
 
 import java.util.ArrayList;
@@ -11,9 +12,9 @@ public class LintsHistory {
 
     private final LintPatterns ignoredLints;
 
-    private final Map<String, Lints> lints;
+    private final Map<MigrationVersion, Lints> lints;
 
-    private final List<String> order;
+    private final List<MigrationVersion> order;
 
     public LintsHistory(LintPatterns ignoredLints) {
         this.ignoredLints = ignoredLints;
@@ -21,22 +22,22 @@ public class LintsHistory {
         this.order = new ArrayList<>();
     }
 
-    public boolean isAnalysed(String descriptor) {
-        return lints.containsKey(descriptor);
+    public boolean isAnalysed(MigrationVersion migrationVersion) {
+        return lints.containsKey(migrationVersion);
     }
 
-    public void putLints(String descriptor, Lints lints) {
-        this.lints.put(descriptor, lints);
-        this.order.add(descriptor);
+    public void putLints(MigrationVersion migrationVersion, Lints lints) {
+        this.lints.put(migrationVersion, lints);
+        this.order.add(migrationVersion);
     }
 
-    public Lints getLints(String descriptor) {
-        return this.lints.get(descriptor);
+    public Lints getLints(MigrationVersion migrationVersion) {
+        return this.lints.get(migrationVersion);
     }
 
-    public Lints diff(String fromDescriptor, String toDescriptor) {
-        Lints beforeMigrate = getLints(fromDescriptor);
-        Lints afterMigrate = getLints(toDescriptor);
+    public Lints diff(MigrationVersion source, MigrationVersion target) {
+        Lints beforeMigrate = getLints(source);
+        Lints afterMigrate = getLints(target);
 
         return new Lints(ignoredLints.dropMatching(afterMigrate.getLints().stream()
                 // drop known lints
@@ -44,7 +45,7 @@ public class LintsHistory {
                 .toList());
     }
 
-    public String getLastAnalyzedVersion() {
+    public MigrationVersion getLastAnalyzedVersion() {
         return this.order.get(this.order.size() - 1);
     }
 

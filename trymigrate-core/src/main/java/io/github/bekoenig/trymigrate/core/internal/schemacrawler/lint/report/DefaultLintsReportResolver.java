@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report;
 
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsMigrateInfo;
+import org.flywaydb.core.api.MigrationVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,10 +27,10 @@ public class DefaultLintsReportResolver implements LintsReportResolver {
     }
 
     @Override
-    public Optional<Path> resolve(LintsMigrateInfo migrateInfo) {
+    public Optional<Path> resolve(String schema, MigrationVersion migrationVersion) {
         Path reportFolder = resolveOutputDirectory()
                 .resolve("trymigrate-lint-reports")
-                .resolve(Objects.requireNonNullElse(migrateInfo.schema(), "schema-undefined"));
+                .resolve(Objects.requireNonNullElse(schema, "schema-undefined"));
 
         try {
             Files.createDirectories(reportFolder);
@@ -39,7 +39,7 @@ public class DefaultLintsReportResolver implements LintsReportResolver {
         }
 
         return Optional.of(reportFolder
-                .resolve(migrateInfo.descriptor().replaceAll("\\.", "_") + ".html"));
+                .resolve(migrationVersion.getVersion().replaceAll("\\.", "_") + ".html"));
     }
 
 }
