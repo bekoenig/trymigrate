@@ -1,8 +1,8 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
 import io.github.bekoenig.trymigrate.core.plugin.*;
-import io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateFlywayCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.DefaultLinters;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.DefaultLintsReportResolver;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
@@ -18,7 +18,7 @@ import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
 
-import static io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateFlywayCustomizer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 
 public class CorePlugin implements TrymigratePlugin {
 

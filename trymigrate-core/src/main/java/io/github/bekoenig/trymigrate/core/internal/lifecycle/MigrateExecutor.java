@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.internal.migrate.FlywayMigrateWrapper;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
@@ -19,7 +19,7 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateFlywayCustomizer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 
 public class MigrateExecutor implements BeforeEachCallback {
 

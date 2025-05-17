@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.internal.container.ContainerStarter;
 import io.github.bekoenig.trymigrate.core.internal.container.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
-import io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateFlywayCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginProvider;
