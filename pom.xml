@@ -63,6 +63,24 @@
         <postgresql.version>42.7.5</postgresql.version>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:bekoenig/trymigrate.git</connection>
+        <developerConnection>scm:git:git@github.com:bekoenig/trymigrate.git</developerConnection>
+        <url>https://github.com/bekoenig/trymigrate</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
