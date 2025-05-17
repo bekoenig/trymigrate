@@ -2,7 +2,7 @@ name: Builds and Verify
 
 on:
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
