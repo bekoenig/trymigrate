@@ -1,13 +1,13 @@
 package io.github.bekoenig.trymigrate.core;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateCompleter;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateExecutor;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.extension.MigrateInitializer;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.order.TargetOrder;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.resolver.CatalogParameterResolver;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.resolver.DataSourceParameterResolver;
-import io.github.bekoenig.trymigrate.core.internal.jupiter.resolver.LintsParameterResolver;
+import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateCompleter;
+import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateExecutor;
+import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateInitializer;
+import io.github.bekoenig.trymigrate.core.internal.lifecycle.order.TargetOrder;
+import io.github.bekoenig.trymigrate.core.internal.parameter.CatalogParameterResolver;
+import io.github.bekoenig.trymigrate.core.internal.parameter.DataSourceParameterResolver;
+import io.github.bekoenig.trymigrate.core.internal.parameter.LintsParameterResolver;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;

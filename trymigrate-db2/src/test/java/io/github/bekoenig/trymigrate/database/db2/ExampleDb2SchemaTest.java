@@ -9,7 +9,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.internal.schemacrawler.lint.report.LintsLogReporter;
+import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
