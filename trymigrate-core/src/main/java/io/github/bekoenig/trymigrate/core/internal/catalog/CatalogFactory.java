@@ -16,7 +16,7 @@ import java.util.logging.LogManager;
 public class CatalogFactory {
 
     private static final String LOG_PROPERTIES =
-            "io/github/bekoenig/trymigrate/core/internal/schemacrawler/catalog/log.properties";
+            "io/github/bekoenig/trymigrate/core/internal/catalog/log.properties";
 
     static {
         try (InputStream is = ClassLoaderUtils.getClassLoader(CatalogFactory.class)
