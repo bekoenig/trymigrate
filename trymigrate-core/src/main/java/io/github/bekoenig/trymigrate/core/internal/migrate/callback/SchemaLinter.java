@@ -76,7 +76,7 @@ public class SchemaLinter implements Callback {
 
         MigrationVersion lastAnalyzedVersion = lintsHistory.getLastAnalyzedVersion();
         MigrationVersion migrationVersion = context.getMigrationInfo().getVersion();
-        lintsHistory.putLints(migrationVersion, currentLints);
+        lintsHistory.put(migrationVersion, currentLints);
         Lints newLints = lintsHistory.diff(lastAnalyzedVersion, migrationVersion);
 
         lintsReporters.forEach(x -> x.report(catalog, newLints, defaultSchema, migrationVersion));

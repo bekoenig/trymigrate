@@ -26,18 +26,18 @@ public class LintsHistory {
         return lints.containsKey(migrationVersion);
     }
 
-    public void putLints(MigrationVersion migrationVersion, Lints lints) {
+    public void put(MigrationVersion migrationVersion, Lints lints) {
         this.lints.put(migrationVersion, lints);
         this.order.add(migrationVersion);
     }
 
-    public Lints getLints(MigrationVersion migrationVersion) {
+    public Lints get(MigrationVersion migrationVersion) {
         return this.lints.get(migrationVersion);
     }
 
     public Lints diff(MigrationVersion source, MigrationVersion target) {
-        Lints beforeMigrate = getLints(source);
-        Lints afterMigrate = getLints(target);
+        Lints beforeMigrate = get(source);
+        Lints afterMigrate = get(target);
 
         return new Lints(ignoredLints.dropMatching(afterMigrate.getLints().stream()
                 // drop known lints
