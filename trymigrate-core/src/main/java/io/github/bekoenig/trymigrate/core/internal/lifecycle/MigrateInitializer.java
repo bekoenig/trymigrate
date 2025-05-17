@@ -17,7 +17,7 @@ import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintsHistory;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CompositeLinterRegistry;
-import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
+import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.Flyway;
@@ -53,7 +53,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         MigrationVersion initialVersion = MigrationVersion.EMPTY;
         StoreSupport.putMigrationVersion(extensionContext, initialVersion);
 
-        LintsHistory lintsHistory = new LintsHistory(ignoredLintsFromAnnotation(annotatedElement));
+        LintsHistory lintsHistory = new LintsHistory(excludedLintPatternsFromAnnotation(annotatedElement));
         lintsHistory.put(initialVersion, new Lints(List.of()));
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 
@@ -77,9 +77,9 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putLintsAssert(extensionContext, new LintsAssert(testConfiguration.failOn()));
     }
 
-    private LintPatterns ignoredLintsFromAnnotation(AnnotatedElement annotatedElement) {
+    private LintPatterns excludedLintPatternsFromAnnotation(AnnotatedElement annotatedElement) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
-                        annotatedElement, IgnoreLint.class).stream()
+                        annotatedElement, ExcludeLint.class).stream()
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
     }
 

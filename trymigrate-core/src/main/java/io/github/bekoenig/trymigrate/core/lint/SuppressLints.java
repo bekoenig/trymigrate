@@ -5,10 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Meta annotation to add support for repeatable usage of {@link SuppressLint}.
+ * <p>
+ * Only necessary for compile time.
+ */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AcceptLints {
+public @interface SuppressLints {
 
-    AcceptLint[] value();
+    SuppressLint[] value();
 
 }

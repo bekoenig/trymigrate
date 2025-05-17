@@ -24,7 +24,7 @@ public class FlywayMigrateWrapper {
         return LATEST.equals(StoreSupport.getMigrationVersion(extensionContext));
     }
 
-    public void migrate(Flyway flyway, LintPatterns acceptedLints) {
+    public void migrate(Flyway flyway, LintPatterns suppressedLintPatterns) {
         MigrationVersion lastVersion = StoreSupport.getMigrationVersion(extensionContext);
 
         MigrateResult migrate = flyway.migrate();
@@ -41,7 +41,7 @@ public class FlywayMigrateWrapper {
             StoreSupport.putMigrationVersion(extensionContext, currentVersion);
             Lints newLints = StoreSupport.getLintsHistory(extensionContext).diff(lastVersion, currentVersion);
             StoreSupport.putLints(extensionContext, newLints);
-            StoreSupport.getLintsAssert(extensionContext).assertLints(newLints, acceptedLints);
+            StoreSupport.getLintsAssert(extensionContext).assertLints(newLints, suppressedLintPatterns);
         }
     }
 

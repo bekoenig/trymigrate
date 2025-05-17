@@ -7,7 +7,7 @@ import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPattern;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
-import io.github.bekoenig.trymigrate.core.lint.AcceptLint;
+import io.github.bekoenig.trymigrate.core.lint.SuppressLint;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.callback.Callback;
@@ -60,13 +60,13 @@ public class MigrateExecutor implements BeforeEachCallback {
             flyway.clean();
         }
 
-        flywayMigrateWrapper.migrate(flyway, acceptedLintsFromAnnotation(extensionContext));
+        flywayMigrateWrapper.migrate(flyway, suppressedLintPatternsFromAnnotation(extensionContext));
     }
 
-    private LintPatterns acceptedLintsFromAnnotation(ExtensionContext extensionContext) {
+    private LintPatterns suppressedLintPatternsFromAnnotation(ExtensionContext extensionContext) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
-                        extensionContext.getElement().orElseThrow(), AcceptLint.class).stream()
-                .map(acceptLint -> new LintPattern(acceptLint.linterId(), acceptLint.objectName())).toList());
+                        extensionContext.getElement().orElseThrow(), SuppressLint.class).stream()
+                .map(suppressLint -> new LintPattern(suppressLint.linterId(), suppressLint.objectName())).toList());
     }
 
 }

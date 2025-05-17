@@ -17,8 +17,8 @@ public class LintsAssert {
         this.failOn = failOn;
     }
 
-    public void assertLints(Lints lints, LintPatterns acceptedLints) {
-        List<Lint<? extends Serializable>> assertLints = acceptedLints
+    public void assertLints(Lints lints, LintPatterns suppressedLintPatterns) {
+        List<Lint<? extends Serializable>> assertLints = suppressedLintPatterns
                 .dropMatching(lints.getLints().stream())
                 .filter(x -> hasOrExceedsSeverity(x, failOn))
                 .toList();

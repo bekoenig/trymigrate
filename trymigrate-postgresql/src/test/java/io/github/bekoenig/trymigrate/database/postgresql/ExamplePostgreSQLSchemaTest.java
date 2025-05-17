@@ -9,8 +9,8 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.AcceptLint;
-import io.github.bekoenig.trymigrate.core.lint.IgnoreLint;
+import io.github.bekoenig.trymigrate.core.lint.SuppressLint;
+import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -43,9 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 //                "user=test",
 //                "password=test",
         })
-@IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableSql", objectName = ".*")
-@IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns", objectName = ".*")
-@IgnoreLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty", objectName = ".*")
+@ExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableSql")
+@ExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
+@ExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
 public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateBean
@@ -77,14 +77,14 @@ public class ExamplePostgreSQLSchemaTest {
     }
 
     @TrymigrateTest(whenTarget = "1.0", cleanBefore = true)
-    @AcceptLint(
+    @SuppressLint(
             linterId = "schemacrawler.tools.linter.LinterTableAllNullableColumns",
             objectName = "example_schema.example_entity1")
-    @AcceptLint(
+    @SuppressLint(
             linterId = "io.github.bekoenig.trymigrate.database.postgresql.DummyLinter",
             objectName = "example_schema.example_entity1"
     )
-    @AcceptLint(
+    @SuppressLint(
             linterId = "schemacrawler.tools.linter.LinterTableWithNoRemarks",
             objectName = "example_schema.example_entity1.*"
     )

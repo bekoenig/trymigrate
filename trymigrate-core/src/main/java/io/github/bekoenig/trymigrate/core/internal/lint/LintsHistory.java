@@ -10,14 +10,14 @@ import java.util.Map;
 
 public class LintsHistory {
 
-    private final LintPatterns ignoredLints;
+    private final LintPatterns excludedLintPatterns;
 
     private final Map<MigrationVersion, Lints> lints;
 
     private final List<MigrationVersion> order;
 
-    public LintsHistory(LintPatterns ignoredLints) {
-        this.ignoredLints = ignoredLints;
+    public LintsHistory(LintPatterns excludedLintPatterns) {
+        this.excludedLintPatterns = excludedLintPatterns;
         this.lints = new HashMap<>();
         this.order = new ArrayList<>();
     }
@@ -39,7 +39,7 @@ public class LintsHistory {
         Lints beforeMigrate = get(source);
         Lints afterMigrate = get(target);
 
-        return new Lints(ignoredLints.dropMatching(afterMigrate.getLints().stream()
+        return new Lints(excludedLintPatterns.dropMatching(afterMigrate.getLints().stream()
                 // drop known lints
                 .filter(l -> !beforeMigrate.getLints().contains(l)))
                 .toList());

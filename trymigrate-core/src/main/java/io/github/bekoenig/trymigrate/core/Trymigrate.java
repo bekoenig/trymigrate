@@ -1,5 +1,7 @@
 package io.github.bekoenig.trymigrate.core;
 
+import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
+import io.github.bekoenig.trymigrate.core.lint.SuppressLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateExecutor;
@@ -57,8 +59,8 @@ public @interface Trymigrate {
     /**
      * Threshold to fail on lints. Indicates mistakes in database model.
      *
-     * @see io.github.bekoenig.trymigrate.core.lint.IgnoreLint
-     * @see io.github.bekoenig.trymigrate.core.lint.AcceptLint
+     * @see ExcludeLint
+     * @see SuppressLint
      * @return lower boundary
      */
     LintSeverity failOn() default LintSeverity.low;
