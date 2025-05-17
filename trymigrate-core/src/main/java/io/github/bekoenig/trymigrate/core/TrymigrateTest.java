@@ -32,7 +32,7 @@ public @interface TrymigrateTest {
     /**
      * Scenario data applied before execution of migration to target.
      *
-     * @return resources for {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader}
+     * @return resources for {@link io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateDataLoader}
      */
     String[] givenData() default {};
 

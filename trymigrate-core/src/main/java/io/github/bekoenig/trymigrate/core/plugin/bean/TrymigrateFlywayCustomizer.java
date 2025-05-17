@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.plugin.customize;
+package io.github.bekoenig.trymigrate.core.plugin.bean;
 
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;

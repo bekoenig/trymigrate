@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateExecutor;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateInitializer;
-import io.github.bekoenig.trymigrate.core.internal.lifecycle.order.TargetOrder;
+import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateOrderer;
 import io.github.bekoenig.trymigrate.core.internal.parameter.CatalogParameterResolver;
 import io.github.bekoenig.trymigrate.core.internal.parameter.DataSourceParameterResolver;
 import io.github.bekoenig.trymigrate.core.internal.parameter.LintsParameterResolver;
@@ -37,7 +37,7 @@ import java.lang.annotation.Target;
         CatalogParameterResolver.class,
         LintsParameterResolver.class
 })
-@TestMethodOrder(TargetOrder.class)
+@TestMethodOrder(MigrateOrderer.class)
 public @interface Trymigrate {
 
     /**

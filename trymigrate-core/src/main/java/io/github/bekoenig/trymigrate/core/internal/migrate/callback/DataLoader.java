@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.migrate.callback;
 
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.bean.TrymigrateDataLoader;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;

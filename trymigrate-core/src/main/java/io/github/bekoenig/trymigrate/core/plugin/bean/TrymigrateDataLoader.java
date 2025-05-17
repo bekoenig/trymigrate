@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.plugin.customize;
+package io.github.bekoenig.trymigrate.core.plugin.bean;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 

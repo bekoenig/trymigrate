@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.internal.lifecycle.order;
+package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import org.flywaydb.core.api.MigrationVersion;
@@ -11,7 +11,7 @@ import java.util.Comparator;
 import java.util.Optional;
 
 
-public class TargetOrder implements MethodOrderer {
+public class MigrateOrderer implements MethodOrderer {
 
     static final Comparator<MethodDescriptor> COMPARATOR = new Comparator<>() {
 
