@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core.internal.lint.config;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 
-public class DefaultLinters implements LintersCustomizer {
+public class CoreLinters implements LintersCustomizer {
 
     @Override
     public void accept(LintersConfiguration configuration) {

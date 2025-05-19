@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.config.DefaultLinters;
+import io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
@@ -45,7 +45,7 @@ public class CorePlugin implements TrymigratePlugin {
     private LintsReporter lintsHtmlReporter;
 
     @TrymigrateBean
-    private final LintersCustomizer lintersCustomizer = new DefaultLinters();
+    private final LintersCustomizer lintersCustomizer = new CoreLinters();
 
     @TrymigrateBean
     private final TrymigrateDataLoader sqlDataLoadHandle = new TrymigrateDataLoader() {
