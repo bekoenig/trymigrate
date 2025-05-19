@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.IdentifiersBuilder;
-import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
+import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintReportOutputFormat;
 import schemacrawler.tools.lint.Lints;
 import schemacrawler.tools.lint.formatter.LintReportTextFormatter;
@@ -16,9 +16,11 @@ import java.nio.file.Path;
 
 public class LintsHtmlReporter implements LintsReporter {
 
+    private final LintOptions lintOptions;
     private final LintsReportPathResolver lintsReportResolver;
 
-    public LintsHtmlReporter() {
+    public LintsHtmlReporter(LintOptions lintOptions) {
+        this.lintOptions = lintOptions;
         this.lintsReportResolver = new LintsReportPathResolver();
     }
 
@@ -26,7 +28,7 @@ public class LintsHtmlReporter implements LintsReporter {
         Path outputFile = lintsReportResolver.resolve(schema, migrationVersion);
 
         LintReportTextFormatter lintReportTextFormatter = new LintReportTextFormatter(
-                LintOptionsBuilder.builder().toOptions(),
+                lintOptions,
                 OutputOptionsBuilder.builder()
                         .withOutputFormat(LintReportOutputFormat.html)
                         .withOutputEncoding(StandardCharsets.UTF_8)

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.IdentifiersBuilder;
-import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
+import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintReportOutputFormat;
 import schemacrawler.tools.lint.Lints;
 import schemacrawler.tools.lint.formatter.LintReportTextFormatter;
@@ -19,6 +19,12 @@ public class LintsLogReporter implements LintsReporter {
 
     private final Logger logger = LoggerFactory.getLogger(LintsLogReporter.class);
 
+    private final LintOptions lintOptions;
+
+    public LintsLogReporter(LintOptions lintOptions) {
+        this.lintOptions = lintOptions;
+    }
+
     public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion) {
         logger.atInfo().setMessage(() -> createTextReport(catalog, lints)).log();
     }
@@ -27,7 +33,7 @@ public class LintsLogReporter implements LintsReporter {
         StringWriter writer = new StringWriter();
 
         LintReportTextFormatter lintReportTextFormatter = new LintReportTextFormatter(
-                LintOptionsBuilder.builder().toOptions(),
+                lintOptions,
                 OutputOptionsBuilder.builder()
                         .withOutputFormat(LintReportOutputFormat.text)
                         .withOutputWriter(writer)

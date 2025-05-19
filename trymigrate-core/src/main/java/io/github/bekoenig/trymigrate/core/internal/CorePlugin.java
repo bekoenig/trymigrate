@@ -1,17 +1,21 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
-import io.github.bekoenig.trymigrate.core.plugin.*;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.DefaultLinters;
+import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import schemacrawler.schemacrawler.*;
+import schemacrawler.tools.command.lint.options.LintOptions;
+import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
@@ -35,7 +39,7 @@ public class CorePlugin implements TrymigratePlugin {
     private TrymigrateFlywayCustomizer containerDataSourceConfigurer;
 
     @TrymigrateBean
-    private final LintsReporter lintsLogReporter = new LintsLogReporter();
+    private LintsReporter lintsLogReporter;
 
     @TrymigrateBean
     private LintsReporter lintsHtmlReporter;
@@ -67,6 +71,11 @@ public class CorePlugin implements TrymigratePlugin {
                 beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(c ->
                         configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
 
-        this.lintsHtmlReporter = new LintsHtmlReporter();
+        LintOptions lintOptions = beanProvider.findFirst(LintOptions.class)
+                .orElseGet(() -> LintOptionsBuilder.builder()
+                        .noInfo()
+                        .toOptions());
+        this.lintsLogReporter = new LintsLogReporter(lintOptions);
+        this.lintsHtmlReporter = new LintsHtmlReporter(lintOptions);
     }
 }
