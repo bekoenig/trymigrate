@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import org.flywaydb.core.api.MigrationVersion;
 
 import java.io.IOException;
@@ -8,14 +7,12 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
-import java.util.Optional;
 
-public class DefaultLintsReportResolver implements LintsReportResolver {
+public class LintsReportPathResolver {
 
     public static final String PROPERTY_NAME = "trymigrate.lint.reports.path";
 
-    @Override
-    public Optional<Path> resolve(String schema, MigrationVersion migrationVersion) {
+    public Path resolve(String schema, MigrationVersion migrationVersion) {
         Path reportFolder = getBaseFolder()
                 .resolve("trymigrate-lint-reports")
                 .resolve(Objects.requireNonNullElse(schema, "schema-undefined"));
@@ -26,7 +23,7 @@ public class DefaultLintsReportResolver implements LintsReportResolver {
             throw new IllegalStateException("Failed to create folder", e);
         }
 
-        return Optional.of(reportFolder.resolve(getReportFileName(migrationVersion)));
+        return reportFolder.resolve(getReportFileName(migrationVersion));
     }
 
     private Path getBaseFolder() {

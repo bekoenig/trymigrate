@@ -1,7 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.IdentifiersBuilder;
@@ -14,28 +13,24 @@ import schemacrawler.tools.options.OutputOptionsBuilder;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Optional;
 
 public class LintsHtmlReporter implements LintsReporter {
 
-    private final LintsReportResolver lintsReportResolver;
+    private final LintsReportPathResolver lintsReportResolver;
 
-    public LintsHtmlReporter(LintsReportResolver lintsReportResolver) {
-        this.lintsReportResolver = lintsReportResolver;
+    public LintsHtmlReporter() {
+        this.lintsReportResolver = new LintsReportPathResolver();
     }
 
     public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion) {
-        Optional<Path> outputFile = lintsReportResolver.resolve(schema, migrationVersion);
-        if (outputFile.isEmpty()) {
-            return;
-        }
+        Path outputFile = lintsReportResolver.resolve(schema, migrationVersion);
 
         LintReportTextFormatter lintReportTextFormatter = new LintReportTextFormatter(
                 LintOptionsBuilder.builder().toOptions(),
                 OutputOptionsBuilder.builder()
                         .withOutputFormat(LintReportOutputFormat.html)
                         .withOutputEncoding(StandardCharsets.UTF_8)
-                        .withOutputFile(outputFile.get())
+                        .withOutputFile(outputFile)
                         .toOptions(),
                 IdentifiersBuilder.builder().toOptions());
 

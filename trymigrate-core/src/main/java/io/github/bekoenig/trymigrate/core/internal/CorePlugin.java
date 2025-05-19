@@ -1,14 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
+import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.plugin.*;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.DefaultLinters;
-import io.github.bekoenig.trymigrate.core.internal.lint.report.DefaultLintsReportResolver;
-import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReportResolver;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
@@ -69,7 +67,6 @@ public class CorePlugin implements TrymigratePlugin {
                 beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(c ->
                         configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
 
-        this.lintsHtmlReporter = new LintsHtmlReporter(
-                beanProvider.findFirst(LintsReportResolver.class).orElseGet(DefaultLintsReportResolver::new));
+        this.lintsHtmlReporter = new LintsHtmlReporter();
     }
 }
