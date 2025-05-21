@@ -23,7 +23,7 @@ class LintsReportPathResolverTest {
         Path path = resolver.resolve(schema, migrationVersion);
 
         // THEN
-        assertThat(path).endsWithRaw(Path.of("target\\trymigrate-lint-reports\\MY_SCHEMA\\1_0.html"));
+        assertThat(path).endsWithRaw(Path.of("target", "trymigrate-lint-reports", "MY_SCHEMA", "1_0.html"));
     }
 
     @Test
@@ -40,7 +40,7 @@ class LintsReportPathResolverTest {
 
         // THEN
         assertThat(path).startsWithRaw(tempDir);
-        assertThat(path).endsWithRaw(Path.of("trymigrate-lint-reports\\MY_SCHEMA\\1_0.html"));
+        assertThat(path).endsWithRaw(Path.of("trymigrate-lint-reports", "MY_SCHEMA", "1_0.html"));
     }
 
 }
