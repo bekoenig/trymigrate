@@ -10,10 +10,10 @@ import java.util.Objects;
 
 public class LintsReportPathResolver {
 
-    public static final String PROPERTY_NAME = "trymigrate.lint.reports.path";
+    public static final String PROPERTY_NAME = "trymigrate.lint.reports.basedir";
 
     public Path resolve(String schema, MigrationVersion migrationVersion) {
-        Path reportFolder = getBaseFolder()
+        Path reportFolder = getBaseDir()
                 .resolve("trymigrate-lint-reports")
                 .resolve(Objects.requireNonNullElse(schema, "schema-undefined"));
 
@@ -26,7 +26,7 @@ public class LintsReportPathResolver {
         return reportFolder.resolve(getReportFileName(migrationVersion));
     }
 
-    private Path getBaseFolder() {
+    private Path getBaseDir() {
         String property = System.getProperty(PROPERTY_NAME);
         if (property != null) {
             return Path.of(property);
@@ -37,7 +37,7 @@ public class LintsReportPathResolver {
     private Path getTargetFolder() {
         try {
             // target folder is parent of system resource folder
-            return Path.of(Objects.requireNonNull(ClassLoader.getSystemResource("")).toURI()).getParent();
+            return Path.of(Objects.requireNonNull(ClassLoader.getSystemResource("./")).toURI()).getParent();
         } catch (URISyntaxException e) {
             throw new IllegalStateException("Failed to get root uri for system resources of class loader", e);
         }

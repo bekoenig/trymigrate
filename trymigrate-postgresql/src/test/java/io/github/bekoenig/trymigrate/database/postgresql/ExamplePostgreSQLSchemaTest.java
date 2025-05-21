@@ -100,7 +100,7 @@ public class ExamplePostgreSQLSchemaTest {
                 .matches(m -> m.contains("no non-nullable data columns"))
                 .matches(m -> m.contains("should have remarks\tentity1_id, attribute1"));
 
-        assertThat(Path.of(ClassLoader.getSystemResource("").toURI())
+        assertThat(Path.of(ClassLoader.getSystemResource("./").toURI())
                 .getParent()
                 .resolve("trymigrate-lint-reports")
                 .resolve("example_schema")
