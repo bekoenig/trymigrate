@@ -1,8 +1,8 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters;
-import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
-import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
+import io.github.bekoenig.trymigrate.core.internal.lint.report.html.LintsHtmlReporter;
+import io.github.bekoenig.trymigrate.core.internal.lint.report.log.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;

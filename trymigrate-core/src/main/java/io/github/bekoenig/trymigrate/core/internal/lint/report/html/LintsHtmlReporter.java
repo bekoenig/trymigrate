@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.internal.lint.report;
+package io.github.bekoenig.trymigrate.core.internal.lint.report.html;
 
 import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
@@ -19,11 +19,11 @@ public class LintsHtmlReporter implements LintsReporter {
     public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.reports.html.skip-empty";
 
     private final LintOptions lintOptions;
-    private final LintsReportPathResolver lintsReportResolver;
+    private final LintsHtmlReporterFileResolver lintsReportResolver;
 
     public LintsHtmlReporter(LintOptions lintOptions) {
         this.lintOptions = lintOptions;
-        this.lintsReportResolver = new LintsReportPathResolver();
+        this.lintsReportResolver = new LintsHtmlReporterFileResolver();
     }
 
     public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion) {

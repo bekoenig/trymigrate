@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.internal.lint.report;
+package io.github.bekoenig.trymigrate.core.internal.lint.report.html;
 
 import org.flywaydb.core.api.MigrationVersion;
 
@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class LintsReportPathResolver {
+public class LintsHtmlReporterFileResolver {
 
     public static final String PROPERTY_NAME = "trymigrate.lint.reports.html.basedir";
 

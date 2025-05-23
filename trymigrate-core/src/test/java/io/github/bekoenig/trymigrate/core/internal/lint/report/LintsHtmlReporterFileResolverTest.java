@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
+import io.github.bekoenig.trymigrate.core.internal.lint.report.html.LintsHtmlReporterFileResolver;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -9,9 +10,9 @@ import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LintsReportPathResolverTest {
+class LintsHtmlReporterFileResolverTest {
 
-    private final LintsReportPathResolver resolver = new LintsReportPathResolver();
+    private final LintsHtmlReporterFileResolver resolver = new LintsHtmlReporterFileResolver();
 
     @Test
     void resolve_defaultBaseDir() {
@@ -27,9 +28,9 @@ class LintsReportPathResolverTest {
     }
 
     @Test
-    @ClearSystemProperty(key = LintsReportPathResolver.PROPERTY_NAME)
+    @ClearSystemProperty(key = LintsHtmlReporterFileResolver.PROPERTY_NAME)
     void resolve_propertyBaseDir(@TempDir Path tempDir) {
-        System.setProperty(LintsReportPathResolver.PROPERTY_NAME, tempDir.toString());
+        System.setProperty(LintsHtmlReporterFileResolver.PROPERTY_NAME, tempDir.toString());
 
         // GIVEN
         String schema = "MY_SCHEMA";

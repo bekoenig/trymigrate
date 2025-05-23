@@ -8,7 +8,7 @@ import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
+import io.github.bekoenig.trymigrate.core.internal.lint.report.log.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.SuppressLint;
 import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
 import org.flywaydb.core.api.callback.Callback;
