@@ -10,7 +10,7 @@ import java.util.Objects;
 
 public class LintsReportPathResolver {
 
-    public static final String PROPERTY_NAME = "trymigrate.lint.reports.basedir";
+    public static final String PROPERTY_NAME = "trymigrate.lint.reports.html.basedir";
 
     public Path resolve(String schema, MigrationVersion migrationVersion) {
         Path reportFolder = getBaseDir()

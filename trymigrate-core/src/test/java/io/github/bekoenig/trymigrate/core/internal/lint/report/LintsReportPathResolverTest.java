@@ -27,9 +27,9 @@ class LintsReportPathResolverTest {
     }
 
     @Test
-    @ClearSystemProperty(key = "trymigrate.lint.reports.basedir")
+    @ClearSystemProperty(key = LintsReportPathResolver.PROPERTY_NAME)
     void resolve_propertyBaseDir(@TempDir Path tempDir) {
-        System.setProperty("trymigrate.lint.reports.basedir", tempDir.toString());
+        System.setProperty(LintsReportPathResolver.PROPERTY_NAME, tempDir.toString());
 
         // GIVEN
         String schema = "MY_SCHEMA";
