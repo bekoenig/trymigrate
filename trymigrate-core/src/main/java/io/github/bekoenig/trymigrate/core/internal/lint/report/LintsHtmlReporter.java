@@ -16,6 +16,8 @@ import java.nio.file.Path;
 
 public class LintsHtmlReporter implements LintsReporter {
 
+    public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.reports.html.skip-empty";
+
     private final LintOptions lintOptions;
     private final LintsReportPathResolver lintsReportResolver;
 
@@ -25,6 +27,10 @@ public class LintsHtmlReporter implements LintsReporter {
     }
 
     public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion) {
+        if (lints.isEmpty() && skipEmpty()) {
+            return;
+        }
+
         Path outputFile = lintsReportResolver.resolve(schema, migrationVersion);
 
         LintReportTextFormatter lintReportTextFormatter = new LintReportTextFormatter(
@@ -40,6 +46,10 @@ public class LintsHtmlReporter implements LintsReporter {
         lintReportTextGenerator.setCatalog(catalog);
         lintReportTextGenerator.setHandler(lintReportTextFormatter);
         lintReportTextGenerator.generateLintReport(lints);
+    }
+
+    private boolean skipEmpty() {
+        return Boolean.parseBoolean(System.getProperty(PROPERTY_NAME_SKIP_EMPTY, Boolean.TRUE.toString()));
     }
 
 }
