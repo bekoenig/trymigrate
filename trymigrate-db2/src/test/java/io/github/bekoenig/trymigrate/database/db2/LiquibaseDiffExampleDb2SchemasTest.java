@@ -27,9 +27,6 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Beispiel zur Verwendung von Liquibase zum Abgleich des Flyway-Schemas gegen einen Schema-Dump.
- */
 @Trymigrate(
         flywayProperties = {
                 "defaultSchema=" + LiquibaseDiffExampleDb2SchemasTest.FLYWAY_SCHEMA,
@@ -47,7 +44,6 @@ public class LiquibaseDiffExampleDb2SchemasTest {
                     .acceptLicense();
 
     @TrymigrateTest(whenTarget = "latest")
-        // Der Tests wird nach Anwendung aller Migrationen durchgeführt.
     void test_latest(DataSource dataSource) throws Exception {
         // GIVEN
         // WHEN
@@ -66,7 +62,6 @@ public class LiquibaseDiffExampleDb2SchemasTest {
                     jdbcConnection);
 
             CommandResults execute = Scope.child(
-                    // Beispiel: Überschreiben von globalen Properties für den lokalen Scope.
                     Map.of(GlobalConfiguration.DIFF_COLUMN_ORDER.getKey(), true),
                     () -> new CommandScope(DiffChangelogCommandStep.COMMAND_NAME)
                             .addArgumentValue(ReferenceDbUrlConnectionCommandStep.REFERENCE_DATABASE_ARG, referenceDatabase)
@@ -81,9 +76,9 @@ public class LiquibaseDiffExampleDb2SchemasTest {
         }
 
         // THEN
-        assertThat(diffResult.getUnexpectedObjects()).as("Keine unerwarteten Objekte").isEmpty();
-        assertThat(diffResult.getMissingObjects()).as("Keine fehlenden Objekte").isEmpty();
-        assertThat(diffResult.getChangedObjects()).as("Keine abweichenden Objekte").isEmpty();
+        assertThat(diffResult.getUnexpectedObjects()).isEmpty();
+        assertThat(diffResult.getMissingObjects()).isEmpty();
+        assertThat(diffResult.getChangedObjects()).isEmpty();
     }
 
 }

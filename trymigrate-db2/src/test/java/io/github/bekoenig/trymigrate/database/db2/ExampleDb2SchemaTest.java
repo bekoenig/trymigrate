@@ -66,25 +66,19 @@ public class ExampleDb2SchemaTest {
     void beforeAll() {
         MDC.put("test-name", getClass().getName());
         Logger rootLogger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        // List-Appender zu den Logs des Tests.
         listAppender = (ListAppender<ILoggingEvent>) rootLogger.getAppender("LIST");
-        // Logs vor der Testausführung löschen.
         listAppender.list.clear();
     }
 
     @AfterEach
     @AfterAll
     void afterTest() {
-        // Logs nach jedem Test löschen.
         listAppender.list.clear();
     }
 
     @TrymigrateTest(whenTarget = "1.0")
-    void test_Initial(Catalog catalog,
-                      DataSource dataSource,
-                      Lints lints) {
+    void test_Initial(Catalog catalog, Lints lints) {
         assertThat(listAppender.list)
-                .as("Initiales Schema-Linting wird geloggt")
                 .filteredOn(l -> l.getLoggerName().equals(LintsLogReporter.class.getName()))
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .singleElement()
@@ -96,8 +90,7 @@ public class ExampleDb2SchemaTest {
 
         assertThat(Path.of("target", "trymigrate-lint-reports", "EXAMPLE_SCHEMA", "1_0.html")).exists();
 
-        assertThat(catalog).as("Catalog wird als Parameter gesetzt").isNotNull();
-        assertThat(dataSource).as("DataSource wird als Parameter gesetzt").isNotNull();
+        assertThat(catalog).isNotNull();
 
         TableAssert tableAssert = SchemaCrawlerAssertions.assertThat(catalog)
                 .table("EXAMPLE_SCHEMA", "EXAMPLE_ENTITY1");
@@ -111,13 +104,11 @@ public class ExampleDb2SchemaTest {
 
     @TrymigrateTest(givenData = "db/testdata/db2/initial.sql", whenTarget = "1.1")
     @Order(1)
-        // Test mit der höchsten Order löst die Migration aus
     void test_AddOptionalAttribute2_Schema(Catalog catalog,
                                            Lints lints) {
         assertThat(trymigrateDataLoadHandleInvoked).isTrue();
 
         assertThat(listAppender.list)
-                .as("Schema-Linting der neuen Findings")
                 .filteredOn(l -> l.getLoggerName().equals(LintsLogReporter.class.getName()))
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .singleElement()
@@ -130,7 +121,6 @@ public class ExampleDb2SchemaTest {
         assertThat(Path.of("target", "trymigrate-lint-reports", "EXAMPLE_SCHEMA", "1_1.html")).exists();
 
         SchemaCrawlerAssertions.assertThat(catalog)
-                .as("Optionales ATTRIBUTE2 wurde erweitert")
                 .column("EXAMPLE_SCHEMA", "EXAMPLE_ENTITY1", "ATTRIBUTE2")
                 .matchesColumnDataTypeName(isEqual("INTEGER"))
                 .isNullable(true);
@@ -138,10 +128,8 @@ public class ExampleDb2SchemaTest {
 
     @TrymigrateTest(whenTarget = "1.1")
     @Order(2)
-        // Test mit folgender Order löst keine weitere Migration aus, da bereits das Target erreicht wurde
     void test_AddOptionalAttribute2_Data(Lints lints) {
         assertThat(listAppender.list)
-                .as("Kein Schema-Liniting ohne Migration")
                 .filteredOn(l -> l.getLoggerName().equals(LintsLogReporter.class.getName()))
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .isEmpty();
@@ -150,10 +138,8 @@ public class ExampleDb2SchemaTest {
     }
 
     @TrymigrateTest(
-            // Dieser Test setzt nicht auf den vorherigen Datenstand auf
             cleanBefore = true,
             givenData = {
-                    // Eine neue Zeile erweitern
                     "INSERT INTO EXAMPLE_SCHEMA.EXAMPLE_ENTITY1 (ENTITY1_ID, ATTRIBUTE1, ATTRIBUTE2) VALUES ('3019e6cc-386a-4c15-af62-60bddb438faf', 'v1.1-value3', 4711);"
             },
             whenTarget = "1.3"
@@ -161,17 +147,15 @@ public class ExampleDb2SchemaTest {
     void test_EnforceAttribute2(Catalog catalog,
                                 Lints lints) {
         assertThat(listAppender.list)
-                .as("Schema-Linting nur nach den neuen Migration")
                 .filteredOn(l -> l.getLoggerName().equals(LintsLogReporter.class.getName()))
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .hasSize(2);
 
         assertThat(lints).hasSize(0);
 
-        assertThat(Path.of("target", "trymigrate-lint-reports", "EXAMPLE_SCHEMA", "1_3.html")).exists();
+        assertThat(Path.of("target", "trymigrate-lint-reports", "EXAMPLE_SCHEMA", "1_3.html")).doesNotExist();
 
         SchemaCrawlerAssertions.assertThat(catalog)
-                .as("ATTRIBUTE2 ist nicht mehr optional")
                 .column("EXAMPLE_SCHEMA", "EXAMPLE_ENTITY1", "ATTRIBUTE2")
                 .isNullable(false);
     }

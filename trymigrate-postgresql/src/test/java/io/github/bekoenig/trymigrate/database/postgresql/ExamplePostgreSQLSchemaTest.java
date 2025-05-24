@@ -92,7 +92,6 @@ public class ExamplePostgreSQLSchemaTest {
                       DataSource dataSource,
                       Lints lints) throws URISyntaxException {
         assertThat(listAppender.list)
-                .as("Initiales Schema-Linting wird geloggt")
                 .filteredOn(l -> l.getLoggerName().equals(LintsLogReporter.class.getName()))
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .singleElement()
@@ -106,12 +105,12 @@ public class ExamplePostgreSQLSchemaTest {
                 .resolve("example_schema")
                 .resolve("1_0.html")).exists();
 
-        assertThat(catalog).as("Catalog wird als Parameter gesetzt").isNotNull();
-        assertThat(dataSource).as("DataSource wird als Parameter gesetzt").isNotNull();
+        assertThat(catalog).isNotNull();
+        assertThat(dataSource).isNotNull();
 
         assertThat(lints).hasSize(4);
 
-        assertThat(catalog.getSchemas()).as("System schemas should be excluded").hasSize(1);
+        assertThat(catalog.getSchemas()).hasSize(1);
 
         TableAssert tableAssert = SchemaCrawlerAssertions.assertThat(catalog)
                 .table("example_schema", "example_entity1");
