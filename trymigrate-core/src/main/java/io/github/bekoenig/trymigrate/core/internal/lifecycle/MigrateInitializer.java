@@ -39,8 +39,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
     @Override
     public void postProcessTestInstance(Object o, ExtensionContext extensionContext) {
-        AnnotatedElement annotatedElement = extensionContext.getElement().orElseThrow();
-        Trymigrate testConfiguration = AnnotationSupport.findAnnotation(annotatedElement,
+        Trymigrate testConfiguration = AnnotationSupport.findAnnotation(o.getClass(),
                 Trymigrate.class).orElseThrow();
 
         List<PluginProvider> pluginProviders = new PluginDiscovery().discover(testConfiguration.plugin());
@@ -53,7 +52,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         MigrationVersion initialVersion = MigrationVersion.EMPTY;
         StoreSupport.putMigrationVersion(extensionContext, initialVersion);
 
-        LintsHistory lintsHistory = new LintsHistory(excludedLintPatternsFromAnnotation(annotatedElement));
+        LintsHistory lintsHistory = new LintsHistory(excludedLintPatternsFromAnnotation(o.getClass()));
         lintsHistory.put(initialVersion, new Lints(List.of()));
         StoreSupport.putLintsHistory(extensionContext, lintsHistory);
 

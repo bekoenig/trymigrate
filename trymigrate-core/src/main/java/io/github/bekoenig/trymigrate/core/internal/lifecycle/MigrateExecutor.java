@@ -34,7 +34,7 @@ public class MigrateExecutor implements BeforeEachCallback {
 
         FluentConfiguration fluentConfiguration = StoreSupport.getFlywayConfigurationFactory(extensionContext).get();
         Optional<TrymigrateTest> flywayMigrationTest = AnnotationSupport.findAnnotation(
-                extensionContext.getElement().orElseThrow(), TrymigrateTest.class);
+                extensionContext.getRequiredTestMethod(), TrymigrateTest.class);
 
         boolean cleanBefore;
         if (flywayMigrationTest.isPresent()) {
@@ -65,7 +65,7 @@ public class MigrateExecutor implements BeforeEachCallback {
 
     private LintPatterns suppressedLintPatternsFromAnnotation(ExtensionContext extensionContext) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
-                        extensionContext.getElement().orElseThrow(), TrymigrateSuppressLint.class).stream()
+                        extensionContext.getRequiredTestMethod(), TrymigrateSuppressLint.class).stream()
                 .map(suppressLint -> new LintPattern(suppressLint.linterId(), suppressLint.objectName())).toList());
     }
 
