@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.config.LinterConfiguration;
-import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLinterConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfiguration;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class LintersBuilder implements LintersConfiguration, LinterConfiguration {
+public class LintersBuilder implements TrymigrateLintersConfiguration, TrymigrateLinterConfiguration {
 
     private final List<LinterConfig> configs = new ArrayList<>();
 
@@ -42,26 +42,26 @@ public class LintersBuilder implements LintersConfiguration, LinterConfiguration
         }
     }
 
-    public LinterConfiguration enable(String linterId) {
+    public TrymigrateLinterConfiguration enable(String linterId) {
         endLinterConfig();
         startLinterConfig(linterId);
         return this;
     }
 
     @Override
-    public LinterConfiguration config(Map<String, Object> config) {
+    public TrymigrateLinterConfiguration config(Map<String, Object> config) {
         currentLinterConfigBuilder = currentLinterConfigBuilder.config(config);
         return this;
     }
 
     @Override
-    public LinterConfiguration severity(LintSeverity severity) {
+    public TrymigrateLinterConfiguration severity(LintSeverity severity) {
         currentLinterConfigBuilder = currentLinterConfigBuilder.severity(severity);
         return this;
     }
 
     @Override
-    public LinterConfiguration threshold(int threshold) {
+    public TrymigrateLinterConfiguration threshold(int threshold) {
         currentLinterConfigBuilder = currentLinterConfigBuilder.threshold(threshold);
         return this;
     }

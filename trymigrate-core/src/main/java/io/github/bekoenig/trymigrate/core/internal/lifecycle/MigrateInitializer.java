@@ -17,9 +17,9 @@ import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintsAssert;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintsHistory;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CompositeLinterRegistry;
-import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
-import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -62,7 +62,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 compositeLintersCustomizer(beanProvider),
                 new CatalogFactory(beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class)),
                 catalog -> StoreSupport.putCatalog(extensionContext, catalog),
-                lintsHistory, beanProvider.all(LintsReporter.class));
+                lintsHistory, beanProvider.all(TrymigrateLintsReporter.class));
         FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
                 testConfiguration.flywayProperties(),
                 configuration -> beanProvider.all(TrymigrateFlywayCustomizer.class)
@@ -79,12 +79,12 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
     private LintPatterns excludedLintPatternsFromAnnotation(AnnotatedElement annotatedElement) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
-                        annotatedElement, ExcludeLint.class).stream()
+                        annotatedElement, TrymigrateExcludeLint.class).stream()
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
     }
 
-    private LintersCustomizer compositeLintersCustomizer(TrymigrateBeanProvider beanProvider) {
-        return lintersBuilder -> beanProvider.all(LintersCustomizer.class)
+    private TrymigrateLintersCustomizer compositeLintersCustomizer(TrymigrateBeanProvider beanProvider) {
+        return lintersBuilder -> beanProvider.all(TrymigrateLintersCustomizer.class)
                 .forEach(x -> x.accept(lintersBuilder));
     }
 

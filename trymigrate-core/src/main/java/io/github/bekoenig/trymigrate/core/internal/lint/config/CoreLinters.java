@@ -1,12 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.config.LintersConfiguration;
-import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
 
-public class CoreLinters implements LintersCustomizer {
+public class CoreLinters implements TrymigrateLintersCustomizer {
 
     @Override
-    public void accept(LintersConfiguration configuration) {
+    public void accept(TrymigrateLintersConfiguration configuration) {
         configuration
                 .enable("schemacrawler.tools.linter.LinterColumnTypes")
                 .enable("schemacrawler.tools.linter.LinterForeignKeyMismatch")

@@ -9,8 +9,8 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(ExcludeLints.class)
-public @interface ExcludeLint {
+@Repeatable(TrymigrateExcludeLints.class)
+public @interface TrymigrateExcludeLint {
 
     /**
      * Linter-id of the lint to exclude.

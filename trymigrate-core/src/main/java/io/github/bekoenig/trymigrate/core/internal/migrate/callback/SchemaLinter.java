@@ -4,8 +4,8 @@ import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintsHistory;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LinterConfigBuilder;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LintersBuilder;
-import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
@@ -22,15 +22,15 @@ import java.util.function.Consumer;
 public class SchemaLinter implements Callback {
 
     private final LinterInitializer linterInitializer;
-    private final LintersCustomizer lintersCustomizer;
+    private final TrymigrateLintersCustomizer lintersCustomizer;
     private final CatalogFactory catalogFactory;
     private final Consumer<Catalog> catalogCache;
     private final LintsHistory lintsHistory;
-    private final List<LintsReporter> lintsReporters;
+    private final List<TrymigrateLintsReporter> lintsReporters;
 
-    public SchemaLinter(LinterInitializer linterInitializer, LintersCustomizer lintersCustomizer,
+    public SchemaLinter(LinterInitializer linterInitializer, TrymigrateLintersCustomizer lintersCustomizer,
                         CatalogFactory catalogFactory, Consumer<Catalog> catalogCache, LintsHistory lintsHistory,
-                        List<LintsReporter> lintsReporters) {
+                        List<TrymigrateLintsReporter> lintsReporters) {
         this.linterInitializer = linterInitializer;
         this.lintersCustomizer = lintersCustomizer;
         this.catalogFactory = catalogFactory;

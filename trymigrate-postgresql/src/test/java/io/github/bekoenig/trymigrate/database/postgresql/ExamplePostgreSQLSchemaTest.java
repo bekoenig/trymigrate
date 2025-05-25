@@ -9,8 +9,8 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.log.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.SuppressLint;
-import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -43,9 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 //                "user=test",
 //                "password=test",
         })
-@ExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableSql")
-@ExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
-@ExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
+@TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableSql")
+@TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
+@TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
 public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateBean
@@ -77,14 +77,14 @@ public class ExamplePostgreSQLSchemaTest {
     }
 
     @TrymigrateTest(whenTarget = "1.0", cleanBefore = true)
-    @SuppressLint(
+    @TrymigrateSuppressLint(
             linterId = "schemacrawler.tools.linter.LinterTableAllNullableColumns",
             objectName = "example_schema.example_entity1")
-    @SuppressLint(
+    @TrymigrateSuppressLint(
             linterId = "io.github.bekoenig.trymigrate.database.postgresql.DummyLinter",
             objectName = "example_schema.example_entity1"
     )
-    @SuppressLint(
+    @TrymigrateSuppressLint(
             linterId = "schemacrawler.tools.linter.LinterTableWithNoRemarks",
             objectName = "example_schema.example_entity1.*"
     )

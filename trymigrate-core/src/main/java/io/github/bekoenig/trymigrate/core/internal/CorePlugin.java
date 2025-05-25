@@ -3,8 +3,8 @@ package io.github.bekoenig.trymigrate.core.internal;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.html.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.log.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
@@ -39,13 +39,13 @@ public class CorePlugin implements TrymigratePlugin {
     private TrymigrateFlywayCustomizer containerDataSourceConfigurer;
 
     @TrymigrateBean
-    private LintsReporter lintsLogReporter;
+    private TrymigrateLintsReporter lintsLogReporter;
 
     @TrymigrateBean
-    private LintsReporter lintsHtmlReporter;
+    private TrymigrateLintsReporter lintsHtmlReporter;
 
     @TrymigrateBean
-    private final LintersCustomizer lintersCustomizer = new CoreLinters();
+    private final TrymigrateLintersCustomizer lintersCustomizer = new CoreLinters();
 
     @TrymigrateBean
     private final TrymigrateDataLoader sqlDataLoadHandle = new TrymigrateDataLoader() {

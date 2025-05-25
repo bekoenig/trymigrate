@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Meta annotation to add support for repeatable usage of {@link ExcludeLint}.
+ * Meta annotation to add support for repeatable usage of {@link TrymigrateExcludeLint}.
  * <p>
  * Only necessary for compile time.
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ExcludeLints {
+public @interface TrymigrateExcludeLints {
 
-    ExcludeLint[] value();
+    TrymigrateExcludeLint[] value();
 
 }

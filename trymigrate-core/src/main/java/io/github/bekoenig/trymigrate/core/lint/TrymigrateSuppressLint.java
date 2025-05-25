@@ -12,8 +12,8 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(SuppressLints.class)
-public @interface SuppressLint {
+@Repeatable(TrymigrateSuppressLints.class)
+public @interface TrymigrateSuppressLint {
 
     /**
      * Linter-id of the lint to suppress.

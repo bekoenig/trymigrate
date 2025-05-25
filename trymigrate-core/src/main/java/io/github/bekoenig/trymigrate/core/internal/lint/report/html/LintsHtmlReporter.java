@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report.html;
 
-import io.github.bekoenig.trymigrate.core.lint.report.LintsReporter;
+import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.IdentifiersBuilder;
@@ -14,7 +14,7 @@ import schemacrawler.tools.options.OutputOptionsBuilder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
-public class LintsHtmlReporter implements LintsReporter {
+public class LintsHtmlReporter implements TrymigrateLintsReporter {
 
     public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.reports.html.skip-empty";
 

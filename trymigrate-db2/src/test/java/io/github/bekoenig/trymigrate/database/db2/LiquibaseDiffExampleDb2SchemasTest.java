@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.database.db2;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
-import io.github.bekoenig.trymigrate.core.lint.ExcludeLint;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import liquibase.GlobalConfiguration;
 import liquibase.Scope;
 import liquibase.command.CommandResults;
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
                 "locations=classpath:db/migration/example/db2"
         }
 )
-@ExcludeLint
+@TrymigrateExcludeLint
 public class LiquibaseDiffExampleDb2SchemasTest {
 
     protected static final String FLYWAY_SCHEMA = "EXAMPLE_SCHEMA";

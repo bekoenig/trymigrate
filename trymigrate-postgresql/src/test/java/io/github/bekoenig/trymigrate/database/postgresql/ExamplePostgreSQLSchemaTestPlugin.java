@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
-import io.github.bekoenig.trymigrate.core.lint.config.LintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public class ExamplePostgreSQLSchemaTestPlugin implements PostgreSQLPlugin {
     private final DummyLinterProvider dummyLinterProvider = new DummyLinterProvider();
 
     @TrymigrateBean
-    private final LintersCustomizer lintersCustomizer = linterConfiguration ->
+    private final TrymigrateLintersCustomizer lintersCustomizer = linterConfiguration ->
             linterConfiguration
                     .enable("io.github.bekoenig.trymigrate.database.postgresql.DummyLinter")
                     .enable("schemacrawler.tools.linter.LinterTableSql")
