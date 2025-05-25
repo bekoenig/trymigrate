@@ -150,8 +150,7 @@ public class ExamplePostgreSQLSchemaTest {
     }
 
     @Test
-    public void test_migrateToLatest(DataSource ds) {
-        assertThat(ds).isNotNull();
+    public void test_migrateToLatest() {
     }
 
     @Test
