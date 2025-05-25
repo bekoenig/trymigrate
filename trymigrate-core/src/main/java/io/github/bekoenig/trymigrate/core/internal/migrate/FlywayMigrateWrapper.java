@@ -40,7 +40,6 @@ public class FlywayMigrateWrapper {
         if (currentVersion.isNewerThan(lastVersion)) {
             StoreSupport.putMigrationVersion(extensionContext, currentVersion);
             Lints newLints = StoreSupport.getLintsHistory(extensionContext).diff(lastVersion, currentVersion);
-            StoreSupport.putLints(extensionContext, newLints);
             StoreSupport.getLintsAssert(extensionContext).assertLints(newLints, suppressedLintPatterns);
         }
     }

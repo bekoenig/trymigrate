@@ -22,7 +22,6 @@ import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
 
-import javax.sql.DataSource;
 import java.nio.file.Path;
 import java.sql.Connection;
 
@@ -116,7 +115,7 @@ public class ExampleDb2SchemaTest {
                 .matches(m -> !m.contains("no non-nullable data columns"))
                 .matches(m -> m.contains("should have remarks\tENTITY1_ID, ATTRIBUTE1, ATTRIBUTE2"));
 
-        assertThat(lints).hasSize(4);
+        assertThat(lints).hasSize(8);
 
         assertThat(Path.of("target", "trymigrate-lint-reports", "EXAMPLE_SCHEMA", "1_1.html")).exists();
 
@@ -134,7 +133,7 @@ public class ExampleDb2SchemaTest {
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .isEmpty();
 
-        assertThat(lints).hasSize(4);
+        assertThat(lints).hasSize(8);
     }
 
     @TrymigrateTest(
@@ -151,7 +150,7 @@ public class ExampleDb2SchemaTest {
                 .filteredOn(l -> getClass().getName().equals(l.getMDCPropertyMap().get("test-name")))
                 .hasSize(2);
 
-        assertThat(lints).hasSize(0);
+        assertThat(lints).hasSize(7);
 
         assertThat(Path.of("target", "trymigrate-lint-reports", "EXAMPLE_SCHEMA", "1_3.html")).doesNotExist();
 

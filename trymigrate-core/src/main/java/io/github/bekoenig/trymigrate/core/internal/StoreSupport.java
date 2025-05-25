@@ -8,7 +8,6 @@ import io.github.bekoenig.trymigrate.core.internal.lint.LintsHistory;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import schemacrawler.schema.Catalog;
-import schemacrawler.tools.lint.Lints;
 
 import javax.sql.DataSource;
 
@@ -20,7 +19,6 @@ public class StoreSupport {
     private static final String FLUENT_CONFIGURATION_FACTORY = "fluent-configuration-factory";
     private static final String MIGRATION_VERSION = "migration-version";
     private static final String LINTS_HISTORY = "lints-history";
-    private static final String LINTS = "lints";
     private static final String LINTS_ASSERT = "lints-assert";
 
     private StoreSupport() {
@@ -78,14 +76,6 @@ public class StoreSupport {
 
     public static void putLintsHistory(ExtensionContext extensionContext, LintsHistory lintsHistory) {
         getStore(extensionContext).put(LINTS_HISTORY, lintsHistory);
-    }
-
-    public static Lints getLints(ExtensionContext extensionContext) {
-        return getStore(extensionContext).get(LINTS, Lints.class);
-    }
-
-    public static void putLints(ExtensionContext extensionContext, Lints lints) {
-        getStore(extensionContext).put(LINTS, lints);
     }
 
     public static LintsAssert getLintsAssert(ExtensionContext extensionContext) {
