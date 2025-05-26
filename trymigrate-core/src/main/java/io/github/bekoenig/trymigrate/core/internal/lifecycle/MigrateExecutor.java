@@ -1,16 +1,14 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.internal.migrate.FlywayMigrateWrapper;
-import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPattern;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
+import io.github.bekoenig.trymigrate.core.internal.migrate.FlywayMigrateWrapper;
+import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
-import org.flywaydb.core.Flyway;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import org.flywaydb.core.api.MigrationVersion;
-import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -32,35 +30,33 @@ public class MigrateExecutor implements BeforeEachCallback {
             return;
         }
 
-        FluentConfiguration fluentConfiguration = StoreSupport.getFlywayConfigurationFactory(extensionContext).get();
-        Optional<TrymigrateTest> flywayMigrationTest = AnnotationSupport.findAnnotation(
+        Optional<TrymigrateTest> trymigrateTest = AnnotationSupport.findAnnotation(
                 extensionContext.getRequiredTestMethod(), TrymigrateTest.class);
 
-        boolean cleanBefore;
-        if (flywayMigrationTest.isPresent()) {
-            fluentConfiguration.target(flywayMigrationTest.get().whenTarget());
+        MigrationVersion target = trymigrateTest
+                .map(TrymigrateTest::whenTarget).map(MigrationVersion::fromVersion)
+                .orElse(MigrationVersion.LATEST);
 
-            Callback callback = new DataLoader(
-                    StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoader.class),
-                    MigrationVersion.fromVersion(flywayMigrationTest.get().whenTarget()),
-                    List.of(flywayMigrationTest.get().givenData())
-            );
-            addCallbacks(fluentConfiguration, List.of(callback));
+        FluentConfiguration fluentConfiguration = StoreSupport.getFlywayConfigurationFactory(extensionContext).get();
 
-            cleanBefore = flywayMigrationTest.get().cleanBefore();
-        } else {
-            fluentConfiguration.target(MigrationVersion.LATEST);
-            cleanBefore = false;
-        }
+        fluentConfiguration.target(target);
 
-        Flyway flyway = fluentConfiguration.load();
-        flywayMigrateWrapper.migrate(flyway, cleanBefore, suppressedLintPatternsFromAnnotation(extensionContext));
+        addCallbacks(fluentConfiguration, List.of(new DataLoader(
+                StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoader.class),
+                target,
+                trymigrateTest.map(TrymigrateTest::givenData).map(List::of).orElse(List.of())
+        )));
+
+        flywayMigrateWrapper.migrate(fluentConfiguration.load(),
+                trymigrateTest.map(TrymigrateTest::cleanBefore).orElse(false),
+                suppressedLintPatternsFromAnnotation(extensionContext));
     }
 
     private LintPatterns suppressedLintPatternsFromAnnotation(ExtensionContext extensionContext) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         extensionContext.getRequiredTestMethod(), TrymigrateSuppressLint.class).stream()
-                .map(suppressLint -> new LintPattern(suppressLint.linterId(), suppressLint.objectName())).toList());
+                .map(suppressLint ->
+                        new LintPattern(suppressLint.linterId(), suppressLint.objectName())).toList());
     }
 
 }
