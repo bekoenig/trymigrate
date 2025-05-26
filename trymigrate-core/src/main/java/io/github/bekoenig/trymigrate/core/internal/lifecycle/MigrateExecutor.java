@@ -40,14 +40,12 @@ public class MigrateExecutor implements BeforeEachCallback {
         if (flywayMigrationTest.isPresent()) {
             fluentConfiguration.target(flywayMigrationTest.get().whenTarget());
 
-            if (flywayMigrationTest.get().givenData().length > 0) {
-                Callback callback = new DataLoader(
-                        StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoader.class),
-                        MigrationVersion.fromVersion(flywayMigrationTest.get().whenTarget()),
-                        List.of(flywayMigrationTest.get().givenData())
-                );
-                addCallbacks(fluentConfiguration, List.of(callback));
-            }
+            Callback callback = new DataLoader(
+                    StoreSupport.getBeanProvider(extensionContext).all(TrymigrateDataLoader.class),
+                    MigrationVersion.fromVersion(flywayMigrationTest.get().whenTarget()),
+                    List.of(flywayMigrationTest.get().givenData())
+            );
+            addCallbacks(fluentConfiguration, List.of(callback));
 
             cleanBefore = flywayMigrationTest.get().cleanBefore();
         } else {
