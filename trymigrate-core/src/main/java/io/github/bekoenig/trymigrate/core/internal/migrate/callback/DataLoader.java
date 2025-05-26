@@ -29,6 +29,10 @@ public class DataLoader implements Callback {
 
     @Override
     public boolean supports(Event event, Context context) {
+        if (this.resources.isEmpty()) {
+            return false;
+        }
+
         if (event == Event.AFTER_MIGRATE && !applied) {
             throw new IllegalStateException("Data was not be proceeded because schema is above version " + target);
         }
