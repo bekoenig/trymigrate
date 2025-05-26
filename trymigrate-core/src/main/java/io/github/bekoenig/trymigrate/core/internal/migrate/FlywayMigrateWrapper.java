@@ -24,7 +24,11 @@ public class FlywayMigrateWrapper {
         return LATEST.equals(StoreSupport.getMigrationVersion(extensionContext));
     }
 
-    public void migrate(Flyway flyway, LintPatterns suppressedLintPatterns) {
+    public void migrate(Flyway flyway, boolean cleanBefore, LintPatterns suppressedLintPatterns) {
+        if (cleanBefore) {
+            flyway.clean();
+        }
+
         MigrationVersion lastVersion = StoreSupport.getMigrationVersion(extensionContext);
 
         MigrateResult migrate = flyway.migrate();

@@ -20,7 +20,7 @@ public class MigrateCompleter implements TestInstancePreDestroyCallback {
         if (Objects.nonNull(flywayConfigurationFactory )) {
             FlywayMigrateWrapper flywayMigrateWrapper = new FlywayMigrateWrapper(extensionContext);
             if (!flywayMigrateWrapper.isLatest()) {
-                flywayMigrateWrapper.migrate(flywayConfigurationFactory.get().load(), LintPatterns.EMPTY);
+                flywayMigrateWrapper.migrate(flywayConfigurationFactory.get().load(), false, LintPatterns.EMPTY);
             }
         }
 

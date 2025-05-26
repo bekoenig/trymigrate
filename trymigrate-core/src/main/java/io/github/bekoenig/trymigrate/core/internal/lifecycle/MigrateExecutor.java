@@ -54,11 +54,7 @@ public class MigrateExecutor implements BeforeEachCallback {
         }
 
         Flyway flyway = fluentConfiguration.load();
-        if (cleanBefore) {
-            flyway.clean();
-        }
-
-        flywayMigrateWrapper.migrate(flyway, suppressedLintPatternsFromAnnotation(extensionContext));
+        flywayMigrateWrapper.migrate(flyway, cleanBefore, suppressedLintPatternsFromAnnotation(extensionContext));
     }
 
     private LintPatterns suppressedLintPatternsFromAnnotation(ExtensionContext extensionContext) {
