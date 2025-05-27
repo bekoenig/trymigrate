@@ -13,7 +13,7 @@ public class LintsParameterResolver extends AbstractParameterResolver<Lints> {
 
     @Override
     protected Lints currentValue(ExtensionContext extensionContext) {
-        return StoreSupport.getLintsHistory(extensionContext).get(StoreSupport.getMigrationVersion(extensionContext));
+        return StoreSupport.getMigrateProcessor(extensionContext).getLints();
     }
 
 }

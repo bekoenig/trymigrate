@@ -14,7 +14,7 @@ public class DataSourceParameterResolver extends AbstractParameterResolver<DataS
 
     @Override
     protected DataSource currentValue(ExtensionContext extensionContext) {
-        return StoreSupport.getDataSource(extensionContext);
+        return StoreSupport.getMigrateProcessor(extensionContext).getDataSource();
     }
 
 }

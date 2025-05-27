@@ -1,39 +1,32 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.internal.container.StaticPortBinding;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
-import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
-import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
-import io.github.bekoenig.trymigrate.core.internal.plugin.PluginProvider;
-import io.github.bekoenig.trymigrate.core.internal.migrate.FlywayConfigurationFactory;
-import io.github.bekoenig.trymigrate.core.internal.migrate.callback.SchemaLinter;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
-import io.github.bekoenig.trymigrate.core.internal.lint.LintPattern;
-import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
-import io.github.bekoenig.trymigrate.core.internal.lint.LintsAssert;
-import io.github.bekoenig.trymigrate.core.internal.lint.LintsHistory;
+import io.github.bekoenig.trymigrate.core.internal.lint.*;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CompositeLinterRegistry;
+import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
+import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
+import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
-import org.flywaydb.core.Flyway;
-import org.flywaydb.core.api.MigrationVersion;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.lifecycle.Startable;
 import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.LinterProvider;
-import schemacrawler.tools.lint.Lints;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MigrateInitializer implements TestInstancePostProcessor {
 
@@ -42,38 +35,34 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         Trymigrate testConfiguration = AnnotationSupport.findAnnotation(o.getClass(),
                 Trymigrate.class).orElseThrow();
 
-        List<PluginProvider> pluginProviders = new PluginDiscovery().discover(testConfiguration.plugin());
-        TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o, pluginProviders);
-        StoreSupport.putBeanProvider(extensionContext, beanProvider);
+        TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o,
+                new PluginDiscovery().discover(testConfiguration.plugin()));
 
-        beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(jdbcDatabaseContainer ->
-                new StaticPortBinding().andThen(Startable::start).accept(jdbcDatabaseContainer));
+        CatalogFactory catalogFactory = new CatalogFactory(
+                beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class));
 
-        MigrationVersion initialVersion = MigrationVersion.EMPTY;
-        StoreSupport.putMigrationVersion(extensionContext, initialVersion);
+        LintProcessor lintProcessor = new LintProcessor(createLinterInitializer(beanProvider),
+                beanProvider.all(TrymigrateLintersCustomizer.class),
+                beanProvider.all(TrymigrateLintsReporter.class),
+                new LintsHistory(excludedLintPatternsFromAnnotation(o.getClass())),
+                new LintsAssert(testConfiguration.failOn()));
 
-        LintsHistory lintsHistory = new LintsHistory(excludedLintPatternsFromAnnotation(o.getClass()));
-        lintsHistory.put(initialVersion, new Lints(List.of()));
-        StoreSupport.putLintsHistory(extensionContext, lintsHistory);
+        MigrateProcessor testProcessor = new MigrateProcessor(
+                beanProvider.findOne(JdbcDatabaseContainer.class).orElse(null),
+                splitProperties(testConfiguration.flywayProperties()),
+                beanProvider.all(TrymigrateFlywayCustomizer.class),
+                beanProvider.all(TrymigrateDataLoader.class),
+                catalogFactory,
+                lintProcessor);
+        StoreSupport.putMigrateProcessor(extensionContext, testProcessor);
 
-        SchemaLinter schemaLinter = new SchemaLinter(
-                compositeLinterRegistry(beanProvider),
-                compositeLintersCustomizer(beanProvider),
-                new CatalogFactory(beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class)),
-                catalog -> StoreSupport.putCatalog(extensionContext, catalog),
-                lintsHistory, beanProvider.all(TrymigrateLintsReporter.class));
-        FlywayConfigurationFactory flywayConfigurationFactory = new FlywayConfigurationFactory(
-                testConfiguration.flywayProperties(),
-                configuration -> beanProvider.all(TrymigrateFlywayCustomizer.class)
-                        .forEach(configurer -> configurer.accept(configuration)),
-                schemaLinter);
-        StoreSupport.putFlywayConfigurationFactory(extensionContext, flywayConfigurationFactory);
+        testProcessor.prepare();
+    }
 
-        Flyway flyway = flywayConfigurationFactory.get().load();
-        flyway.info();
-        StoreSupport.putDataSource(extensionContext, flyway.getConfiguration().getDataSource());
-
-        StoreSupport.putLintsAssert(extensionContext, new LintsAssert(testConfiguration.failOn()));
+    private LinterInitializer createLinterInitializer(TrymigrateBeanProvider beanProvider) {
+        CompositeLinterRegistry compositeLinterRegistry = new CompositeLinterRegistry();
+        beanProvider.all(LinterProvider.class).forEach(compositeLinterRegistry::register);
+        return compositeLinterRegistry;
     }
 
     private LintPatterns excludedLintPatternsFromAnnotation(AnnotatedElement annotatedElement) {
@@ -82,15 +71,26 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
     }
 
-    private TrymigrateLintersCustomizer compositeLintersCustomizer(TrymigrateBeanProvider beanProvider) {
-        return lintersBuilder -> beanProvider.all(TrymigrateLintersCustomizer.class)
-                .forEach(x -> x.accept(lintersBuilder));
+    private Map<String, String> splitProperties(String[] properties) {
+        return Stream.of(properties)
+                .map(property -> {
+                    String[] tokens = property.split("=");
+                    if (tokens.length != 2) {
+                        throw new IllegalArgumentException("Property '%s' does not match format 'key=value'"
+                                .formatted(property));
+                    }
+                    return tokens;
+                })
+                .collect(Collectors.toMap(
+                        split -> normalizePrefix(split[0]),
+                        split -> split[1]));
     }
 
-    private LinterInitializer compositeLinterRegistry(TrymigrateBeanProvider beanProvider) {
-        CompositeLinterRegistry compositeLinterRegistry = new CompositeLinterRegistry();
-        beanProvider.all(LinterProvider.class).forEach(compositeLinterRegistry::register);
-        return compositeLinterRegistry;
+    private String normalizePrefix(String propertyName) {
+        if (propertyName.startsWith("flyway.")) {
+            return propertyName;
+        }
+        return "flyway." + propertyName;
     }
 
 }

@@ -13,7 +13,7 @@ public class CatalogParameterResolver extends AbstractParameterResolver<Catalog>
 
     @Override
     protected Catalog currentValue(ExtensionContext extensionContext) {
-        return StoreSupport.getCatalog(extensionContext);
+        return StoreSupport.getMigrateProcessor(extensionContext).getCatalog();
     }
 
 }

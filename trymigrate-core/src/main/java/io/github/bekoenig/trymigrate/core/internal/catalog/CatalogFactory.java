@@ -26,7 +26,6 @@ public class CatalogFactory {
     }
 
     private final LimitOptions limitOptions;
-
     private final LoadOptions loadOptions;
 
     public CatalogFactory(LimitOptions limitOptions, LoadOptions loadOptions) {

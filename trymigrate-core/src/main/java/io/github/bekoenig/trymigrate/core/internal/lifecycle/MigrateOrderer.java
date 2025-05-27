@@ -20,7 +20,7 @@ public class MigrateOrderer implements MethodOrderer {
             Optional<MigrationVersion> version1 = getMigrationVersion(m1);
             Optional<MigrationVersion> version2 = getMigrationVersion(m2);
 
-            // target before non target
+            // target before no target
             if (Boolean.logicalXor(version1.isPresent(), version2.isPresent())) {
                 return version1.isEmpty() ? 1 : -1;
             }

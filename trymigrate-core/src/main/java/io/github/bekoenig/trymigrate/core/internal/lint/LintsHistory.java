@@ -20,6 +20,8 @@ public class LintsHistory {
         this.excludedLintPatterns = excludedLintPatterns;
         this.lints = new HashMap<>();
         this.order = new ArrayList<>();
+
+        put(MigrationVersion.EMPTY, new Lints(List.of()));
     }
 
     public boolean isAnalysed(MigrationVersion migrationVersion) {
@@ -31,13 +33,13 @@ public class LintsHistory {
         this.order.add(migrationVersion);
     }
 
-    public Lints get(MigrationVersion migrationVersion) {
+    public Lints getLints(MigrationVersion migrationVersion) {
         return this.lints.get(migrationVersion);
     }
 
-    public Lints diff(MigrationVersion source, MigrationVersion target) {
-        Lints beforeMigrate = get(source);
-        Lints afterMigrate = get(target);
+    public Lints diffLints(MigrationVersion source, MigrationVersion target) {
+        Lints beforeMigrate = getLints(source);
+        Lints afterMigrate = getLints(target);
 
         return new Lints(excludedLintPatterns.dropMatching(afterMigrate.getLints().stream()
                 // drop known lints

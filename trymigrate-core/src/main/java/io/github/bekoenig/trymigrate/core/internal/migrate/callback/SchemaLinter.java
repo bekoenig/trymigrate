@@ -1,19 +1,11 @@
 package io.github.bekoenig.trymigrate.core.internal.migrate.callback;
 
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
-import io.github.bekoenig.trymigrate.core.internal.lint.LintsHistory;
-import io.github.bekoenig.trymigrate.core.internal.lint.config.LinterConfigBuilder;
-import io.github.bekoenig.trymigrate.core.internal.lint.config.LintersBuilder;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
-import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
-import org.flywaydb.core.api.MigrationVersion;
+import io.github.bekoenig.trymigrate.core.internal.lint.LintProcessor;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
 import schemacrawler.schema.Catalog;
-import schemacrawler.tools.lint.LinterInitializer;
-import schemacrawler.tools.lint.Linters;
-import schemacrawler.tools.lint.Lints;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,27 +13,19 @@ import java.util.function.Consumer;
 
 public class SchemaLinter implements Callback {
 
-    private final LinterInitializer linterInitializer;
-    private final TrymigrateLintersCustomizer lintersCustomizer;
     private final CatalogFactory catalogFactory;
     private final Consumer<Catalog> catalogCache;
-    private final LintsHistory lintsHistory;
-    private final List<TrymigrateLintsReporter> lintsReporters;
+    private final LintProcessor lintProcessor;
 
-    public SchemaLinter(LinterInitializer linterInitializer, TrymigrateLintersCustomizer lintersCustomizer,
-                        CatalogFactory catalogFactory, Consumer<Catalog> catalogCache, LintsHistory lintsHistory,
-                        List<TrymigrateLintsReporter> lintsReporters) {
-        this.linterInitializer = linterInitializer;
-        this.lintersCustomizer = lintersCustomizer;
+    public SchemaLinter(CatalogFactory catalogFactory, Consumer<Catalog> catalogCache, LintProcessor lintProcessor) {
         this.catalogFactory = catalogFactory;
         this.catalogCache = catalogCache;
-        this.lintsHistory = lintsHistory;
-        this.lintsReporters = lintsReporters;
+        this.lintProcessor = lintProcessor;
     }
 
     @Override
     public boolean supports(Event event, Context context) {
-        return event == Event.AFTER_EACH_MIGRATE && !lintsHistory.isAnalysed(context.getMigrationInfo().getVersion());
+        return event == Event.AFTER_EACH_MIGRATE && !lintProcessor.isAnalysed(context.getMigrationInfo().getVersion());
     }
 
     @Override
@@ -51,35 +35,23 @@ public class SchemaLinter implements Callback {
 
     @Override
     public void handle(Event event, Context context) {
-        String defaultSchema = context.getConfiguration().getDefaultSchema();
-
-        List<String> schemas = new ArrayList<>();
-        schemas.add(defaultSchema);
-        schemas.addAll(List.of(context.getConfiguration().getSchemas()));
-
-        LintersBuilder lintersBuilder = LintersBuilder.builder(linterId -> LinterConfigBuilder.builder()
-                .linterId(linterId)
-                // include tables from managed schemas
-                .tableInclusionPattern("(" + String.join("|", schemas) + ")\\..*")
-                // exclude history table
-                .tableExclusionPattern(defaultSchema + "\\." +
-                        context.getConfiguration().getTable())
-                .runLinter(true));
-        lintersCustomizer.accept(lintersBuilder);
-
         Catalog catalog = catalogFactory.crawl(context.getConnection());
         catalogCache.accept(catalog);
 
-        Linters linters = lintersBuilder.build(linterInitializer);
-        linters.lint(catalog, context.getConnection());
-        Lints currentLints = linters.getLints();
+        List<String> schemas = new ArrayList<>();
+        schemas.add(context.getConfiguration().getDefaultSchema());
+        schemas.addAll(List.of(context.getConfiguration().getSchemas()));
 
-        MigrationVersion lastAnalyzedVersion = lintsHistory.getLastAnalyzedVersion();
-        MigrationVersion migrationVersion = context.getMigrationInfo().getVersion();
-        lintsHistory.put(migrationVersion, currentLints);
-        Lints newLints = lintsHistory.diff(lastAnalyzedVersion, migrationVersion);
-
-        lintsReporters.forEach(x -> x.report(catalog, newLints, defaultSchema, migrationVersion));
+        lintProcessor.lint(
+                context.getConnection(),
+                context.getConfiguration().getDefaultSchema(),
+                catalog,
+                context.getMigrationInfo().getVersion(),
+                // include all tables from managed schemas
+                "(" + String.join("|", schemas) + ")\\..*",
+                // exclude history table
+                context.getConfiguration().getDefaultSchema() + "\\." + context.getConfiguration().getTable()
+        );
     }
 
     @Override
