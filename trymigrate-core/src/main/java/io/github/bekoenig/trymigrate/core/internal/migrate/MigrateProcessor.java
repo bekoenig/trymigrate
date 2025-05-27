@@ -74,7 +74,8 @@ public class MigrateProcessor {
         currentTarget = EMPTY;
     }
 
-    public void migrate(MigrationVersion target, List<String> resources, boolean cleanBefore, LintPatterns suppressedLintPatterns) {
+    public void migrate(MigrationVersion target, List<String> resources, boolean cleanBefore,
+                        LintPatterns suppressedLintPatterns) {
         // nothing to do on latest
         if (LATEST.equals(currentTarget)) {
             return;

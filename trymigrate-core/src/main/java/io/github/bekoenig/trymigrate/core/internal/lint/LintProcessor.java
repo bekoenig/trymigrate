@@ -57,7 +57,8 @@ public class LintProcessor {
         return lintsHistory.isAnalysed(migrationVersion);
     }
 
-    public void assertLints(MigrationVersion lastVersion, MigrationVersion currentVersion, LintPatterns suppressedLintPatterns) {
+    public void assertLints(MigrationVersion lastVersion, MigrationVersion currentVersion,
+                            LintPatterns suppressedLintPatterns) {
         lintsAssert.assertLints(lintsHistory.diffLints(lastVersion, currentVersion), suppressedLintPatterns);
     }
 
