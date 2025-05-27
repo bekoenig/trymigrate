@@ -20,7 +20,7 @@ public class StoreSupport {
         return getStore(extensionContext).get(MIGRATE_PROCESSOR, MigrateProcessor.class);
     }
 
-    public static void putMigrateProcessor(ExtensionContext extensionContext, MigrateProcessor testProcessor) {
-        getStore(extensionContext).put(MIGRATE_PROCESSOR, testProcessor);
+    public static void putMigrateProcessor(ExtensionContext extensionContext, MigrateProcessor migrateProcessor) {
+        getStore(extensionContext).put(MIGRATE_PROCESSOR, migrateProcessor);
     }
 }
