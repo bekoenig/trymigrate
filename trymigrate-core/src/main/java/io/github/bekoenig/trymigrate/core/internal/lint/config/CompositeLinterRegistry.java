@@ -8,8 +8,9 @@ public class CompositeLinterRegistry implements LinterInitializer {
 
     private final Map<String, LinterProvider> linterProviders = new HashMap<>();
 
-    public void register(LinterProvider linterProvider) {
-        linterProviders.put(linterProvider.getLinterId(), linterProvider);
+    public CompositeLinterRegistry(List<LinterProvider> linterProviders) {
+        linterProviders.forEach(linterProvider ->
+                this.linterProviders.put(linterProvider.getLinterId(), linterProvider));
     }
 
     @Override

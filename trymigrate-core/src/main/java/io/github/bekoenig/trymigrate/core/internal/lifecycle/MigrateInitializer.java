@@ -20,7 +20,6 @@ import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import schemacrawler.schemacrawler.LimitOptions;
 import schemacrawler.schemacrawler.LoadOptions;
-import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.LinterProvider;
 
 import java.lang.reflect.AnnotatedElement;
@@ -41,10 +40,11 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         CatalogFactory catalogFactory = new CatalogFactory(
                 beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class));
 
-        LintProcessor lintProcessor = new LintProcessor(createLinterInitializer(beanProvider),
+        LintProcessor lintProcessor = new LintProcessor(
+                new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
                 beanProvider.all(TrymigrateLintersCustomizer.class),
                 beanProvider.all(TrymigrateLintsReporter.class),
-                new LintsHistory(excludedLintPatternsFromAnnotation(o.getClass())),
+                new LintsHistory(excludedLintPatterns(o.getClass())),
                 new LintsAssert(testConfiguration.failOn()));
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
@@ -59,13 +59,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         migrateProcessor.prepare();
     }
 
-    private LinterInitializer createLinterInitializer(TrymigrateBeanProvider beanProvider) {
-        CompositeLinterRegistry compositeLinterRegistry = new CompositeLinterRegistry();
-        beanProvider.all(LinterProvider.class).forEach(compositeLinterRegistry::register);
-        return compositeLinterRegistry;
-    }
-
-    private LintPatterns excludedLintPatternsFromAnnotation(AnnotatedElement annotatedElement) {
+    private LintPatterns excludedLintPatterns(AnnotatedElement annotatedElement) {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         annotatedElement, TrymigrateExcludeLint.class).stream()
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
