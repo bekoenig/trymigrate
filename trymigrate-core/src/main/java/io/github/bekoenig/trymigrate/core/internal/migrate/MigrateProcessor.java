@@ -94,13 +94,16 @@ public class MigrateProcessor {
 
         MigrationVersion lastTarget = currentTarget;
         MigrateResult migrate = flyway.migrate();
-        if (fromVersion(migrate.initialSchemaVersion).isNewerThan(flyway.getConfiguration().getTarget())) {
-            throw new IllegalStateException("Schema version " + migrate.initialSchemaVersion +
+        // target schema version of result is null when current version matches target version
+        currentTarget = fromVersion(Objects.requireNonNullElse(migrate.targetSchemaVersion,
+                migrate.initialSchemaVersion));
+        // throw exception when current version is above target (only happens on database reuse)
+        if (currentTarget.isNewerThan(flyway.getConfiguration().getTarget())) {
+            throw new IllegalStateException("Schema version " + currentTarget +
                     " is newer than target " + flyway.getConfiguration().getTarget() +
                     " for test. Dispose database or set " + TrymigrateTest.class.getSimpleName() +
                     "#cleanBefore=true on first migrate test.");
         }
-        currentTarget = fromVersion(migrate.targetSchemaVersion);
 
         // assert lints only for a newer target
         if (currentTarget.isNewerThan(lastTarget)) {
