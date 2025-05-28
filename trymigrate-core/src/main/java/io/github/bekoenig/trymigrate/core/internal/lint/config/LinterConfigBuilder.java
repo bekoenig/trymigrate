@@ -12,7 +12,6 @@ public class LinterConfigBuilder {
     private boolean runLinter;
     private LintSeverity severity;
     private int threshold;
-
     private String tableInclusionPattern;
     private String tableExclusionPattern;
     private String columnInclusionPattern;

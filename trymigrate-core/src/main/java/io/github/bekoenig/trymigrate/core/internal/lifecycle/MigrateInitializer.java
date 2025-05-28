@@ -43,8 +43,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         LintProcessor lintProcessor = new LintProcessor(
                 new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
                 beanProvider.all(TrymigrateLintersCustomizer.class),
-                beanProvider.all(TrymigrateLintsReporter.class),
-                new LintsHistory(excludedLintPatterns(o.getClass())),
+                new LintsHistory(excludedLintPatterns(o.getClass())), beanProvider.all(TrymigrateLintsReporter.class),
                 new LintsAssert(testConfiguration.failOn()));
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(

@@ -17,19 +17,19 @@ public class LintProcessor {
 
     private final LinterInitializer linterInitializer;
     private final List<TrymigrateLintersCustomizer> lintersCustomizers;
-    private final List<TrymigrateLintsReporter> lintsReporters;
     private final LintsHistory lintsHistory;
+    private final List<TrymigrateLintsReporter> lintsReporters;
     private final LintsAssert lintsAssert;
 
     public LintProcessor(LinterInitializer linterInitializer,
                          List<TrymigrateLintersCustomizer> lintersCustomizers,
-                         List<TrymigrateLintsReporter> lintsReporters,
                          LintsHistory lintsHistory,
+                         List<TrymigrateLintsReporter> lintsReporters,
                          LintsAssert lintsAssert) {
         this.linterInitializer = linterInitializer;
         this.lintersCustomizers = lintersCustomizers;
-        this.lintsReporters = lintsReporters;
         this.lintsHistory = lintsHistory;
+        this.lintsReporters = lintsReporters;
         this.lintsAssert = lintsAssert;
     }
 

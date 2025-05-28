@@ -11,9 +11,7 @@ import java.util.Map;
 public class LintsHistory {
 
     private final LintPatterns excludedLintPatterns;
-
     private final Map<MigrationVersion, Lints> lints;
-
     private final List<MigrationVersion> order;
 
     public LintsHistory(LintPatterns excludedLintPatterns) {
