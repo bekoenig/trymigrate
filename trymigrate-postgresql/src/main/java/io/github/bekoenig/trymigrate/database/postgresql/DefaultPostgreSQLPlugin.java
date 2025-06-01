@@ -7,7 +7,7 @@ import schemacrawler.schemacrawler.LimitOptionsBuilder;
 
 import java.util.List;
 
-public class DefaultPostgreSQLPlugin implements PostgreSQLPlugin {
+public class DefaultPostgreSQLPlugin implements TrymigratePostgreSQLPlugin {
 
     private static final List<String> SYSTEM_SCHEMAS = List.of("information_schema", "public", "pg_catalog");
 

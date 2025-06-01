@@ -5,5 +5,5 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 /**
  * Marker interface for all PostgreSQL plugins.
  */
-public interface PostgreSQLPlugin extends TrymigratePlugin {
+public interface TrymigratePostgreSQLPlugin extends TrymigratePlugin {
 }
