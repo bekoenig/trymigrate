@@ -50,14 +50,21 @@ public @interface Trymigrate {
     String[] flywayProperties() default {};
 
     /**
-     * Allows explicit plugin selection for multiple plugin branches.
+     * Allows limitations of the plugin discovery to a subtree or plugins.
      *
      * @return interface extension of {@link TrymigratePlugin}
      */
-    Class<? extends TrymigratePlugin> plugin() default TrymigratePlugin.class;
+    Class<? extends TrymigratePlugin> discoverPlugin() default TrymigratePlugin.class;
 
     /**
-     * Threshold to fail on lints. Indicates mistakes in database model.
+     * Allows plugin exclusion of plugin subtrees using interfaces or single plugins using class.
+     *
+     * @return interface or class of type {@link TrymigratePlugin}
+     */
+    Class<? extends TrymigratePlugin>[] excludePlugins() default {};
+
+    /**
+     * Threshold to fail on lints. Indicates mistakes in the database model.
      *
      * @see TrymigrateExcludeLint
      * @see TrymigrateSuppressLint

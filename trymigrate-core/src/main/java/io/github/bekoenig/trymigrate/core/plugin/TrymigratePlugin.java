@@ -14,7 +14,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
  * <p>
  * The current test instance has always the highest priority.
  *
- * @see Trymigrate#plugin()
+ * @see Trymigrate#discoverPlugin()
  */
 public interface TrymigratePlugin {
 

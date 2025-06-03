@@ -34,8 +34,8 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         Trymigrate testConfiguration = AnnotationSupport.findAnnotation(o.getClass(),
                 Trymigrate.class).orElseThrow();
 
-        TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o,
-                new PluginDiscovery().discover(testConfiguration.plugin()));
+        TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o, new PluginDiscovery().discover(
+                testConfiguration.discoverPlugin(), testConfiguration.excludePlugins()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
                 beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class));
