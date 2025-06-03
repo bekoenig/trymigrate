@@ -1,9 +1,9 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfiguration;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 
-public class CoreLinters implements TrymigrateLintersCustomizer {
+public class CoreLinters implements TrymigrateLintersConfigurer {
 
     @Override
     public void accept(TrymigrateLintersConfiguration configuration) {

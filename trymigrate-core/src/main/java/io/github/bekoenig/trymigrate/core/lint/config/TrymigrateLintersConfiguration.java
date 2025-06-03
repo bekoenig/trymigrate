@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core.lint.config;
 /**
  * Root interface to configure linters on a fluent way.
  *
- * @see TrymigrateLintersCustomizer
+ * @see TrymigrateLintersConfigurer
  */
 public interface TrymigrateLintersConfiguration {
 

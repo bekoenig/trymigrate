@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.lint;
 
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LinterConfigBuilder;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LintersBuilder;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
@@ -16,18 +16,18 @@ import java.util.List;
 public class LintProcessor {
 
     private final LinterInitializer linterInitializer;
-    private final List<TrymigrateLintersCustomizer> lintersCustomizers;
+    private final List<TrymigrateLintersConfigurer> lintersConfigurers;
     private final LintsHistory lintsHistory;
     private final List<TrymigrateLintsReporter> lintsReporters;
     private final LintsAssert lintsAssert;
 
     public LintProcessor(LinterInitializer linterInitializer,
-                         List<TrymigrateLintersCustomizer> lintersCustomizers,
+                         List<TrymigrateLintersConfigurer> lintersConfigurers,
                          LintsHistory lintsHistory,
                          List<TrymigrateLintsReporter> lintsReporters,
                          LintsAssert lintsAssert) {
         this.linterInitializer = linterInitializer;
-        this.lintersCustomizers = lintersCustomizers;
+        this.lintersConfigurers = lintersConfigurers;
         this.lintsHistory = lintsHistory;
         this.lintsReporters = lintsReporters;
         this.lintsAssert = lintsAssert;
@@ -40,7 +40,7 @@ public class LintProcessor {
                 .tableInclusionPattern(tableInclusionPattern)
                 .tableExclusionPattern(tableExclusionPattern)
                 .runLinter(true));
-        lintersCustomizers.forEach(x -> x.accept(lintersBuilder));
+        lintersConfigurers.forEach(x -> x.accept(lintersBuilder));
 
         Linters linters = lintersBuilder.build(linterInitializer);
         linters.lint(catalog, connection);

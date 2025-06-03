@@ -9,7 +9,7 @@ import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
 import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersCustomizer;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
@@ -42,7 +42,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
         LintProcessor lintProcessor = new LintProcessor(
                 new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
-                beanProvider.all(TrymigrateLintersCustomizer.class),
+                beanProvider.all(TrymigrateLintersConfigurer.class),
                 new LintsHistory(excludedLintPatterns(o.getClass())), beanProvider.all(TrymigrateLintsReporter.class),
                 new LintsAssert(testConfiguration.failOn()));
 

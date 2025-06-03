@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Intermediate interface to add specific configurations to the enabled linter or enable the next linter.
  *
- * @see TrymigrateLintersCustomizer
+ * @see TrymigrateLintersConfigurer
  * @see TrymigrateLintersConfiguration
  */
 public interface TrymigrateLinterConfiguration extends TrymigrateLintersConfiguration {
