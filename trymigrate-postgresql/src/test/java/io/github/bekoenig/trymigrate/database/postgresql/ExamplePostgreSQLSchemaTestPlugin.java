@@ -1,7 +1,8 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import schemacrawler.tools.lint.LintSeverity;
 
 import java.util.Map;
 
@@ -13,6 +14,8 @@ public class ExamplePostgreSQLSchemaTestPlugin implements TrymigratePostgreSQLPl
     @TrymigrateBean
     private final TrymigrateLintersConfigurer lintersConfigurer = linterConfiguration ->
             linterConfiguration
+                    .disable("schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
+                    .reenable("schemacrawler.tools.linter.LinterTableWithNoRemarks").severity(LintSeverity.critical)
                     .enable("io.github.bekoenig.trymigrate.database.postgresql.DummyLinter")
                     .enable("schemacrawler.tools.linter.LinterTableSql")
                     .config(Map.of(

@@ -24,6 +24,7 @@ import org.slf4j.MDC;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 import schemacrawler.schema.Catalog;
+import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
 
 import javax.sql.DataSource;
@@ -42,9 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 //                "url=jdbc:postgresql://localhost:5432/test",
 //                "user=test",
 //                "password=test",
-        })
+        }, failOn = LintSeverity.medium)
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableSql")
-@TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
 public class ExamplePostgreSQLSchemaTest {
 
@@ -108,7 +108,7 @@ public class ExamplePostgreSQLSchemaTest {
         assertThat(catalog).isNotNull();
         assertThat(dataSource).isNotNull();
 
-        assertThat(lints).hasSize(9);
+        assertThat(lints).hasSize(7);
 
         assertThat(catalog.getSchemas()).hasSize(1);
 
@@ -146,7 +146,7 @@ public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateTest(whenTarget = "1.1")
     public void test_Comments(Lints lints) {
-        assertThat(lints).hasSize(7);
+        assertThat(lints).hasSize(5);
     }
 
     @Test

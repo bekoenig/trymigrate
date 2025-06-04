@@ -23,6 +23,9 @@ import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.LinterProvider;
 
 import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,7 +45,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
         LintProcessor lintProcessor = new LintProcessor(
                 new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
-                beanProvider.all(TrymigrateLintersConfigurer.class),
+                allLintersConfigurers(beanProvider),
                 new LintsHistory(excludedLintPatterns(o.getClass())), beanProvider.all(TrymigrateLintsReporter.class),
                 new LintsAssert(testConfiguration.failOn()));
 
@@ -56,6 +59,14 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         StoreSupport.putMigrateProcessor(extensionContext, migrateProcessor);
 
         migrateProcessor.prepare();
+    }
+
+    private List<TrymigrateLintersConfigurer> allLintersConfigurers(TrymigrateBeanProvider beanProvider) {
+        List<TrymigrateLintersConfigurer> lintersConfigurers = new ArrayList<>(
+                beanProvider.all(TrymigrateLintersConfigurer.class));
+        // configurers with high order are applied at last to manipulate base definitions
+        Collections.reverse(lintersConfigurers);
+        return lintersConfigurers;
     }
 
     private LintPatterns excludedLintPatterns(AnnotatedElement annotatedElement) {

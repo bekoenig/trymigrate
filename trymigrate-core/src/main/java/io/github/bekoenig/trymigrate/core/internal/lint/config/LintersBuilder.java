@@ -49,6 +49,18 @@ public class LintersBuilder implements TrymigrateLintersConfiguration, Trymigrat
     }
 
     @Override
+    public TrymigrateLintersConfiguration disable(String linterId) {
+        endLinterConfig();
+        configs.removeIf(config -> config.getLinterId().equals(linterId));
+        return this;
+    }
+
+    @Override
+    public TrymigrateLinterConfiguration reenable(String linterId) {
+        return disable(linterId).enable(linterId);
+    }
+
+    @Override
     public TrymigrateLinterConfiguration config(Map<String, Object> config) {
         currentLinterConfigBuilder = currentLinterConfigBuilder.config(config);
         return this;
