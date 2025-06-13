@@ -6,6 +6,7 @@ import org.junit.platform.commons.support.ReflectionSupport;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -75,7 +76,14 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
             throw new UnsupportedOperationException("Expects single generic for collection type '" + field.getName());
         }
 
-        return genericType.getActualTypeArguments()[0].equals(clazz);
+        Type actualTypeArgument = genericType.getActualTypeArguments()[0];
+        if (actualTypeArgument instanceof Class<?> genericClassType) {
+            return genericClassType.isAssignableFrom(clazz);
+        } else if (actualTypeArgument instanceof ParameterizedType genericParameterizedType) {
+            return clazz.isAssignableFrom(((Class<?>) genericParameterizedType.getRawType()));
+        } else {
+            return actualTypeArgument.equals(clazz);
+        }
     }
 
     public <T> T get(Class<T> clazz) {

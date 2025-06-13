@@ -144,7 +144,7 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void isCollection_isTrue() {
+    void isCollection_isTrueOnSameType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final List<String> attribute = List.of("a");
@@ -152,6 +152,34 @@ class BeanDefinitionTest {
 
         // WHEN
         boolean result = beanDefinition.isCollection(String.class);
+
+        // THEN
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isCollection_isTrueOnCompatibleType() {
+        // GIVEN
+        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
+            private final List<Object> attribute = List.of("a");
+        });
+
+        // WHEN
+        boolean result = beanDefinition.isCollection(String.class);
+
+        // THEN
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isCollection_isTrueOnCompatibleGenericType() {
+        // GIVEN
+        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
+            private final List<List<Object>> attribute = List.of(List.of("a"));
+        });
+
+        // WHEN
+        boolean result = beanDefinition.isCollection(Collection.class);
 
         // THEN
         assertThat(result).isTrue();

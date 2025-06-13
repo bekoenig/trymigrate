@@ -53,7 +53,7 @@ public class ExamplePostgreSQLSchemaTest {
             DockerImageName.parse("postgres:17.2"));
 
     @TrymigrateBean
-    private final List<JavaMigration> javaMigrations = List.of(new NoopJavaMigration("1.0.1"));
+    private final List<NoopJavaMigration> javaMigrations = List.of(new NoopJavaMigration("1.0.1"));
 
     @TrymigrateBean
     private final NoopJavaMigration moreNoop = new NoopJavaMigration("1.0.2");
