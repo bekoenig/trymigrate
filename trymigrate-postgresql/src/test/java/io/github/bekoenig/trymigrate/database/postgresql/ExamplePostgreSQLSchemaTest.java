@@ -14,7 +14,6 @@ import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
-import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,8 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateBean
-    private final PostgreSQLContainer<?> containerDatabase = new PostgreSQLContainer<>(
-            DockerImageName.parse("postgres:17.2"));
+    private final List<PostgreSQLContainer<?>> containerDatabase = List.of(new PostgreSQLContainer<>(
+            DockerImageName.parse("postgres:17.2")));
 
     @TrymigrateBean
     private final List<NoopJavaMigration> javaMigrations = List.of(new NoopJavaMigration("1.0.1"));

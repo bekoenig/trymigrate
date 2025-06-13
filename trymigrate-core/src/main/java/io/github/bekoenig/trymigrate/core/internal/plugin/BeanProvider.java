@@ -11,18 +11,14 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
 
     private <T> Stream<T> stream(Class<T> clazz) {
         return beanDefinitions.stream()
-                .filter(x -> x.is(clazz))
-                .map(x -> x.get(clazz))
+                .filter(x -> x.is(clazz) || x.isCollection(clazz))
+                .flatMap(x -> x.getCollection(clazz).stream())
                 .filter(Objects::nonNull);
     }
 
     @Override
     public <T> List<T> all(Class<T> clazz) {
-        return beanDefinitions.stream()
-                .filter(x -> x.is(clazz) || x.isCollection(clazz))
-                .flatMap(x -> x.getCollection(clazz).stream())
-                .filter(Objects::nonNull)
-                .toList();
+        return stream(clazz).toList();
     }
 
     @Override
