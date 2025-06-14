@@ -27,7 +27,7 @@ import java.util.function.Consumer;
  */
 public class StaticPortBinding implements Consumer<JdbcDatabaseContainer<?>> {
 
-    public static final String PROPERTY_NAME = "trymigrate.container.db-port";
+    protected static final String PROPERTY_NAME = "trymigrate.container.db-port";
 
     @Override
     public void accept(JdbcDatabaseContainer<?> jdbcDatabaseContainer) {
