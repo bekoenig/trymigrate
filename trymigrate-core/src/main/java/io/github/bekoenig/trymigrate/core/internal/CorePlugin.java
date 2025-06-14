@@ -20,6 +20,7 @@ import us.fatehi.utility.database.SqlScript;
 import java.sql.Connection;
 
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
+import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addJavaMigrations;
 
 public class CorePlugin implements TrymigratePlugin {
 
@@ -63,7 +64,7 @@ public class CorePlugin implements TrymigratePlugin {
     public void populate(TrymigrateBeanProvider beanProvider) {
         this.additionalBeanConfigurer = configuration -> {
             addCallbacks(configuration, beanProvider.all(Callback.class));
-            configuration.javaMigrations(beanProvider.all(JavaMigration.class).toArray(new JavaMigration[0]));
+            addJavaMigrations(configuration, beanProvider.all(JavaMigration.class));
         };
 
         this.containerDataSourceConfigurer = configuration ->
