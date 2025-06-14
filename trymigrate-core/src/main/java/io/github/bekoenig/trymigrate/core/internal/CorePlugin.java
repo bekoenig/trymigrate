@@ -72,9 +72,7 @@ public class CorePlugin implements TrymigratePlugin {
                         configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
 
         LintOptions lintOptions = beanProvider.findFirst(LintOptions.class)
-                .orElseGet(() -> LintOptionsBuilder.builder()
-                        .noInfo()
-                        .toOptions());
+                .orElseGet(() -> LintOptionsBuilder.builder().noInfo().toOptions());
         this.lintsLogReporter = new LintsLogReporter(lintOptions);
         this.lintsHtmlReporter = new LintsHtmlReporter(lintOptions);
     }
