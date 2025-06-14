@@ -161,11 +161,11 @@ class BeanDefinitionTest {
     void isCollection_isTrueOnCompatibleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            private final List<Object> attribute = List.of("a");
+            private final List<String> attribute = List.of("a");
         });
 
         // WHEN
-        boolean result = beanDefinition.isCollection(String.class);
+        boolean result = beanDefinition.isCollection(Object.class);
 
         // THEN
         assertThat(result).isTrue();

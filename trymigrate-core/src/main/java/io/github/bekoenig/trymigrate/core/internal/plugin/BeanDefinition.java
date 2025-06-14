@@ -78,7 +78,7 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
 
         Type actualTypeArgument = genericType.getActualTypeArguments()[0];
         if (actualTypeArgument instanceof Class<?> genericClassType) {
-            return genericClassType.isAssignableFrom(clazz);
+            return clazz.isAssignableFrom(genericClassType);
         } else if (actualTypeArgument instanceof ParameterizedType genericParameterizedType) {
             return clazz.isAssignableFrom(((Class<?>) genericParameterizedType.getRawType()));
         } else {
