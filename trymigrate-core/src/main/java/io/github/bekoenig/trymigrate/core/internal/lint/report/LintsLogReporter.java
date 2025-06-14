@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.internal.lint.report.log;
+package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;

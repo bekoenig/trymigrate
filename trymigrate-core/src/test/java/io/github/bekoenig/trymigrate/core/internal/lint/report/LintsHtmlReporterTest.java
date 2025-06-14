@@ -1,18 +1,18 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.report.html.LintsHtmlReporterFileResolver;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junitpioneer.jupiter.ClearSystemProperty;
+import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 
 import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LintsHtmlReporterFileResolverTest {
+class LintsHtmlReporterTest {
 
-    private final LintsHtmlReporterFileResolver resolver = new LintsHtmlReporterFileResolver();
+    private final LintsHtmlReporter resolver = new LintsHtmlReporter(LintOptionsBuilder.builder().build());
 
     @Test
     void resolve_defaultBaseDir() {
@@ -28,9 +28,9 @@ class LintsHtmlReporterFileResolverTest {
     }
 
     @Test
-    @ClearSystemProperty(key = LintsHtmlReporterFileResolver.PROPERTY_NAME)
+    @ClearSystemProperty(key = LintsHtmlReporter.PROPERTY_NAME)
     void resolve_propertyBaseDir(@TempDir Path tempDir) {
-        System.setProperty(LintsHtmlReporterFileResolver.PROPERTY_NAME, tempDir.toString());
+        System.setProperty(LintsHtmlReporter.PROPERTY_NAME, tempDir.toString());
 
         // GIVEN
         String schema = "MY_SCHEMA";
