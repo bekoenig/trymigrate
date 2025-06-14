@@ -39,7 +39,7 @@ public class MigrateOrderer implements MethodOrderer {
                     .map(x -> MigrationVersion.fromVersion(x.whenTarget()));
         }
 
-        private static Integer getOrder(MethodDescriptor m) {
+        private Integer getOrder(MethodDescriptor m) {
             return m.findAnnotation(Order.class)
                     .map(Order::value)
                     .orElse(Order.DEFAULT);

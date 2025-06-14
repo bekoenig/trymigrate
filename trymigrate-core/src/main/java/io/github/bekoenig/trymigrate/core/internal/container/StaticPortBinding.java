@@ -44,15 +44,15 @@ public class StaticPortBinding implements Consumer<JdbcDatabaseContainer<?>> {
         jdbcDatabaseContainer.setPortBindings(List.of(toPortBinding(jdbcDatabaseContainer, dbPort.split(":"))));
     }
 
-    private static String toPortBinding(JdbcDatabaseContainer<?> jdbcDatabaseContainer, String[] dbPortParts) {
+    private String toPortBinding(JdbcDatabaseContainer<?> jdbcDatabaseContainer, String[] dbPortParts) {
         return getHostPort(dbPortParts) + ":" + getContainerPort(jdbcDatabaseContainer, dbPortParts);
     }
 
-    private static int getHostPort(String[] ports) {
+    private int getHostPort(String[] ports) {
         return Integer.parseInt(ports[0]);
     }
 
-    private static int getContainerPort(JdbcDatabaseContainer<?> jdbcDatabaseContainer, String[] ports) {
+    private int getContainerPort(JdbcDatabaseContainer<?> jdbcDatabaseContainer, String[] ports) {
         if (ports.length > 1) {
             return Integer.parseInt(ports[1]);
         }
