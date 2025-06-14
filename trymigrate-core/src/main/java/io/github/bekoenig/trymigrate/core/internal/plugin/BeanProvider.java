@@ -32,7 +32,7 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
         }
 
         if (values.size() > 1) {
-            throw new IllegalStateException("Multiple beans for type " + clazz.getSimpleName());
+            throw new IllegalStateException("Multiple beans for type " + clazz.getName());
         }
 
         return Optional.of(values.get(0));
@@ -41,7 +41,7 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
     @Override
     public <T> T one(Class<T> clazz) {
         return findOne(clazz)
-                .orElseThrow(() -> new IllegalStateException("Missing bean for type " + clazz.getSimpleName()));
+                .orElseThrow(() -> new IllegalStateException("Missing bean for type " + clazz.getName()));
     }
 
     @Override
@@ -53,7 +53,7 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
     public <T> T first(Class<T> clazz) {
         return stream(clazz)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Missing bean for type " + clazz.getSimpleName()));
+                .orElseThrow(() -> new IllegalStateException("Missing bean for type " + clazz.getName()));
     }
 
 }
