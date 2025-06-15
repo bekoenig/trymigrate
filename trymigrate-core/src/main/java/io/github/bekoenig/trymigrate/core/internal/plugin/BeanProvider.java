@@ -11,8 +11,9 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
 
     private <T> Stream<T> stream(Class<T> clazz) {
         return beanDefinitions.stream()
-                .filter(x -> x.is(clazz) || x.isCollection(clazz))
-                .flatMap(x -> x.getCollection(clazz).stream())
+                .filter(x -> x.isCompatible(clazz))
+                .flatMap(x -> x.get().stream())
+                .map(clazz::cast)
                 .filter(Objects::nonNull);
     }
 

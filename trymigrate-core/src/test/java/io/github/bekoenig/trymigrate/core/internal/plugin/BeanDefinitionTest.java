@@ -15,6 +15,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SuppressWarnings("unused")
 class BeanDefinitionTest {
 
+    private static BeanDefinition getBeanDefinition(Object instance) {
+        return getBeanDefinition(instance, 0);
+    }
+
+    private static BeanDefinition getBeanDefinition(Object instance, Integer hierarchy) {
+        Field field;
+        try {
+            field = instance.getClass().getDeclaredField("attribute");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+        field.setAccessible(true);
+        return new BeanDefinition(instance, field, hierarchy);
+    }
+
     @Test
     void compareTo_same() {
         // GIVEN
@@ -116,103 +131,103 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void is_isTrue() {
+    void isCompatible_isTrue() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final String attribute = "a";
         });
 
         // WHEN
-        boolean result = beanDefinition.is(String.class);
+        boolean result = beanDefinition.isCompatible(String.class);
 
         // THEN
         assertThat(result).isTrue();
     }
 
     @Test
-    void is_isFalse() {
+    void isCompatible_isFalseOnDifferentSimpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final String attribute = "a";
         });
 
         // WHEN
-        boolean result = beanDefinition.is(Integer.class);
+        boolean result = beanDefinition.isCompatible(Integer.class);
 
         // THEN
         assertThat(result).isFalse();
     }
 
     @Test
-    void isCollection_isTrueOnSameType() {
+    void isCompatible_isFalseOnDifferentListType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final List<String> attribute = List.of("a");
         });
 
         // WHEN
-        boolean result = beanDefinition.isCollection(String.class);
+        boolean result = beanDefinition.isCompatible(Integer.class);
 
         // THEN
-        assertThat(result).isTrue();
+        assertThat(result).isFalse();
     }
 
     @Test
-    void isCollection_isTrueOnCompatibleType() {
+    void isCompatible_isTrueOnSameType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final List<String> attribute = List.of("a");
         });
 
         // WHEN
-        boolean result = beanDefinition.isCollection(Object.class);
+        boolean result = beanDefinition.isCompatible(String.class);
 
         // THEN
         assertThat(result).isTrue();
     }
 
     @Test
-    void isCollection_isTrueOnCompatibleGenericType() {
+    void isCompatible_isTrueOnCompatibleType() {
+        // GIVEN
+        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
+            private final List<String> attribute = List.of("a");
+        });
+
+        // WHEN
+        boolean result = beanDefinition.isCompatible(Object.class);
+
+        // THEN
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    void isCompatible_isTrueOnCompatibleGenericType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final List<List<Object>> attribute = List.of(List.of("a"));
         });
 
         // WHEN
-        boolean result = beanDefinition.isCollection(Collection.class);
+        boolean result = beanDefinition.isCompatible(Collection.class);
 
         // THEN
         assertThat(result).isTrue();
     }
 
     @Test
-    void isCollection_isFalse() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            private final String attribute = "a";
-        });
-
-        // WHEN
-        boolean result = beanDefinition.isCollection(String.class);
-
-        // THEN
-        assertThat(result).isFalse();
-    }
-
-    @Test
     @SuppressWarnings("rawtypes")
-    void isCollection_throwsOnNoGeneric() {
+    void isCompatible_throwsOnNoGeneric() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final List attribute = List.of("a");
         });
 
         // WHEN & THEN
-        assertThatThrownBy(() -> beanDefinition.isCollection(String.class));
+        assertThatThrownBy(() -> beanDefinition.isCompatible(String.class));
     }
 
     @Test
-    void isCollection_throwsOnManyGenerics() {
+    void isCompatible_throwsOnManyGenerics() {
         // GIVEN
         interface BiList<A, B> extends List<A> {
         }
@@ -228,7 +243,7 @@ class BeanDefinitionTest {
         });
 
         // WHEN & THEN
-        assertThatThrownBy(() -> beanDefinition.isCollection(String.class));
+        assertThatThrownBy(() -> beanDefinition.isCompatible(String.class));
     }
 
     @Test
@@ -276,17 +291,17 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void get() {
+    void get_simpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final String attribute = "a";
         });
 
         // WHEN
-        String attribute = beanDefinition.get(String.class);
+        Collection<String> attribute = beanDefinition.get();
 
         // THEN
-        assertThat(attribute).isEqualTo("a");
+        assertThat(attribute).containsExactly("a");
     }
 
     @Test
@@ -298,64 +313,64 @@ class BeanDefinitionTest {
         });
 
         // WHEN
-        String attribute = beanDefinition.get(String.class);
+        Collection<String> attribute = beanDefinition.get();
 
         // THEN
-        assertThat(attribute).isNull();
+        assertThat(attribute).isEmpty();
     }
 
     @Test
-    void get_throwsOnIncompatibleType() {
+    void get_throwsOnIncompatibleSimpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private String attribute;
         });
 
         // WHEN & THEN
-        assertThatThrownBy(() -> beanDefinition.get(Integer.class));
+        assertThatThrownBy(beanDefinition::get);
     }
 
     @Test
-    void get_throwsOnNonNullable() {
+    void get_throwsOnNonNullableSimpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private String attribute;
         });
 
         // WHEN & THEN
-        assertThatThrownBy(() -> beanDefinition.get(String.class));
+        assertThatThrownBy(beanDefinition::get);
     }
 
     @Test
-    void getCollection() {
+    void get_listType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final List<String> attribute = List.of("a");
         });
 
         // WHEN
-        Collection<String> collection = beanDefinition.getCollection(String.class);
+        Collection<String> collection = beanDefinition.get();
 
         // THEN
         assertThat(collection).containsExactly("a");
     }
 
     @Test
-    void getCollection_wrapSingle() {
+    void get_wrapSingle() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private final String attribute = "a";
         });
 
         // WHEN
-        Collection<String> collection = beanDefinition.getCollection(String.class);
+        Collection<String> collection = beanDefinition.get();
 
         // THEN
         assertThat(collection).containsExactly("a");
     }
 
     @Test
-    void getCollection_emptyOnNullable() {
+    void get_emptyOnNullable() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             @TrymigrateBean(nullable = true)
@@ -363,32 +378,10 @@ class BeanDefinitionTest {
         });
 
         // WHEN
-        Collection<String> collection = beanDefinition.getCollection(String.class);
+        Collection<String> collection = beanDefinition.get();
 
         // THEN
         assertThat(collection).isEmpty();
-    }
-
-    @Test
-    void getCollection_throwsOnNonNullable() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            private String attribute;
-        });
-
-        // WHEN & THEN
-        assertThatThrownBy(() -> beanDefinition.getCollection(String.class));
-    }
-
-    @Test
-    void getCollection_throwsOnIncompatibleType() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            private final List<String> attribute = List.of("a");
-        });
-
-        // WHEN & THEN
-        assertThatThrownBy(() -> beanDefinition.getCollection(Integer.class));
     }
 
     void getOrder_valueOnAnnotation() {
@@ -416,21 +409,6 @@ class BeanDefinitionTest {
 
         // THEN
         assertThat(order).isEqualTo(Order.DEFAULT);
-    }
-
-    private static BeanDefinition getBeanDefinition(Object instance) {
-        return getBeanDefinition(instance, 0);
-    }
-
-    private static BeanDefinition getBeanDefinition(Object instance, Integer hierarchy) {
-        Field field;
-        try {
-            field = instance.getClass().getDeclaredField("attribute");
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        }
-        field.setAccessible(true);
-        return new BeanDefinition(instance, field, hierarchy);
     }
 
 }

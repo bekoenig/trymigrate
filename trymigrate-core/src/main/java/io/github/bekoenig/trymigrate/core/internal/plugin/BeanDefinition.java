@@ -59,12 +59,15 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
         return !isNullable();
     }
 
-    public boolean is(Class<?> clazz) {
-        return clazz.isAssignableFrom(field.getType());
+    private boolean isCollection() {
+        return Collection.class.isAssignableFrom(field.getType());
     }
 
-    public boolean isCollection(Class<?> clazz) {
-        if (!Collection.class.isAssignableFrom(field.getType())) {
+    public boolean isCompatible(Class<?> clazz) {
+        // excepting assignable or collection type
+        if (clazz.isAssignableFrom(field.getType())) {
+            return true;
+        } else if (!isCollection()) {
             return false;
         }
 
@@ -86,7 +89,8 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
         }
     }
 
-    public <T> T get(Class<T> clazz) {
+    @SuppressWarnings("unchecked")
+    public <T> Collection<T> get() {
         Object value = ReflectionSupport.tryToReadFieldValue(field, instance)
                 .getOrThrow((e) -> new IllegalStateException("Failed to read field " + field.getName()));
 
@@ -95,20 +99,15 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
                     " is null. Initialize properly or mark as nullable.");
         }
 
-        return clazz.cast(value);
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> Collection<T> getCollection(Class<T> clazz) {
-        if (isCollection(clazz)) {
-            return (Collection<T>) get(Collection.class);
+        if (isCollection()) {
+            return (Collection<T>) value;
         }
 
-        T value = get(clazz);
         if (value == null) {
             return Collections.emptyList();
         }
-        return List.of(value);
+
+        return List.of((T) value);
     }
 
 }
