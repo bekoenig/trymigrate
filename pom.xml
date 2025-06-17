@@ -60,7 +60,7 @@
         <schemacrawler.version>16.26.1</schemacrawler.version>
 
         <db2.version>12.1.2.0</db2.version>
-        <postgresql.version>42.7.6</postgresql.version>
+        <postgresql.version>42.7.7</postgresql.version>
     </properties>
 
     <scm>
