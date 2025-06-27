@@ -37,7 +37,8 @@ import java.lang.annotation.Target;
  *     <li>Test methods annotated with {@link org.junit.jupiter.api.Test}</li>
  * </ol>
  * Sorting within a group is not unique. The order should therefore be explicitly defined via
- * {@link org.junit.jupiter.api.Order}.
+ * {@link org.junit.jupiter.api.Order}. After executing the last annotated {@link TrymigrateTest}, all following
+ * migrations are completed.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
