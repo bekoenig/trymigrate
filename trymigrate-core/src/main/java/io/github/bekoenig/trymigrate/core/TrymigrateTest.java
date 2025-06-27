@@ -8,7 +8,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Enables database migration lifecycle management for a test method.
+ * Enables database migration lifecycle management for a test method in a {@link Trymigrate} test class.
+ *
+ * @see Trymigrate
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -16,7 +18,7 @@ import java.lang.annotation.Target;
 public @interface TrymigrateTest {
 
     /**
-     * Target version of database model.
+     * Target version of the database model.
      *
      * @return Version for {@link org.flywaydb.core.api.MigrationVersion#fromVersion(String)}
      */
@@ -30,7 +32,7 @@ public @interface TrymigrateTest {
     boolean cleanBefore() default false;
 
     /**
-     * Scenario data applied before execution of migration to target.
+     * Scenario data applied before execution of migration to target version.
      *
      * @return resources for {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader}
      */

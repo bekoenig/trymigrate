@@ -23,9 +23,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Root annotation to activate database migration testing for test instance.
+ * Root annotation to activate database migration testing for test instance. Loads beans from test instance and all
+ * plugins, prepares migration and executes all migration steps. After each migration, the database model will be
+ * checked for new lints.
  * <p>
- * Enables support for {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean} on test instance.
+ * Use {@link TrymigrateTest} to add scenario data before migration, assert the database model after migration or
+ * perform a clean before a migration.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -50,21 +53,21 @@ public @interface Trymigrate {
     String[] flywayProperties() default {};
 
     /**
-     * Allows limitations of the plugin discovery to a subtree or plugins.
+     * Restricts the plugin discovery to a subtree of plugins.
      *
      * @return interface extension of {@link TrymigratePlugin}
      */
     Class<? extends TrymigratePlugin> discoverPlugin() default TrymigratePlugin.class;
 
     /**
-     * Allows plugin exclusion of plugin subtrees using interfaces or single plugins using class.
+     * Excludes plugin subtrees using interfaces or single plugins using class.
      *
      * @return interface or class of type {@link TrymigratePlugin}
      */
     Class<? extends TrymigratePlugin>[] excludePlugins() default {};
 
     /**
-     * Threshold to fail on lints. Indicates mistakes in the database model.
+     * Threshold to fail on lints. Indicates mistakes in the database model on migration.
      *
      * @see TrymigrateExcludeLint
      * @see TrymigrateSuppressLint

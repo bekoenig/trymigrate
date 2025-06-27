@@ -7,6 +7,9 @@ import schemacrawler.schemacrawler.LimitOptionsBuilder;
 
 import java.util.List;
 
+/**
+ * Default plugin implementation for {@link TrymigrateDb2Plugin}.
+ */
 public class DefaultDb2Plugin implements TrymigrateDb2Plugin {
 
     private static final List<String> SYSTEM_SCHEMAS = List.of("NULLID", "SQLJ", "SYSFUN", "SYSIBM",
