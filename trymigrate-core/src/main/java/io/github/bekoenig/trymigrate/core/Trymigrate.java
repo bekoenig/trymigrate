@@ -24,11 +24,20 @@ import java.lang.annotation.Target;
 
 /**
  * Root annotation to activate database migration testing for test instance. Loads beans from test instance and all
- * plugins, prepares migration and executes all migration steps. After each migration, the database model will be
- * checked for new lints.
+ * plugins, prepares migration and executes all migrations. After each migration, the database model will be
+ * checked for new lints. The lints are reported as HTML file and log message. If the quality gate is broken, the test
+ * fails (see {@link Trymigrate#failOn()}).
  * <p>
  * Use {@link TrymigrateTest} to add scenario data before migration, assert the database model after migration or
  * perform a clean before a migration.
+ * <p>
+ * Tests methods are executed in this order:
+ * <ol>
+ *     <li>Test methods annotated with {@link TrymigrateTest} ascending the target version</li>
+ *     <li>Test methods annotated with {@link org.junit.jupiter.api.Test}</li>
+ * </ol>
+ * Sorting within a group is not unique. The order should therefore be explicitly defined via
+ * {@link org.junit.jupiter.api.Order}.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

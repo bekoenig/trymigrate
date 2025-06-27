@@ -9,6 +9,14 @@ import java.lang.annotation.Target;
 
 /**
  * Enables database migration lifecycle management for a test method in a {@link Trymigrate} test class.
+ * <p>
+ * Annotated methods supports
+ * <ul>
+ *     <li>{@link javax.sql.DataSource}: Datasource to database</li>
+ *     <li>{@link schemacrawler.schema.Catalog}: Database model after last migration (system schemas may be excluded)</li>
+ *     <li>{@link schemacrawler.tools.lint.Lints}: Lints of migrated schemas</li>
+ * </ul>
+ * as parameters for further asserts.
  *
  * @see Trymigrate
  */

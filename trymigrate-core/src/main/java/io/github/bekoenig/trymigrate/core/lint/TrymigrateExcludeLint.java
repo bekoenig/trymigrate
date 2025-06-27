@@ -3,7 +3,8 @@ package io.github.bekoenig.trymigrate.core.lint;
 import java.lang.annotation.*;
 
 /**
- * Marker annotation to exclude lints for a test class. Excluded lints will not be reported or fail a test method.
+ * Marker annotation to exclude lints for a test class. Excluded lints are completely removed and are not reported or
+ * fail the quality gate.
  * <p>
  * Supports regex to ignore multiple lints using single annotation.
  */
