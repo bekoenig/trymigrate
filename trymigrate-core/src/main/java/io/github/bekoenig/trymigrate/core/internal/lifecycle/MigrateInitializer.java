@@ -23,12 +23,7 @@ import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.LinterProvider;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class MigrateInitializer implements TestInstancePostProcessor {
 
@@ -75,19 +70,18 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
     }
 
-    private Map<String, String> splitProperties(String[] properties) {
-        return Stream.of(properties)
-                .map(property -> {
-                    String[] tokens = property.split("=");
-                    if (tokens.length != 2) {
-                        throw new IllegalArgumentException("Property '%s' does not match format 'key=value'"
-                                .formatted(property));
-                    }
-                    return tokens;
-                })
-                .collect(Collectors.toMap(
-                        split -> normalizePrefix(split[0]),
-                        split -> split[1]));
+    private Map<String, String> splitProperties(String[] keyValues) {
+        Map<String, String> properties = new HashMap<>();
+        for (String keyValue : keyValues) {
+            int delimiterIndex = keyValue.indexOf("=");
+            if (delimiterIndex < 0) {
+                throw new IllegalArgumentException("Property '%s' does not match format 'key=value'"
+                        .formatted(keyValue));
+            }
+            properties.put(normalizePrefix(keyValue.substring(0, delimiterIndex)),
+                    keyValue.substring(delimiterIndex + 1));
+        }
+        return properties;
     }
 
     private String normalizePrefix(String propertyName) {
