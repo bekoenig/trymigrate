@@ -48,7 +48,7 @@ public class SchemaLinter implements Callback {
                 catalog,
                 context.getMigrationInfo().getVersion(),
                 // include all tables from managed schemas
-                "(" + String.join("|", schemas) + ")\\..*",
+                "(.*\\.)?(" + String.join("|", schemas) + ")\\..*",
                 // exclude history table
                 context.getConfiguration().getDefaultSchema() + "\\." + context.getConfiguration().getTable()
         );
