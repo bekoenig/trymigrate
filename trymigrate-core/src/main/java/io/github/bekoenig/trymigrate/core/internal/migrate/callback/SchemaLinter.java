@@ -50,7 +50,7 @@ public class SchemaLinter implements Callback {
                 // include all tables from managed schemas
                 "(.*\\.)?(" + String.join("|", schemas) + ")\\..*",
                 // exclude history table
-                context.getConfiguration().getDefaultSchema() + "\\." + context.getConfiguration().getTable()
+                "(.*\\.)?" + context.getConfiguration().getDefaultSchema() + "\\." + context.getConfiguration().getTable()
         );
     }
 
