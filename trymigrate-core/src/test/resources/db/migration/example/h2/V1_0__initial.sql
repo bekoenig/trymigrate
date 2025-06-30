@@ -1,0 +1,5 @@
+CREATE TABLE TAB1
+(
+    ID    INT,
+    COL1 VARCHAR(100) NOT NULL
+);
