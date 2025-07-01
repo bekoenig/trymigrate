@@ -49,7 +49,6 @@
         <slf4j.version>2.0.17</slf4j.version>
         <logback.version>1.5.18</logback.version>
 
-        <jackson.version>2.18.3</jackson.version>
         <testcontainers.version>1.21.3</testcontainers.version>
 
         <mockito.version>5.18.0</mockito.version>
@@ -76,15 +75,6 @@
                 <groupId>io.github.bekoenig.trymigrate</groupId>
                 <artifactId>trymigrate-core</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <!-- bill of materials -->
-            <dependency>
-                <groupId>com.fasterxml.jackson</groupId>
-                <artifactId>jackson-bom</artifactId>
-                <version>${jackson.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
             </dependency>
 
             <dependency>
