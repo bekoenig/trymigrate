@@ -50,7 +50,7 @@
         <logback.version>1.5.18</logback.version>
 
         <jackson.version>2.18.3</jackson.version>
-        <testcontainers.version>1.21.2</testcontainers.version>
+        <testcontainers.version>1.21.3</testcontainers.version>
 
         <mockito.version>5.18.0</mockito.version>
         <assertj.version>3.27.3</assertj.version>
