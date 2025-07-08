@@ -72,12 +72,6 @@ public class LintersBuilder implements TrymigrateLintersConfiguration, Trymigrat
         return this;
     }
 
-    @Override
-    public TrymigrateLinterConfiguration threshold(int threshold) {
-        currentLinterConfigBuilder = currentLinterConfigBuilder.threshold(threshold);
-        return this;
-    }
-
     public Linters build(LinterInitializer linterInitializer) {
         endLinterConfig();
 

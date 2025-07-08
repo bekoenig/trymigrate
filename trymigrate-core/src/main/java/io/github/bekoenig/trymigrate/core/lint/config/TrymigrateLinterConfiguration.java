@@ -28,12 +28,4 @@ public interface TrymigrateLinterConfiguration extends TrymigrateLintersConfigur
      */
     TrymigrateLinterConfiguration severity(LintSeverity severity);
 
-    /**
-     * Overwrites threshold value.
-     *
-     * @param threshold new threshold
-     * @return intermediate interface
-     */
-    TrymigrateLinterConfiguration threshold(int threshold);
-
 }
