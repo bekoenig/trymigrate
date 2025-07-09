@@ -19,7 +19,7 @@ public class TrymigrateH2ExampleLintTest {
 
     @TrymigrateTest(whenTarget = "1.0")
     @TrymigrateSuppressLint(
-            objectName = "TESTDB.EXAMPLE_SCHEMA.TAB1", // note: database name is part of object names in h2
+            objectName = "TESTDB.EXAMPLE_SCHEMA.TAB1", // note: catalog name is part of object names in h2
             linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
     void initial(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
