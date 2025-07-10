@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.config.LinterConfigBuilder;
+import io.github.bekoenig.trymigrate.core.internal.lint.config.DefaultablePattern;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LintersBuilder;
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
@@ -34,12 +34,8 @@ public class LintProcessor {
     }
 
     public void lint(Connection connection, String schema, Catalog catalog, MigrationVersion migrationVersion,
-                     String tableInclusionPattern, String tableExclusionPattern) {
-        LintersBuilder lintersBuilder = LintersBuilder.builder(linterId -> LinterConfigBuilder.builder()
-                .linterId(linterId)
-                .tableInclusionPattern(tableInclusionPattern)
-                .tableExclusionPattern(tableExclusionPattern)
-                .runLinter(true));
+                     DefaultablePattern defaultTablePattern) {
+        LintersBuilder lintersBuilder = LintersBuilder.builder(defaultTablePattern);
         lintersConfigurers.forEach(x -> x.accept(lintersBuilder));
 
         Linters linters = lintersBuilder.build(linterInitializer);

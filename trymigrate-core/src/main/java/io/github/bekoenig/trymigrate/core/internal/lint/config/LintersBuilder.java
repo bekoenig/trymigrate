@@ -13,26 +13,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 public class LintersBuilder implements TrymigrateLintersConfiguration, TrymigrateLinterConfiguration {
 
+    private final DefaultablePattern tablePattern;
     private final List<LinterConfig> configs = new ArrayList<>();
-
-    private final Function<String, LinterConfigBuilder> linterConfigBuilderFactory;
 
     private LinterConfigBuilder currentLinterConfigBuilder;
 
-    private LintersBuilder(Function<String, LinterConfigBuilder> linterConfigBuilderFactory) {
-        this.linterConfigBuilderFactory = linterConfigBuilderFactory;
+    private LintersBuilder(DefaultablePattern tablePattern) {
+        this.tablePattern = tablePattern;
     }
 
-    public static LintersBuilder builder(Function<String, LinterConfigBuilder> linterConfigBuilderFactory) {
-        return new LintersBuilder(linterConfigBuilderFactory);
+    public static LintersBuilder builder(DefaultablePattern tablePattern) {
+        return new LintersBuilder(tablePattern);
     }
 
     private void startLinterConfig(String linterId) {
-        this.currentLinterConfigBuilder = linterConfigBuilderFactory.apply(linterId);
+        this.currentLinterConfigBuilder = LinterConfigBuilder.builder()
+                .linterId(linterId)
+                .tableInclusionPattern(tablePattern.includePattern())
+                .tableExclusionPattern(tablePattern.excludePattern())
+                .runLinter(true);
     }
 
     private void endLinterConfig() {
@@ -62,13 +64,37 @@ public class LintersBuilder implements TrymigrateLintersConfiguration, Trymigrat
 
     @Override
     public TrymigrateLinterConfiguration config(Map<String, Object> config) {
-        currentLinterConfigBuilder = currentLinterConfigBuilder.config(config);
+        currentLinterConfigBuilder.config(config);
         return this;
     }
 
     @Override
     public TrymigrateLinterConfiguration severity(LintSeverity severity) {
-        currentLinterConfigBuilder = currentLinterConfigBuilder.severity(severity);
+        currentLinterConfigBuilder.severity(severity);
+        return this;
+    }
+
+    @Override
+    public TrymigrateLinterConfiguration tableInclusionPattern(String tableInclusionPattern) {
+        currentLinterConfigBuilder.tableInclusionPattern(tablePattern.overlayIncludePattern(tableInclusionPattern));
+        return this;
+    }
+
+    @Override
+    public TrymigrateLinterConfiguration tableExclusionPattern(String tableExclusionPattern) {
+        currentLinterConfigBuilder.tableExclusionPattern(tablePattern.overlayExcludePattern(tableExclusionPattern));
+        return this;
+    }
+
+    @Override
+    public TrymigrateLinterConfiguration columnInclusionPattern(String columnInclusionPattern) {
+        currentLinterConfigBuilder.columnInclusionPattern(columnInclusionPattern);
+        return this;
+    }
+
+    @Override
+    public TrymigrateLinterConfiguration columnExclusionPattern(String columnExclusionPattern) {
+        currentLinterConfigBuilder.columnExclusionPattern(columnExclusionPattern);
         return this;
     }
 
