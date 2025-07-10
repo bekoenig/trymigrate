@@ -2,9 +2,9 @@ package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
 /**
  * This is an extension for {@link LintersBuilder} to support additional include and exclude patterns in
- * {@link schemacrawler.tools.lint.config.LinterConfig} with predefined defaults.
+ * {@link schemacrawler.tools.lint.config.LinterConfig} with restricted defaults.
  */
-public record DefaultablePattern(String includePattern, String excludePattern) {
+public record RestrictedPattern(String includePattern, String excludePattern) {
 
     public String overlayIncludePattern(String other) {
         if (other == null) {

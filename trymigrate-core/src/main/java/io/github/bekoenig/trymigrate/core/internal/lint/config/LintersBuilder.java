@@ -16,16 +16,16 @@ import java.util.Objects;
 
 public class LintersBuilder implements TrymigrateLintersConfiguration, TrymigrateLinterConfiguration {
 
-    private final DefaultablePattern tablePattern;
+    private final RestrictedPattern tablePattern;
     private final List<LinterConfig> configs = new ArrayList<>();
 
     private LinterConfigBuilder currentLinterConfigBuilder;
 
-    private LintersBuilder(DefaultablePattern tablePattern) {
+    private LintersBuilder(RestrictedPattern tablePattern) {
         this.tablePattern = tablePattern;
     }
 
-    public static LintersBuilder builder(DefaultablePattern tablePattern) {
+    public static LintersBuilder builder(RestrictedPattern tablePattern) {
         return new LintersBuilder(tablePattern);
     }
 

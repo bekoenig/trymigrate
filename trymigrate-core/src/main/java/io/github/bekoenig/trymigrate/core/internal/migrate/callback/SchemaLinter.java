@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.migrate.callback;
 
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintProcessor;
-import io.github.bekoenig.trymigrate.core.internal.lint.config.DefaultablePattern;
+import io.github.bekoenig.trymigrate.core.internal.lint.config.RestrictedPattern;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -45,20 +45,15 @@ public class SchemaLinter implements Callback {
         schemas.add(defaultSchema);
         schemas.addAll(List.of(context.getConfiguration().getSchemas()));
 
-        DefaultablePattern defaultTablePattern = new DefaultablePattern(
+        RestrictedPattern tablePattern = new RestrictedPattern(
                 // include all tables from managed schemas
                 "(.*\\.)?(" + String.join("|", schemas) + ")\\..*",
                 // exclude history table
                 "(.*\\.)?" + defaultSchema + "\\." + context.getConfiguration().getTable()
         );
 
-        lintProcessor.lint(
-                context.getConnection(),
-                defaultSchema,
-                catalog,
-                context.getMigrationInfo().getVersion(),
-                defaultTablePattern
-        );
+        lintProcessor.lint(context.getConnection(), defaultSchema, catalog,
+                context.getMigrationInfo().getVersion(), tablePattern);
     }
 
     @Override

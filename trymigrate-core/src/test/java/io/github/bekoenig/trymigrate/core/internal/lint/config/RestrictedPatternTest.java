@@ -8,10 +8,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DefaultablePatternTest {
+class RestrictedPatternTest {
 
     /**
-     * This tests asserts the side effects between {@link DefaultablePattern} and {@link RegularExpressionRule}.
+     * This test asserts the side effects between {@link RestrictedPattern} and {@link RegularExpressionRule}.
      */
     @ParameterizedTest
     @CsvSource({
@@ -47,14 +47,14 @@ class DefaultablePatternTest {
     void test(String tableFullName, String otherTableIncludePattern, String otherTableExcludePattern, boolean matches) {
         // GIVEN
         List<String> schemas = List.of("SCHEMA_A", "SCHEMA_B");
-        DefaultablePattern defaultablePattern = new DefaultablePattern(
+        RestrictedPattern restrictedPattern = new RestrictedPattern(
                 "(.*\\.)?(" + String.join("|", schemas) + ")\\..*",
                 "(.*\\.)?SCHEMA_A\\.migration_history");
 
         // WHEN
         RegularExpressionRule regularExpressionRule = new RegularExpressionRule(
-                defaultablePattern.overlayIncludePattern(otherTableIncludePattern),
-                defaultablePattern.overlayExcludePattern(otherTableExcludePattern));
+                restrictedPattern.overlayIncludePattern(otherTableIncludePattern),
+                restrictedPattern.overlayExcludePattern(otherTableExcludePattern));
         boolean test = regularExpressionRule.test(tableFullName);
 
         // THEN
