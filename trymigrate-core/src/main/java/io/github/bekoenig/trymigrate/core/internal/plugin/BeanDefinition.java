@@ -34,17 +34,17 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
 
     @Override
     public int compareTo(BeanDefinition other) {
-        int compareOrder = Integer.compare(this.getOrder(), other.getOrder());
+        int compareOrder = Integer.compare(getOrder(), other.getOrder());
         if (compareOrder != 0) {
             return compareOrder;
         }
 
-        int compareHierarchy = -Integer.compare(this.hierarchy, other.hierarchy);
+        int compareHierarchy = -Integer.compare(hierarchy, other.hierarchy);
         if (compareHierarchy != 0) {
             return compareHierarchy;
         }
 
-        return Boolean.compare(this.nonNullable(), other.nonNullable());
+        return Boolean.compare(nonNullable(), other.nonNullable());
     }
 
     public boolean isNullable() {

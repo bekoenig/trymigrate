@@ -234,7 +234,7 @@ class BeanDefinitionTest {
 
         class BiArrayList<A, B> extends ArrayList<A> implements BiList<A, B> {
             public BiArrayList(A a) {
-                this.add(a);
+                add(a);
             }
         }
 

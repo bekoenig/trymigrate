@@ -30,7 +30,7 @@ public class LintersBuilder implements TrymigrateLintersConfiguration, Trymigrat
     }
 
     private void startLinterConfig(String linterId) {
-        this.currentLinterConfigBuilder = LinterConfigBuilder.builder()
+        currentLinterConfigBuilder = LinterConfigBuilder.builder()
                 .linterId(linterId)
                 .tableInclusionPattern(tablePattern.includePattern())
                 .tableExclusionPattern(tablePattern.excludePattern())
@@ -102,7 +102,7 @@ public class LintersBuilder implements TrymigrateLintersConfiguration, Trymigrat
         endLinterConfig();
 
         LinterConfigs linterConfigs = new LinterConfigs(new Config());
-        this.configs.forEach(linterConfigs::add);
+        configs.forEach(linterConfigs::add);
 
         Linters linters = new Linters(linterConfigs, false);
         linters.initialize(linterInitializer);

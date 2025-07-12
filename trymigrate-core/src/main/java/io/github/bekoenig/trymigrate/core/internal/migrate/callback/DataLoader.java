@@ -29,7 +29,7 @@ public class DataLoader implements Callback {
 
     @Override
     public boolean supports(Event event, Context context) {
-        if (this.resources.isEmpty()) {
+        if (resources.isEmpty()) {
             return false;
         }
 

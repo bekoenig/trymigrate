@@ -8,21 +8,21 @@ public record RestrictedPattern(String includePattern, String excludePattern) {
 
     public String overlayIncludePattern(String other) {
         if (other == null) {
-            return includePattern();
+            return includePattern;
         }
 
         // Combine two lookaheads for the entire line for a logical 'and'.
         // The following wildcard consumes all characters after match.
-        return "(?=" + this.includePattern + "$)(?=" + other + "$).*";
+        return "(?=" + includePattern + "$)(?=" + other + "$).*";
     }
 
     public String overlayExcludePattern(String other) {
         if (other == null) {
-            return excludePattern();
+            return excludePattern;
         }
 
         // Use logical 'or' to match any pattern.
-        return "(" + this.excludePattern + ")|(" + other + ")";
+        return "(" + excludePattern + ")|(" + other + ")";
     }
 
 }

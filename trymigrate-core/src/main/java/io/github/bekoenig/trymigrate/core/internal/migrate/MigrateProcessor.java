@@ -113,7 +113,7 @@ public class MigrateProcessor {
     }
 
     public Lints getLints() {
-        return this.lintProcessor.getLints(currentTarget);
+        return lintProcessor.getLints(currentTarget);
     }
 
     public DataSource getDataSource() {

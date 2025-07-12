@@ -59,6 +59,6 @@ public class LintProcessor {
     }
 
     public Lints getLints(MigrationVersion currentVersion) {
-        return this.lintsHistory.getLints(currentVersion);
+        return lintsHistory.getLints(currentVersion);
     }
 }

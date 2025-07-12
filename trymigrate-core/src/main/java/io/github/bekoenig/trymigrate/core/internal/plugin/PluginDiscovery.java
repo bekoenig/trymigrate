@@ -11,7 +11,7 @@ public class PluginDiscovery {
     private final ServiceLoader<TrymigratePlugin> serviceLoader;
 
     public PluginDiscovery() {
-        this.serviceLoader = ServiceLoader.load(TrymigratePlugin.class);
+        serviceLoader = ServiceLoader.load(TrymigratePlugin.class);
     }
 
     public List<PluginProvider> discover(Class<? extends TrymigratePlugin> interfaceType,

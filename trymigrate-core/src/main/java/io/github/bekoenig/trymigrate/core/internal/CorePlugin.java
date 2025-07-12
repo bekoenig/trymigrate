@@ -62,18 +62,18 @@ public class CorePlugin implements TrymigratePlugin {
 
     @Override
     public void populate(TrymigrateBeanProvider beanProvider) {
-        this.additionalBeanConfigurer = configuration -> {
+        additionalBeanConfigurer = configuration -> {
             addCallbacks(configuration, beanProvider.all(Callback.class));
             addJavaMigrations(configuration, beanProvider.all(JavaMigration.class));
         };
 
-        this.containerDataSourceConfigurer = configuration ->
+        containerDataSourceConfigurer = configuration ->
                 beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(c ->
                         configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
 
         LintOptions lintOptions = beanProvider.findFirst(LintOptions.class)
                 .orElseGet(() -> LintOptionsBuilder.builder().noInfo().toOptions());
-        this.lintsLogReporter = new LintsLogReporter(lintOptions);
-        this.lintsHtmlReporter = new LintsHtmlReporter(lintOptions);
+        lintsLogReporter = new LintsLogReporter(lintOptions);
+        lintsHtmlReporter = new LintsHtmlReporter(lintOptions);
     }
 }

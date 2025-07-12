@@ -32,7 +32,7 @@ public class LintsHistory {
     }
 
     public Lints getLints(MigrationVersion migrationVersion) {
-        return this.lints.get(migrationVersion);
+        return lints.get(migrationVersion);
     }
 
     public Lints diffLints(MigrationVersion source, MigrationVersion target) {
@@ -46,7 +46,7 @@ public class LintsHistory {
     }
 
     public MigrationVersion getLastAnalyzedVersion() {
-        return this.order.get(this.order.size() - 1);
+        return order.get(order.size() - 1);
     }
 
 }
