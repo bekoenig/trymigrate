@@ -52,8 +52,7 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
 
     @Override
     public <T> T first(Class<T> clazz) {
-        return stream(clazz)
-                .findFirst()
+        return findFirst(clazz)
                 .orElseThrow(() -> new IllegalStateException("Missing bean for type " + clazz.getName()));
     }
 
