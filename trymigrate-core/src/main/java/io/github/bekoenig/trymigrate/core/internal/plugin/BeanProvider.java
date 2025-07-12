@@ -47,7 +47,7 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
 
     @Override
     public <T> Optional<T> findFirst(Class<T> clazz) {
-        return all(clazz).stream().findFirst();
+        return stream(clazz).findFirst();
     }
 
     @Override
