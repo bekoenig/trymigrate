@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>trymigrate-postgresql</artifactId>
+    <name>trymigrate-postgresql</name>
     <packaging>jar</packaging>
 
     <dependencies>

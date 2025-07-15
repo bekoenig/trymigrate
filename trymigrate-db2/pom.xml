@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>trymigrate-db2</artifactId>
+    <name>trymigrate-db2</name>
     <packaging>jar</packaging>
 
     <dependencies>

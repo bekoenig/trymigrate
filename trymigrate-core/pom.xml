@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>trymigrate-core</artifactId>
+    <name>trymigrate-core</name>
     <packaging>jar</packaging>
 
     <dependencies>
