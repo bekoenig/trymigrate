@@ -51,7 +51,7 @@
         <testcontainers.version>1.21.3</testcontainers.version>
 
         <mockito.version>5.18.0</mockito.version>
-        <assertj.version>3.27.3</assertj.version>
+        <assertj.version>3.27.4</assertj.version>
         <assertj-schemacrawler.version>1.1.2</assertj-schemacrawler.version>
 
         <flyway.version>11.10.2</flyway.version>
