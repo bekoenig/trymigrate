@@ -45,7 +45,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 new LintsAssert(testConfiguration.failOn()));
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
-                beanProvider.findOne(JdbcDatabaseContainer.class).orElse(null),
+                resolveJdbcDatabaseContainer(beanProvider),
                 splitProperties(testConfiguration.flywayProperties()),
                 beanProvider.all(TrymigrateFlywayCustomizer.class),
                 beanProvider.all(TrymigrateDataLoader.class),
@@ -89,6 +89,14 @@ public class MigrateInitializer implements TestInstancePostProcessor {
             return propertyName;
         }
         return "flyway." + propertyName;
+    }
+
+    private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(TrymigrateBeanProvider beanProvider) {
+        try {
+            return beanProvider.findOne(JdbcDatabaseContainer.class).orElse(null);
+        } catch (NoClassDefFoundError e) {
+            return null;
+        }
     }
 
 }

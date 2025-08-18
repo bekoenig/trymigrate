@@ -18,6 +18,7 @@ import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
+import java.util.Optional;
 
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addJavaMigrations;
@@ -67,9 +68,15 @@ public class CorePlugin implements TrymigratePlugin {
             addJavaMigrations(configuration, beanProvider.all(JavaMigration.class));
         };
 
-        containerDataSourceConfigurer = configuration ->
-                beanProvider.findOne(JdbcDatabaseContainer.class).ifPresent(c ->
-                        configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
+        containerDataSourceConfigurer = configuration -> {
+            Optional<JdbcDatabaseContainer> container;
+            try {
+                container = beanProvider.findOne(JdbcDatabaseContainer.class);
+            } catch (NoClassDefFoundError e) {
+                container = Optional.empty();
+            }
+            container.ifPresent(c -> configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
+        };
 
         LintOptions lintOptions = beanProvider.findFirst(LintOptions.class)
                 .orElseGet(() -> LintOptionsBuilder.builder().noInfo().toOptions());
