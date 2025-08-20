@@ -8,8 +8,9 @@ import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
 import schemacrawler.schema.Catalog;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class SchemaLinter implements Callback {
@@ -39,11 +40,10 @@ public class SchemaLinter implements Callback {
         Catalog catalog = catalogFactory.crawl(context.getConnection());
         catalogCache.accept(catalog);
 
-        String defaultSchema = context.getConfiguration().getDefaultSchema();
+        String defaultSchema = ContextSupport.resolveDefaultSchema(context);
 
-        List<String> schemas = new ArrayList<>();
+        Set<String> schemas = new HashSet<>(List.of(context.getConfiguration().getSchemas()));
         schemas.add(defaultSchema);
-        schemas.addAll(List.of(context.getConfiguration().getSchemas()));
 
         RestrictedPattern tablePattern = new RestrictedPattern(
                 // include all tables from managed schemas
