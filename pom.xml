@@ -54,7 +54,7 @@
         <assertj.version>3.27.4</assertj.version>
         <assertj-schemacrawler.version>1.1.2</assertj-schemacrawler.version>
 
-        <flyway.version>11.11.1</flyway.version>
+        <flyway.version>11.11.2</flyway.version>
         <schemacrawler.version>16.26.3</schemacrawler.version>
 
         <db2.version>12.1.2.0</db2.version>
