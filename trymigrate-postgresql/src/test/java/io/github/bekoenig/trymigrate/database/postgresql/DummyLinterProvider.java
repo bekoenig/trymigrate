@@ -4,12 +4,17 @@ import schemacrawler.schema.Table;
 import schemacrawler.tools.lint.*;
 import us.fatehi.utility.property.PropertyName;
 
+import java.io.Serial;
 import java.sql.Connection;
 
-public class DummyLinterProvider extends BaseLinterProvider {
+public class DummyLinterProvider implements LinterProvider {
 
-    public DummyLinterProvider() {
-        super(DummyLinter.class.getName());
+    @Serial
+    private static final long serialVersionUID = -6555525517116449604L;
+
+    @Override
+    public PropertyName getPropertyName() {
+        return new PropertyName(DummyLinter.class.getName(), null);
     }
 
     @Override
