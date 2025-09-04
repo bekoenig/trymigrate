@@ -4,7 +4,7 @@
     <parent>
         <groupId>io.github.bekoenig.trymigrate</groupId>
         <artifactId>trymigrate</artifactId>
-        <version>1.0.1-SNAPSHOT</version>
+        <version>1.1.0</version>
     </parent>
 
     <artifactId>trymigrate-postgresql</artifactId>
