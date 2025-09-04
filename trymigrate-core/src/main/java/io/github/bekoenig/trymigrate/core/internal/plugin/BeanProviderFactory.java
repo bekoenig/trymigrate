@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 
 public class BeanProviderFactory {
 
-    public BeanProvider create(Object testInstance, List<PluginProvider> pluginProviders) {
-        Map<Integer, List<PluginProvider>> layers = pluginProviders.stream()
-                .collect(Collectors.groupingBy(PluginProvider::getHierarchy, Collectors.toList()));
+    public BeanProvider create(Object testInstance, List<GenericPluginProvider> pluginProviders) {
+        Map<Integer, List<GenericPluginProvider>> layers = pluginProviders.stream()
+                .collect(Collectors.groupingBy(GenericPluginProvider::getHierarchy, Collectors.toList()));
 
         List<Integer> layerIndex = layers.keySet().stream()
                 .sorted((i, j) -> -Integer.compare(i, j))
@@ -22,9 +22,8 @@ public class BeanProviderFactory {
         for(Integer currentLayerNumber : layerIndex) {
             BeanProvider currentLayerBeans = lastLayerBeans;
 
-            for (PluginProvider provider : layers.get(currentLayerNumber)) {
-                TrymigratePlugin plugin = provider.newInstance();
-                plugin.populate(lastLayerBeans);
+            for (GenericPluginProvider provider : layers.get(currentLayerNumber)) {
+                TrymigratePlugin plugin = provider.provide(lastLayerBeans);
                 currentLayerBeans = create(currentLayerBeans, plugin, currentLayerNumber);
             }
 

@@ -7,6 +7,7 @@ import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.callback.Callback;
@@ -25,6 +26,13 @@ import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlyw
 
 public class CorePlugin implements TrymigratePlugin {
 
+    public static class CorePluginProvider implements TrymigratePluginProvider<CorePlugin> {
+        @Override
+        public CorePlugin provide(TrymigrateBeanProvider beanProvider) {
+            return new CorePlugin(beanProvider);
+        }
+    }
+
     @TrymigrateBean
     private final LimitOptions limitOptions = LimitOptionsBuilder.newLimitOptions();
 
@@ -34,16 +42,16 @@ public class CorePlugin implements TrymigratePlugin {
             .toOptions();
 
     @TrymigrateBean
-    private TrymigrateFlywayCustomizer additionalBeanConfigurer;
+    private final TrymigrateFlywayCustomizer additionalBeanConfigurer;
 
     @TrymigrateBean
-    private TrymigrateFlywayCustomizer containerDataSourceConfigurer;
+    private final TrymigrateFlywayCustomizer containerDataSourceConfigurer;
 
     @TrymigrateBean
-    private TrymigrateLintsReporter lintsLogReporter;
+    private final TrymigrateLintsReporter lintsLogReporter;
 
     @TrymigrateBean
-    private TrymigrateLintsReporter lintsHtmlReporter;
+    private final TrymigrateLintsReporter lintsHtmlReporter;
 
     @TrymigrateBean
     private final CoreLinters coreLinters = new CoreLinters();
@@ -61,8 +69,7 @@ public class CorePlugin implements TrymigratePlugin {
         }
     };
 
-    @Override
-    public void populate(TrymigrateBeanProvider beanProvider) {
+    public CorePlugin(TrymigrateBeanProvider beanProvider) {
         additionalBeanConfigurer = configuration -> {
             addCallbacks(configuration, beanProvider.all(Callback.class));
             addJavaMigrations(configuration, beanProvider.all(JavaMigration.class));

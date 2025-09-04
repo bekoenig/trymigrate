@@ -1,31 +1,50 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
+/**
+ * Advanced discovery for {@link TrymigratePluginProvider} using {@link ServiceLoader}. Supports hierarchy detection
+ * for {@link TrymigratePlugin}, explicit excludes and skipping of unloadable classes.
+ * <p>
+ * Note: Some implementations could be moved to {@link TrymigratePluginProvider} for a more flexible way of discovery.
+ */
 public class PluginDiscovery {
 
-    private final ServiceLoader<TrymigratePlugin> serviceLoader;
+    @SuppressWarnings("rawtypes")
+    private final ServiceLoader<TrymigratePluginProvider> serviceLoader;
 
     public PluginDiscovery() {
-        serviceLoader = ServiceLoader.load(TrymigratePlugin.class);
+        serviceLoader = ServiceLoader.load(TrymigratePluginProvider.class);
     }
 
-    public List<PluginProvider> discover(Class<? extends TrymigratePlugin> interfaceType,
-                                         Class<? extends TrymigratePlugin>[] excludedTypes) {
+    public List<GenericPluginProvider> discover(Class<? extends TrymigratePlugin> interfaceType,
+                                                Class<? extends TrymigratePlugin>[] excludedTypes) {
         if (!interfaceType.isInterface()) {
             throw new IllegalArgumentException("Only interfaces are supported.");
         }
 
         return serviceLoader
                 .stream()
-                .filter(p -> hasCommonSuperinterface(p.type(), interfaceType))
-                .filter(p -> !ofType(p.type(), excludedTypes))
-                .map(p -> new PluginProvider(p, countIntermediateInterfaces(p.type())))
+                .map(ServiceLoader.Provider::get)
+                .filter(PluginDiscovery::hasLoadableType)
+                .filter(p -> hasCommonSuperinterface(p.forType(), interfaceType))
+                .filter(p -> !ofType(p.forType(), excludedTypes))
+                .map(p -> new GenericPluginProvider(p, countIntermediateInterfaces(p.forType())))
                 .toList();
+    }
+
+    protected static boolean hasLoadableType(TrymigratePluginProvider<TrymigratePlugin> provider) {
+        try {
+            provider.forType();
+            return true;
+        } catch (NoClassDefFoundError e) {
+            return false;
+        }
     }
 
     protected static boolean hasCommonSuperinterface(Class<?> pluginType, Class<?> interfaceType) {

@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core.plugin;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 
 /**
- * Marker interface for loadable plugins by {@link java.util.ServiceLoader}. Each plugin implementation supplies one
+ * Marker interface for plugins provided by {@link TrymigratePluginProvider}. Each plugin implementation supplies one
  * or more customizations by fields annotated with {@link TrymigrateBean}.
  * <p>
  * The priority of a plugin is the forced order for beans. It is specified by the number of interface extensions
@@ -17,16 +17,4 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
  * @see Trymigrate#discoverPlugin()
  */
 public interface TrymigratePlugin {
-
-    /**
-     * Populates all beans from plugins with higher hierarchy and the current test instance to this plugin. Will be
-     * invoked after plugin initialization in test instance post-processing. All fields annotated with
-     * {@link TrymigrateBean} of this plugin are collected after method call.
-     *
-     * @param beanProvider {@link TrymigrateBeanProvider} with beans from plugin with higher priority
-     *                                                   or the current test instance
-     */
-    default void populate(TrymigrateBeanProvider beanProvider) {
-    }
-
 }

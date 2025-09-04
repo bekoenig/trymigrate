@@ -6,7 +6,7 @@ import java.util.Optional;
 /**
  * Facade to lookup registered {@link TrymigrateBean} in {@link TrymigratePlugin} and test instance.
  *
- * @see TrymigratePlugin#populate(TrymigrateBeanProvider)
+ * @see TrymigratePluginProvider#provide(TrymigrateBeanProvider)
  */
 public interface TrymigrateBeanProvider {
 

@@ -2,11 +2,21 @@ package io.github.bekoenig.trymigrate.database.postgresql;
 
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 import schemacrawler.tools.lint.LintSeverity;
 
 import java.util.Map;
 
 public class ExamplePostgreSQLSchemaTestPlugin implements TrymigratePostgreSQLPlugin {
+
+    public static class ExamplePostgreSQLSchemaTestPluginProvider
+            implements TrymigratePluginProvider<ExamplePostgreSQLSchemaTestPlugin> {
+        @Override
+        public ExamplePostgreSQLSchemaTestPlugin provide(TrymigrateBeanProvider beanProvider) {
+            return new ExamplePostgreSQLSchemaTestPlugin();
+        }
+    }
 
     @TrymigrateBean
     private final DummyLinterProvider dummyLinterProvider = new DummyLinterProvider();
