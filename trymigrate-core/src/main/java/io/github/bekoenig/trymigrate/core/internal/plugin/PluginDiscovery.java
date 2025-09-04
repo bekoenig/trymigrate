@@ -34,7 +34,7 @@ public class PluginDiscovery {
                 .filter(PluginDiscovery::hasLoadableType)
                 .filter(p -> hasCommonSuperinterface(p.forType(), interfaceType))
                 .filter(p -> !ofType(p.forType(), excludedTypes))
-                .map(p -> new GenericPluginProvider(p, countIntermediateInterfaces(p.forType())))
+                .map(p -> new GenericPluginProvider(p, calculateRank(p.forType())))
                 .toList();
     }
 
@@ -60,12 +60,12 @@ public class PluginDiscovery {
     }
 
     @SuppressWarnings("unchecked")
-    protected static int countIntermediateInterfaces(Class<? extends TrymigratePlugin> plugin) {
+    protected static int calculateRank(Class<? extends TrymigratePlugin> plugin) {
         int incrementer = plugin.isInterface() ? 1 : 0;
         return Stream.of(plugin.getInterfaces())
                 .filter(TrymigratePlugin.class::isAssignableFrom)
                 .map(i -> (Class<? extends TrymigratePlugin>) i)
-                .mapToInt(i -> incrementer + countIntermediateInterfaces(i))
+                .mapToInt(i -> incrementer + calculateRank(i))
                 .max().orElse(0);
     }
 

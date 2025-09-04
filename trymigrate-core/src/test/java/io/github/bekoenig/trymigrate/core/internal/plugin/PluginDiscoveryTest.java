@@ -56,19 +56,19 @@ class PluginDiscoveryTest {
     }
 
     @Test
-    void countIntermediateInterfaces() {
-        assertThat(PluginDiscovery.countIntermediateInterfaces(TrymigratePlugin.class)).isEqualTo(0);
-        assertThat(PluginDiscovery.countIntermediateInterfaces(P1.class)).isEqualTo(1);
-        assertThat(PluginDiscovery.countIntermediateInterfaces(P2.class)).isEqualTo(2);
-        assertThat(PluginDiscovery.countIntermediateInterfaces(P3.class)).isEqualTo(3);
+    void calculateRank() {
+        assertThat(PluginDiscovery.calculateRank(TrymigratePlugin.class)).isEqualTo(0);
+        assertThat(PluginDiscovery.calculateRank(P1.class)).isEqualTo(1);
+        assertThat(PluginDiscovery.calculateRank(P2.class)).isEqualTo(2);
+        assertThat(PluginDiscovery.calculateRank(P3.class)).isEqualTo(3);
 
         class P0Impl implements TrymigratePlugin {}
-        assertThat(PluginDiscovery.countIntermediateInterfaces(P0Impl.class)).isEqualTo(0);
+        assertThat(PluginDiscovery.calculateRank(P0Impl.class)).isEqualTo(0);
 
         interface P12 extends P1, P2 {}
-        assertThat(PluginDiscovery.countIntermediateInterfaces(P12.class)).isEqualTo(3);
+        assertThat(PluginDiscovery.calculateRank(P12.class)).isEqualTo(3);
 
         interface P02 extends TrymigratePlugin, P2 {}
-        assertThat(PluginDiscovery.countIntermediateInterfaces(P02.class)).isEqualTo(3);
+        assertThat(PluginDiscovery.calculateRank(P02.class)).isEqualTo(3);
     }
 }
