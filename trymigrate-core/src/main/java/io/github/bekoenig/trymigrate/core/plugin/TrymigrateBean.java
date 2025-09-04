@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * <p>
  * Supported for fields in test instances or {@link TrymigratePlugin}.
  * <p>
- * Use {@link org.junit.jupiter.api.Order} to explicit the priority in test instance or same plugin hierarchy.
+ * Use {@link org.junit.jupiter.api.Order} to explicit the priority in test instance or the same plugin hierarchy level.
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

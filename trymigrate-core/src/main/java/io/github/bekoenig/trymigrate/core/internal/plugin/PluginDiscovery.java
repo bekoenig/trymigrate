@@ -8,7 +8,7 @@ import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
 /**
- * Advanced discovery for {@link TrymigratePluginProvider} using {@link ServiceLoader}. Supports hierarchy detection
+ * Advanced discovery for {@link TrymigratePluginProvider} using {@link ServiceLoader}. Supports hierarchical ranking
  * for {@link TrymigratePlugin}, explicit excludes and skipping of unloadable classes.
  * <p>
  * Note: Some implementations could be moved to {@link TrymigratePluginProvider} for a more flexible way of discovery.

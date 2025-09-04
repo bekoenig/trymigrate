@@ -16,12 +16,12 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
 
     private final Object instance;
     private final Field field;
-    private final Integer hierarchy;
+    private final Integer rank;
 
-    public BeanDefinition(Object instance, Field field, Integer hierarchy) {
+    public BeanDefinition(Object instance, Field field, Integer rank) {
         this.instance = instance;
         this.field = field;
-        this.hierarchy = hierarchy;
+        this.rank = rank;
     }
 
     public int getOrder() {
@@ -39,9 +39,9 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
             return compareOrder;
         }
 
-        int compareHierarchy = -Integer.compare(hierarchy, other.hierarchy);
-        if (compareHierarchy != 0) {
-            return compareHierarchy;
+        int compareRank = -Integer.compare(rank, other.rank);
+        if (compareRank != 0) {
+            return compareRank;
         }
 
         return Boolean.compare(nonNullable(), other.nonNullable());

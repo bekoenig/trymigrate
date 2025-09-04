@@ -19,7 +19,7 @@ class BeanDefinitionTest {
         return getBeanDefinition(instance, 0);
     }
 
-    private static BeanDefinition getBeanDefinition(Object instance, Integer hierarchy) {
+    private static BeanDefinition getBeanDefinition(Object instance, Integer rank) {
         Field field;
         try {
             field = instance.getClass().getDeclaredField("attribute");
@@ -27,7 +27,7 @@ class BeanDefinitionTest {
             throw new RuntimeException(e);
         }
         field.setAccessible(true);
-        return new BeanDefinition(instance, field, hierarchy);
+        return new BeanDefinition(instance, field, rank);
     }
 
     @Test
@@ -67,7 +67,7 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void compareTo_differentHierarchy() {
+    void compareTo_differentRank() {
         // GIVEN
         BeanDefinition beanDefinition1 = getBeanDefinition(new Object() {
             private final String attribute = null;

@@ -15,21 +15,21 @@ public class GenericPluginProvider {
     private final TrymigratePluginProvider<TrymigratePlugin> delegate;
 
     /**
-     * Hierarchy of interface. See {@link TrymigratePlugin} for details.
+     * Rank of interface. See {@link TrymigratePlugin} for details.
      */
-    private final Integer hierarchy;
+    private final Integer rank;
 
-    public GenericPluginProvider(TrymigratePluginProvider<TrymigratePlugin> delegate, Integer hierarchy) {
+    public GenericPluginProvider(TrymigratePluginProvider<TrymigratePlugin> delegate, Integer rank) {
         this.delegate = delegate;
-        this.hierarchy = hierarchy;
+        this.rank = rank;
     }
 
     public TrymigratePlugin provide(TrymigrateBeanProvider beanProvider) {
         return delegate.provide(beanProvider);
     }
 
-    public Integer getHierarchy() {
-        return hierarchy;
+    public Integer getRank() {
+        return rank;
     }
 
 }

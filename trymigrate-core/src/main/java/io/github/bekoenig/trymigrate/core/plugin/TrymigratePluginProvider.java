@@ -33,7 +33,7 @@ public interface TrymigratePluginProvider<T extends TrymigratePlugin> {
     /**
      * Provides a new instance of {@link TrymigratePlugin}.
      * <p>
-     * The {@link TrymigrateBeanProvider} populates all beans from plugins with higher hierarchy and the current test
+     * The {@link TrymigrateBeanProvider} populates all beans from plugins with higher rank and the current test
      * instance to this plugin. Will be invoked after plugin initialization in test instance post-processing. All fields
      * annotated with {@link TrymigrateBean} of this plugin are collected after method call.
      *
