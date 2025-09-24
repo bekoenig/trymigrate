@@ -17,6 +17,7 @@ public interface TrymigratePluginProvider<T extends TrymigratePlugin> {
      *
      * @return provided type
      */
+    @SuppressWarnings("unchecked")
     default Class<T> forType() {
         // reflect generic type for provider implementations with single interface
         if (getClass().getGenericInterfaces().length == 1
