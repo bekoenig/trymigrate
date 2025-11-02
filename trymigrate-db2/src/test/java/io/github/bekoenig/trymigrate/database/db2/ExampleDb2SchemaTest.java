@@ -42,7 +42,7 @@ public class ExampleDb2SchemaTest {
 
     @TrymigrateBean
     private final Db2Container db2Container =
-            new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:11.5.9.0"))
+            new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:12.1.2.0"))
                     .acceptLicense();
 
     @TrymigrateBean
