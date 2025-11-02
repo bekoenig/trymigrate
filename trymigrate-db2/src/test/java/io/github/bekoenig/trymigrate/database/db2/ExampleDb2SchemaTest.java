@@ -16,7 +16,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.testcontainers.containers.Db2Container;
+import org.testcontainers.db2.Db2Container;
 import org.testcontainers.utility.DockerImageName;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.LintSeverity;

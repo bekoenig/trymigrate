@@ -17,7 +17,7 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.diff.DiffResult;
-import org.testcontainers.containers.Db2Container;
+import org.testcontainers.db2.Db2Container;
 import org.testcontainers.utility.DockerImageName;
 import us.fatehi.utility.database.SqlScript;
 
