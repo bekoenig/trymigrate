@@ -20,7 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.LintSeverity;
@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateBean
-    private final List<PostgreSQLContainer<?>> containerDatabase = List.of(new PostgreSQLContainer<>(
+    private final List<PostgreSQLContainer> containerDatabase = List.of(new PostgreSQLContainer(
             DockerImageName.parse("postgres:18.0")));
 
     @TrymigrateBean

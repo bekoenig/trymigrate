@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
-import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class FailOnAboveTargetTest implements TestInstancePostProcessor {
 
     @TrymigrateBean
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.0"));
+    private final PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:18.0"));
 
     private static ExtensionContext extensionContext;
 
