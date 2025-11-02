@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 public class FailOnAboveTargetTest implements TestInstancePostProcessor {
 
     @TrymigrateBean
-    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:17.2"));
+    private final PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:18.0"));
 
     private static ExtensionContext extensionContext;
 
