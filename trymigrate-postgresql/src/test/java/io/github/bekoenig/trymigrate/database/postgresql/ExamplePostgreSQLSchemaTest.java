@@ -49,7 +49,7 @@ public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateBean
     private final List<PostgreSQLContainer<?>> containerDatabase = List.of(new PostgreSQLContainer<>(
-            DockerImageName.parse("postgres:17.2")));
+            DockerImageName.parse("postgres:18.0")));
 
     @TrymigrateBean
     private final List<NoopJavaMigration> javaMigrations = List.of(new NoopJavaMigration("1.0.1"));
