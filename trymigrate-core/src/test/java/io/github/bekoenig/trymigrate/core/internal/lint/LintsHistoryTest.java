@@ -4,6 +4,7 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import schemacrawler.tools.lint.Lint;
+import schemacrawler.tools.lint.LintObjectType;
 import schemacrawler.tools.lint.Lints;
 
 import java.io.Serializable;
@@ -19,9 +20,7 @@ class LintsHistoryTest {
 
     @BeforeEach
     void setUp() {
-        lintsHistory = new LintsHistory(new LintPatterns(List.of(
-                new LintPattern("someLinter", "ANY_TAB"),
-                new LintPattern("someOtherLinter", "ANY_COL"))));
+        lintsHistory = new LintsHistory();
     }
 
     @Test
@@ -128,5 +127,32 @@ class LintsHistoryTest {
 
         // THEN
         assertThat(actual).isEqualTo(MigrationVersion.fromVersion("1.1"));
+    }
+
+    @Test
+    void diffNewLints() {
+        // GIVEN
+        Lint<? extends Serializable> lint0 = mock();
+        when(lint0.getLinterId()).thenReturn("anyLinter");
+        when(lint0.getObjectType()).thenReturn(LintObjectType.unknown);
+        when(lint0.getObjectName()).thenReturn("unknown0");
+
+        Lint<? extends Serializable> lint1 = mock();
+        when(lint1.getLinterId()).thenReturn("moreLinter");
+        when(lint1.getObjectType()).thenReturn(LintObjectType.unknown);
+        when(lint1.getObjectName()).thenReturn("unknown1");
+
+        MigrationVersion migrationVersion1 = MigrationVersion.fromVersion("1");
+        Lints lints1 = new Lints(List.of(lint0));
+        MigrationVersion migrationVersion2 = MigrationVersion.fromVersion("2");
+        Lints lints2 = new Lints(List.of(lint0, lint1));
+
+        // WHEN
+        Lints newLints1 = lintsHistory.diffNewLints(migrationVersion1, lints1);
+        Lints newLints2 = lintsHistory.diffNewLints(migrationVersion2, lints2);
+
+        // THEN
+        assertThat(newLints1).hasSize(1).containsOnly(lint0);
+        assertThat(newLints2).hasSize(1).containsOnly(lint1);
     }
 }

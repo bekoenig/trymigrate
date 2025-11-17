@@ -15,17 +15,20 @@ import java.util.List;
 
 public class LintProcessor {
 
+    private final LintPatterns excludedLintPatterns;
     private final LinterInitializer linterInitializer;
     private final List<TrymigrateLintersConfigurer> lintersConfigurers;
     private final LintsHistory lintsHistory;
     private final List<TrymigrateLintsReporter> lintsReporters;
     private final LintsAssert lintsAssert;
 
-    public LintProcessor(LinterInitializer linterInitializer,
+    public LintProcessor(LintPatterns excludedLintPatterns,
+                         LinterInitializer linterInitializer,
                          List<TrymigrateLintersConfigurer> lintersConfigurers,
                          LintsHistory lintsHistory,
                          List<TrymigrateLintsReporter> lintsReporters,
                          LintsAssert lintsAssert) {
+        this.excludedLintPatterns = excludedLintPatterns;
         this.linterInitializer = linterInitializer;
         this.lintersConfigurers = lintersConfigurers;
         this.lintsHistory = lintsHistory;
@@ -40,12 +43,9 @@ public class LintProcessor {
 
         Linters linters = lintersBuilder.build(linterInitializer);
         linters.lint(catalog, connection);
-        Lints currentLints = linters.getLints();
+        Lints currentLints = new Lints(excludedLintPatterns.dropMatching(linters.getLints().stream()).toList());
 
-        MigrationVersion lastAnalyzedVersion = lintsHistory.getLastAnalyzedVersion();
-        lintsHistory.put(migrationVersion, currentLints);
-
-        Lints newLints = lintsHistory.diffLints(lastAnalyzedVersion, migrationVersion);
+        Lints newLints = lintsHistory.diffNewLints(migrationVersion, currentLints);
         lintsReporters.forEach(x -> x.report(catalog, newLints, schema, migrationVersion));
     }
 

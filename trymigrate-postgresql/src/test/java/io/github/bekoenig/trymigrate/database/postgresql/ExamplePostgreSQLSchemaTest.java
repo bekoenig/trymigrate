@@ -107,7 +107,7 @@ public class ExamplePostgreSQLSchemaTest {
         assertThat(catalog).isNotNull();
         assertThat(dataSource).isNotNull();
 
-        assertThat(lints).hasSize(7);
+        assertThat(lints).hasSize(4);
 
         assertThat(catalog.getSchemas()).hasSize(1);
 
@@ -145,7 +145,7 @@ public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateTest(whenTarget = "1.1")
     public void test_Comments(Lints lints) {
-        assertThat(lints).hasSize(5);
+        assertThat(lints).hasSize(2);
     }
 
     @Test
