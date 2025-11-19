@@ -4,7 +4,7 @@
 
     <groupId>io.github.bekoenig.trymigrate</groupId>
     <artifactId>trymigrate</artifactId>
-    <version>1.1.2</version>
+    <version>1.1.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>trymigrate</name>
@@ -64,7 +64,7 @@
         <connection>scm:git:git@github.com:bekoenig/trymigrate.git</connection>
         <developerConnection>scm:git:git@github.com:bekoenig/trymigrate.git</developerConnection>
         <url>https://github.com/bekoenig/trymigrate</url>
-        <tag>1.1.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
