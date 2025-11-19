@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(TrymigrateExcludeLints.class)
+@Repeatable(TrymigrateExcludeLint.TrymigrateExcludeLints.class)
 public @interface TrymigrateExcludeLint {
 
     /**
@@ -26,5 +26,18 @@ public @interface TrymigrateExcludeLint {
      * @return object name
      */
     String objectName() default ".*";
+
+    /**
+     * Meta annotation to add support for repeatable usage of {@link TrymigrateExcludeLint}.
+     * <p>
+     * Only necessary for compile time.
+     */
+    @Target({ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface TrymigrateExcludeLints {
+
+        TrymigrateExcludeLint[] value();
+
+    }
 
 }

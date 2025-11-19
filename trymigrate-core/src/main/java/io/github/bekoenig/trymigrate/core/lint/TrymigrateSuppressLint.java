@@ -13,7 +13,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(TrymigrateSuppressLints.class)
+@Repeatable(TrymigrateSuppressLint.TrymigrateSuppressLints.class)
 public @interface TrymigrateSuppressLint {
 
     /**
@@ -29,5 +29,18 @@ public @interface TrymigrateSuppressLint {
      * @return object name
      */
     String objectName() default ".*";
+
+    /**
+     * Meta annotation to add support for repeatable usage of {@link TrymigrateSuppressLint}.
+     * <p>
+     * Only necessary for compile time.
+     */
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface TrymigrateSuppressLints {
+
+        TrymigrateSuppressLint[] value();
+
+    }
 
 }
