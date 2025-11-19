@@ -80,7 +80,8 @@ public class CorePlugin implements TrymigratePlugin {
             try {
                 container = beanProvider.findOne(JdbcDatabaseContainer.class);
             } catch (NoClassDefFoundError e) {
-                container = Optional.empty();
+                // skip datasource autoconfiguration for container on missing optional dependency
+                return;
             }
             container.ifPresent(c -> configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
         };
