@@ -26,7 +26,7 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
          * @param linterId id of linter
          * @return intermediate interface for specific configuration of the enabled linter
          */
-        TrymigrateLinterConfiguration enable(String linterId);
+        TrymigrateLinterConfiguration configure(String linterId);
 
         /**
          * Disables an enabled linter by removing all configs.
@@ -42,10 +42,10 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
          * @param linterId id of linter
          * @return intermediate interface for specific configuration of the enabled linter
          */
-        TrymigrateLinterConfiguration reenable(String linterId);
+        TrymigrateLinterConfiguration reconfigure(String linterId);
 
         /**
-         * Intermediate interface to add specific configurations to the enabled linter or enable the next linter.
+         * Intermediate interface to add specific configurations to the enabled linter or configure the next linter.
          *
          * @see TrymigrateLintersConfigurer
          * @see TrymigrateLintersConfiguration

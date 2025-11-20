@@ -45,7 +45,7 @@ public class LintersBuilder implements
         }
     }
 
-    public TrymigrateLinterConfiguration enable(String linterId) {
+    public TrymigrateLinterConfiguration configure(String linterId) {
         endLinterConfig();
         startLinterConfig(linterId);
         return this;
@@ -59,8 +59,8 @@ public class LintersBuilder implements
     }
 
     @Override
-    public TrymigrateLinterConfiguration reenable(String linterId) {
-        return disable(linterId).enable(linterId);
+    public TrymigrateLinterConfiguration reconfigure(String linterId) {
+        return disable(linterId).configure(linterId);
     }
 
     @Override

@@ -7,26 +7,26 @@ public class CoreLinters implements TrymigrateLintersConfigurer {
     @Override
     public void accept(TrymigrateLintersConfiguration configuration) {
         configuration
-                .enable("schemacrawler.tools.linter.LinterColumnTypes")
-                .enable("schemacrawler.tools.linter.LinterForeignKeyMismatch")
-                .enable("schemacrawler.tools.linter.LinterForeignKeySelfReference")
-                .enable("schemacrawler.tools.linter.LinterForeignKeyWithNoIndexes")
-                .enable("schemacrawler.tools.linter.LinterNullColumnsInIndex")
-                .enable("schemacrawler.tools.linter.LinterNullIntendedColumns")
-                .enable("schemacrawler.tools.linter.LinterRedundantIndexes")
-                .enable("schemacrawler.tools.linter.LinterTableAllNullableColumns")
-                .enable("schemacrawler.tools.linter.LinterTableCycles")
-                .enable("schemacrawler.tools.linter.LinterTableEmpty")
-                .enable("schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
-                .enable("schemacrawler.tools.linter.LinterTableWithIncrementingColumns")
-                .enable("schemacrawler.tools.linter.LinterTableWithNoIndexes")
-                .enable("schemacrawler.tools.linter.LinterTableWithNoPrimaryKey")
-                .enable("schemacrawler.tools.linter.LinterTableWithNoRemarks")
-                .enable("schemacrawler.tools.linter.LinterTableWithNoSurrogatePrimaryKey")
-                .enable("schemacrawler.tools.linter.LinterTableWithPrimaryKeyNotFirst")
-                .enable("schemacrawler.tools.linter.LinterTableWithQuotedNames")
-                .enable("schemacrawler.tools.linter.LinterTableWithSingleColumn")
-                .enable("schemacrawler.tools.linter.LinterTooManyLobs");
+                .configure("schemacrawler.tools.linter.LinterColumnTypes")
+                .configure("schemacrawler.tools.linter.LinterForeignKeyMismatch")
+                .configure("schemacrawler.tools.linter.LinterForeignKeySelfReference")
+                .configure("schemacrawler.tools.linter.LinterForeignKeyWithNoIndexes")
+                .configure("schemacrawler.tools.linter.LinterNullColumnsInIndex")
+                .configure("schemacrawler.tools.linter.LinterNullIntendedColumns")
+                .configure("schemacrawler.tools.linter.LinterRedundantIndexes")
+                .configure("schemacrawler.tools.linter.LinterTableAllNullableColumns")
+                .configure("schemacrawler.tools.linter.LinterTableCycles")
+                .configure("schemacrawler.tools.linter.LinterTableEmpty")
+                .configure("schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
+                .configure("schemacrawler.tools.linter.LinterTableWithIncrementingColumns")
+                .configure("schemacrawler.tools.linter.LinterTableWithNoIndexes")
+                .configure("schemacrawler.tools.linter.LinterTableWithNoPrimaryKey")
+                .configure("schemacrawler.tools.linter.LinterTableWithNoRemarks")
+                .configure("schemacrawler.tools.linter.LinterTableWithNoSurrogatePrimaryKey")
+                .configure("schemacrawler.tools.linter.LinterTableWithPrimaryKeyNotFirst")
+                .configure("schemacrawler.tools.linter.LinterTableWithQuotedNames")
+                .configure("schemacrawler.tools.linter.LinterTableWithSingleColumn")
+                .configure("schemacrawler.tools.linter.LinterTooManyLobs");
     }
 
 }
