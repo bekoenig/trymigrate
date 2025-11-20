@@ -6,7 +6,7 @@ import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.config.LinterConfig;
 import schemacrawler.tools.lint.config.LinterConfigs;
-import schemacrawler.tools.options.Config;
+import schemacrawler.tools.options.ConfigUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +102,7 @@ public class LintersBuilder implements
     public Linters build(LinterInitializer linterInitializer) {
         endLinterConfig();
 
-        LinterConfigs linterConfigs = new LinterConfigs(new Config());
+        LinterConfigs linterConfigs = new LinterConfigs(ConfigUtility.newConfig());
         configs.forEach(linterConfigs::add);
 
         Linters linters = new Linters(linterConfigs, false);
