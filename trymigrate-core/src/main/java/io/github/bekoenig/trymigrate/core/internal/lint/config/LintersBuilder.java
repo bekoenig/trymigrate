@@ -1,7 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLinterConfiguration;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfiguration;
+import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
@@ -14,7 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class LintersBuilder implements TrymigrateLintersConfiguration, TrymigrateLinterConfiguration {
+public class LintersBuilder implements
+        TrymigrateLintersConfigurer.TrymigrateLintersConfiguration,
+        TrymigrateLintersConfigurer.TrymigrateLintersConfiguration.TrymigrateLinterConfiguration {
 
     private final RestrictedPattern tablePattern;
     private final List<LinterConfig> configs = new ArrayList<>();
@@ -51,7 +52,7 @@ public class LintersBuilder implements TrymigrateLintersConfiguration, Trymigrat
     }
 
     @Override
-    public TrymigrateLintersConfiguration disable(String linterId) {
+    public TrymigrateLintersConfigurer.TrymigrateLintersConfiguration disable(String linterId) {
         endLinterConfig();
         configs.removeIf(config -> config.getLinterId().equals(linterId));
         return this;

@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfiguration;
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 
 public class CoreLinters implements TrymigrateLintersConfigurer {
