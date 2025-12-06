@@ -125,8 +125,6 @@ public class MigrateProcessor {
     }
 
     public void finish() {
-        migrate(MigrationVersion.LATEST, List.of(), false, LintPatterns.EMPTY);
-
         if (Objects.nonNull(jdbcDatabaseContainer)) {
             jdbcDatabaseContainer.stop();
         }
