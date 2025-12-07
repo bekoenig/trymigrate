@@ -14,7 +14,6 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.platform.commons.annotation.Testable;
 import schemacrawler.tools.lint.LintSeverity;
 
 import java.lang.annotation.ElementType;
@@ -43,7 +42,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @TestInstance(Lifecycle.PER_CLASS)
-@Testable
 @ExtendWith({
         MigrateInitializer.class,
         MigrateExecutor.class,
