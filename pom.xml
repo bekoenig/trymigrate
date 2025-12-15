@@ -49,7 +49,7 @@
 
         <testcontainers.version>2.0.2</testcontainers.version>
 
-        <mockito.version>5.20.0</mockito.version>
+        <mockito.version>5.21.0</mockito.version>
         <assertj.version>3.27.6</assertj.version>
         <assertj-schemacrawler.version>2.0.0</assertj-schemacrawler.version>
 
