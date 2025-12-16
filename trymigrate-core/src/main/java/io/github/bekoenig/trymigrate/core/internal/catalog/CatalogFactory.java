@@ -34,7 +34,10 @@ public class CatalogFactory {
     private final Config additionalConfig;
 
     public CatalogFactory(List<TrymigrateCatalogCustomizer> customizers) {
-        LimitOptions limitOptions = customizedBuild(LimitOptionsBuilder.builder(),
+        LimitOptions limitOptions = customizedBuild(LimitOptionsBuilder.builder()
+                        .includeAllRoutines()
+                        .includeAllSequences()
+                        .includeAllSynonyms(),
                 customizers, c -> c::customize, OptionsBuilder::build);
 
         FilterOptions filterOptions = customizedBuild(FilterOptionsBuilder.builder(),
