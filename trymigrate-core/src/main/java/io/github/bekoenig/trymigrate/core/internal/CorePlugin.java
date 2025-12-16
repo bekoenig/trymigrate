@@ -13,7 +13,6 @@ import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCusto
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import schemacrawler.schemacrawler.*;
 import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 import us.fatehi.utility.database.SqlScript;
@@ -32,14 +31,6 @@ public class CorePlugin implements TrymigratePlugin {
             return new CorePlugin(beanProvider);
         }
     }
-
-    @TrymigrateBean
-    private final LimitOptions limitOptions = LimitOptionsBuilder.newLimitOptions();
-
-    @TrymigrateBean
-    private final LoadOptions loadOptions = LoadOptionsBuilder.builder()
-            .withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum())
-            .toOptions();
 
     @TrymigrateBean
     private final TrymigrateFlywayCustomizer additionalBeanConfigurer;

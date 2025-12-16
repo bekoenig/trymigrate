@@ -14,12 +14,11 @@ import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import schemacrawler.schemacrawler.LimitOptions;
-import schemacrawler.schemacrawler.LoadOptions;
 import schemacrawler.tools.lint.LinterProvider;
 
 import java.lang.reflect.AnnotatedElement;
@@ -36,12 +35,12 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 testConfiguration.discoverPlugin(), testConfiguration.excludePlugins()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
-                beanProvider.first(LimitOptions.class), beanProvider.first(LoadOptions.class));
+                reverse(beanProvider.all(TrymigrateCatalogCustomizer.class)));
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
                 new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
-                allLintersConfigurers(beanProvider),
+                reverse(beanProvider.all(TrymigrateLintersConfigurer.class)),
                 new LintsHistory(),
                 beanProvider.all(TrymigrateLintsReporter.class),
                 new LintsAssert(testConfiguration.failOn()));
@@ -58,12 +57,10 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         migrateProcessor.prepare();
     }
 
-    private List<TrymigrateLintersConfigurer> allLintersConfigurers(TrymigrateBeanProvider beanProvider) {
-        List<TrymigrateLintersConfigurer> lintersConfigurers = new ArrayList<>(
-                beanProvider.all(TrymigrateLintersConfigurer.class));
-        // configurers with high order are applied at last to manipulate base definitions
-        Collections.reverse(lintersConfigurers);
-        return lintersConfigurers;
+    private <T> List<T> reverse(List<T> list) {
+        List<T> arrayList = new ArrayList<>(list);
+        Collections.reverse(arrayList);
+        return arrayList;
     }
 
     private LintPatterns excludedLintPatterns(AnnotatedElement annotatedElement) {
