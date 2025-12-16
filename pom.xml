@@ -102,11 +102,6 @@
             <!-- schemacrawler -->
             <dependency>
                 <groupId>us.fatehi</groupId>
-                <artifactId>schemacrawler</artifactId>
-                <version>${schemacrawler.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>us.fatehi</groupId>
                 <artifactId>schemacrawler-api</artifactId>
                 <version>${schemacrawler.version}</version>
             </dependency>
