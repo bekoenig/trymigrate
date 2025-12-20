@@ -54,13 +54,6 @@ import java.lang.annotation.Target;
 public @interface Trymigrate {
 
     /**
-     * Properties for flyway. Format is {@code [key]=[value]}. Prefix {@code flyway.*} is optional for keys.
-     *
-     * @return array of properties for flyway
-     */
-    String[] flywayProperties() default {};
-
-    /**
      * Restricts the plugin discovery to a subtree of plugins.
      *
      * @return interface extension of {@link TrymigratePlugin}

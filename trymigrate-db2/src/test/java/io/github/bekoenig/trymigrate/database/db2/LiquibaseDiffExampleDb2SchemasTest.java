@@ -2,8 +2,9 @@ package io.github.bekoenig.trymigrate.database.db2;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import liquibase.GlobalConfiguration;
 import liquibase.Scope;
 import liquibase.command.CommandResults;
@@ -27,16 +28,16 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Trymigrate(
-        flywayProperties = {
-                "defaultSchema=" + LiquibaseDiffExampleDb2SchemasTest.FLYWAY_SCHEMA,
-                "locations=classpath:db/migration/example/db2"
-        }
-)
+@Trymigrate
 @TrymigrateExcludeLint
 public class LiquibaseDiffExampleDb2SchemasTest {
 
     protected static final String FLYWAY_SCHEMA = "EXAMPLE_SCHEMA";
+
+    @TrymigrateBean
+    private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
+            .defaultSchema(LiquibaseDiffExampleDb2SchemasTest.FLYWAY_SCHEMA)
+            .locations("classpath:db/migration/example/db2");
 
     @TrymigrateBean
     private final Db2Container db2Container =

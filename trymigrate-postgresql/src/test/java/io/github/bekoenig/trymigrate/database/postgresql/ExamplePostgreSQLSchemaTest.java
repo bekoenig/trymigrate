@@ -6,11 +6,12 @@ import ch.qos.logback.core.read.ListAppender;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -34,18 +35,16 @@ import java.util.List;
 import static java.util.function.Predicate.isEqual;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Trymigrate(
-        flywayProperties = {
-                "defaultSchema=example_schema",
-                "locations=classpath:db/migration/example/postgresql",
-                "cleanDisabled=false"
-//                "url=jdbc:postgresql://localhost:5432/test",
-//                "user=test",
-//                "password=test",
-        }, failOn = LintSeverity.medium)
+@Trymigrate(failOn = LintSeverity.medium)
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableSql")
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
 public class ExamplePostgreSQLSchemaTest {
+
+    @TrymigrateBean
+    private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
+            .defaultSchema("example_schema")
+            .locations("classpath:db/migration/example/postgresql")
+            .cleanDisabled(false);
 
     @TrymigrateBean
     private final List<PostgreSQLContainer> containerDatabase = List.of(new PostgreSQLContainer(

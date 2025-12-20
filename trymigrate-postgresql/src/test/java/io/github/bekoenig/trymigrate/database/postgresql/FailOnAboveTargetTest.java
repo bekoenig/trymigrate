@@ -7,6 +7,7 @@ import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,16 +20,17 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Trymigrate(
-        flywayProperties = {
-                "defaultSchema=example_schema",
-                "locations=classpath:db/migration/example/postgresql"
-        })
+@Trymigrate
 @TrymigrateExcludeLint
 @ExtendWith({
         FailOnAboveTargetTest.class
 })
 public class FailOnAboveTargetTest implements TestInstancePostProcessor {
+
+    @TrymigrateBean
+    private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
+            .defaultSchema("example_schema")
+            .locations("classpath:db/migration/example/postgresql");
 
     @TrymigrateBean
     private final PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:18.0"));

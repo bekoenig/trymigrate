@@ -47,8 +47,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
                 resolveJdbcDatabaseContainer(beanProvider),
-                splitProperties(testConfiguration.flywayProperties()),
-                beanProvider.all(TrymigrateFlywayCustomizer.class),
+                beanProvider.all(TrymigrateFlywayCustomizer.class), // TODO: prefer reserved order
                 beanProvider.all(TrymigrateDataLoader.class),
                 catalogFactory,
                 lintProcessor);
@@ -67,27 +66,6 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         return new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         annotatedElement, TrymigrateExcludeLint.class).stream()
                 .map(x -> new LintPattern(x.linterId(), x.objectName())).toList());
-    }
-
-    private Map<String, String> splitProperties(String[] keyValues) {
-        Map<String, String> properties = new HashMap<>();
-        for (String keyValue : keyValues) {
-            int delimiterIndex = keyValue.indexOf("=");
-            if (delimiterIndex < 0) {
-                throw new IllegalArgumentException("Property '%s' does not match format 'key=value'"
-                        .formatted(keyValue));
-            }
-            properties.put(normalizePrefix(keyValue.substring(0, delimiterIndex)),
-                    keyValue.substring(delimiterIndex + 1));
-        }
-        return properties;
-    }
-
-    private String normalizePrefix(String propertyName) {
-        if (propertyName.startsWith("flyway.")) {
-            return propertyName;
-        }
-        return "flyway." + propertyName;
     }
 
     private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(TrymigrateBeanProvider beanProvider) {

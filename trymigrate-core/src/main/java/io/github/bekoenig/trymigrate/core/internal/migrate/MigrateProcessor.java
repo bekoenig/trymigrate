@@ -20,7 +20,6 @@ import schemacrawler.tools.lint.Lints;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
@@ -29,7 +28,6 @@ import static org.flywaydb.core.api.MigrationVersion.*;
 public class MigrateProcessor {
 
     private final JdbcDatabaseContainer<?> jdbcDatabaseContainer;
-    private final Map<String, String> properties;
     private final List<TrymigrateFlywayCustomizer> flywayCustomizers;
     private final List<TrymigrateDataLoader> dataLoaders;
     private final CatalogFactory catalogFactory;
@@ -39,11 +37,10 @@ public class MigrateProcessor {
     private Catalog catalog;
     private MigrationVersion currentTarget;
 
-    public MigrateProcessor(JdbcDatabaseContainer<?> jdbcDatabaseContainer, Map<String, String> properties,
+    public MigrateProcessor(JdbcDatabaseContainer<?> jdbcDatabaseContainer,
                             List<TrymigrateFlywayCustomizer> flywayCustomizers, List<TrymigrateDataLoader> dataLoaders,
                             CatalogFactory catalogFactory, LintProcessor lintProcessor) {
         this.jdbcDatabaseContainer = jdbcDatabaseContainer;
-        this.properties = properties;
         this.flywayCustomizers = flywayCustomizers;
         this.dataLoaders = dataLoaders;
         this.catalogFactory = catalogFactory;
@@ -51,12 +48,7 @@ public class MigrateProcessor {
     }
 
     private FluentConfiguration getConfiguration() {
-        FluentConfiguration fluentConfiguration = new FluentConfiguration().configuration(properties);
-        if (!fluentConfiguration.getTarget().isPredefined()) {
-            throw new UnsupportedOperationException("Forcing target for flyway is not allowed. Use @" +
-                    TrymigrateTest.class.getSimpleName() + "#whenTarget to force target.");
-        }
-
+        FluentConfiguration fluentConfiguration = new FluentConfiguration();
         flywayCustomizers.forEach(x -> x.accept(fluentConfiguration));
         return fluentConfiguration;
     }

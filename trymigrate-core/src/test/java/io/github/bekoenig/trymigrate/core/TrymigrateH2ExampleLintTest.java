@@ -2,6 +2,8 @@ package io.github.bekoenig.trymigrate.core;
 
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
@@ -10,12 +12,14 @@ import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Trymigrate(flywayProperties = {
-        "url=jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
-        "defaultSchema=EXAMPLE_SCHEMA",
-        "locations=classpath:db/migration/example/h2"
-}, failOn = LintSeverity.medium)
+@Trymigrate(failOn = LintSeverity.medium)
 public class TrymigrateH2ExampleLintTest {
+
+    @TrymigrateBean
+    private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
+            .defaultSchema("EXAMPLE_SCHEMA")
+            .dataSource("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", null, null)
+            .locations("classpath:db/migration/example/h2");
 
     @TrymigrateTest(whenTarget = "1.0")
     @TrymigrateSuppressLint(

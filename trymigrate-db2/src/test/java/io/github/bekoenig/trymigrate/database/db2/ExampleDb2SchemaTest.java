@@ -7,9 +7,10 @@ import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,17 +29,18 @@ import java.sql.Connection;
 import static java.util.function.Predicate.isEqual;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Trymigrate(
-        flywayProperties = {
-                "defaultSchema=EXAMPLE_SCHEMA",
-                "locations=classpath:db/migration/example/db2",
-                "cleanDisabled=false"
-        }, failOn = LintSeverity.critical)
+@Trymigrate(failOn = LintSeverity.critical)
 public class ExampleDb2SchemaTest {
 
     private ListAppender<ILoggingEvent> listAppender;
 
     private boolean trymigrateDataLoadHandleInvoked;
+
+    @TrymigrateBean
+    private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
+            .defaultSchema("EXAMPLE_SCHEMA")
+            .locations("classpath:db/migration/example/db2")
+            .cleanDisabled(false);
 
     @TrymigrateBean
     private final Db2Container db2Container =
