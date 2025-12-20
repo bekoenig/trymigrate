@@ -5,7 +5,6 @@ import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
-import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.MigrationVersion;
@@ -21,7 +20,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Trymigrate
-@TrymigrateExcludeLint
 @ExtendWith({
         FailOnAboveTargetTest.class
 })

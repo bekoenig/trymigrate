@@ -11,6 +11,7 @@ import schemacrawler.tools.lint.Lints;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LintsAssert {
@@ -21,7 +22,15 @@ public class LintsAssert {
         this.failOn = failOn;
     }
 
+    private boolean isDisabled() {
+        return Objects.isNull(failOn);
+    }
+
     public void assertLints(Lints lints, LintPatterns suppressedLintPatterns) {
+        if (isDisabled()) {
+            return;
+        }
+
         List<Lint<? extends Serializable>> assertLints = suppressedLintPatterns
                 .dropMatching(lints.getLints().stream())
                 .filter(x -> hasOrExceedsSeverity(x, failOn))

@@ -8,6 +8,7 @@ import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
@@ -29,7 +30,8 @@ import java.sql.Connection;
 import static java.util.function.Predicate.isEqual;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Trymigrate(failOn = LintSeverity.critical)
+@Trymigrate
+@TrymigrateAssertLints(failOn = LintSeverity.critical)
 public class ExampleDb2SchemaTest {
 
     private ListAppender<ILoggingEvent> listAppender;

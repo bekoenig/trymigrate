@@ -1,6 +1,7 @@
 package io.github.bekoenig.trymigrate.core;
 
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
@@ -12,7 +13,8 @@ import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Trymigrate(failOn = LintSeverity.medium)
+@Trymigrate
+@TrymigrateAssertLints(failOn = LintSeverity.medium)
 public class TrymigrateH2ExampleLintTest {
 
     @TrymigrateBean
