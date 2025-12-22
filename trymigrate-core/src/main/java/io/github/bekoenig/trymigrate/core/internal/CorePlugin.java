@@ -62,8 +62,8 @@ public class CorePlugin implements TrymigratePlugin {
 
     public CorePlugin(TrymigrateBeanProvider beanProvider) {
         additionalBeanConfigurer = configuration -> {
-            addCallbacks(configuration, beanProvider.allReservedOrder(Callback.class));
-            addJavaMigrations(configuration, beanProvider.allReservedOrder(JavaMigration.class));
+            addCallbacks(configuration, beanProvider.all(Callback.class));
+            addJavaMigrations(configuration, beanProvider.all(JavaMigration.class));
         };
 
         containerDataSourceConfigurer = configuration -> {

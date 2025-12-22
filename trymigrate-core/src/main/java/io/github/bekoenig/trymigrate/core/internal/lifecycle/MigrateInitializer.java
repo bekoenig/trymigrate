@@ -44,16 +44,16 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
-                new CompositeLinterRegistry(beanProvider.allReservedOrder(LinterProvider.class)),
+                new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
                 beanProvider.allReservedOrder(TrymigrateLintersConfigurer.class),
                 new LintsHistory(),
-                beanProvider.allReservedOrder(TrymigrateLintsReporter.class),
+                beanProvider.all(TrymigrateLintsReporter.class),
                 new LintsAssert(failOn));
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
                 resolveJdbcDatabaseContainer(beanProvider),
                 beanProvider.allReservedOrder(TrymigrateFlywayCustomizer.class),
-                beanProvider.allReservedOrder(TrymigrateDataLoader.class),
+                beanProvider.all(TrymigrateDataLoader.class),
                 catalogFactory,
                 lintProcessor);
         StoreSupport.putMigrateProcessor(extensionContext, migrateProcessor);
