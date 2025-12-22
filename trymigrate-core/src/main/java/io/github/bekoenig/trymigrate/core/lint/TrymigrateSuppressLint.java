@@ -11,6 +11,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Repeatable(TrymigrateSuppressLint.TrymigrateSuppressLints.class)
 public @interface TrymigrateSuppressLint {
 
@@ -35,6 +36,7 @@ public @interface TrymigrateSuppressLint {
      */
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
+    @Documented
     @interface TrymigrateSuppressLints {
 
         TrymigrateSuppressLint[] value();

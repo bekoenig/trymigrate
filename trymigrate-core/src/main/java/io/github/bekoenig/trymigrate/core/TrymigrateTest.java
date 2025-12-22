@@ -2,10 +2,7 @@ package io.github.bekoenig.trymigrate.core;
 
 import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Enables database migration lifecycle management for a test method in a {@link Trymigrate} test class.
@@ -22,6 +19,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Test
 public @interface TrymigrateTest {
 

@@ -1,9 +1,6 @@
 package io.github.bekoenig.trymigrate.core.plugin;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation to mark a field (each visibility) as injectable bean to configure or customize
@@ -15,6 +12,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface TrymigrateBean {
 
     /**
