@@ -36,4 +36,11 @@ public class TrymigrateH2ExampleLintTest {
                 .anyMatch(x -> x.getLinterId().equals("schemacrawler.tools.linter.LinterTableWithNoRemarks"));
     }
 
+    @Test
+    void someTest(DataSource dataSource, Catalog catalog, Lints lints) {
+        assertThat(dataSource).isNotNull();
+        assertThat(catalog).isNotNull();
+        assertThat(lints.isEmpty()).isFalse();
+    }
+
 }
