@@ -1,6 +1,8 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateCleanBefore;
+import io.github.bekoenig.trymigrate.core.TrymigrateGivenData;
+import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPattern;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
@@ -11,26 +13,26 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.List;
-import java.util.Optional;
 
 public class MigrateExecutor implements BeforeEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) {
-        Optional<TrymigrateTest> trymigrateTest = AnnotationSupport.findAnnotation(
-                extensionContext.getRequiredTestMethod(), TrymigrateTest.class);
-
-        MigrationVersion target = trymigrateTest
-                .map(TrymigrateTest::whenTarget).map(MigrationVersion::fromVersion)
+        MigrationVersion target = AnnotationSupport.findAnnotation(
+                        extensionContext.getRequiredTestMethod(), TrymigrateWhenTarget.class)
+                .map(TrymigrateWhenTarget::value)
+                .map(MigrationVersion::fromVersion)
                 .orElse(MigrationVersion.LATEST);
 
-        List<String> resources = trymigrateTest
-                .map(TrymigrateTest::givenData).map(List::of)
+        List<String> resources = AnnotationSupport.findAnnotation(
+                        extensionContext.getRequiredTestMethod(), TrymigrateGivenData.class)
+                .map(TrymigrateGivenData::value)
+                .map(List::of)
                 .orElse(List.of());
 
-        boolean cleanBefore = trymigrateTest
-                .map(TrymigrateTest::cleanBefore)
-                .orElse(false);
+        boolean cleanBefore = AnnotationSupport.findAnnotation(
+                        extensionContext.getRequiredTestMethod(), TrymigrateCleanBefore.class)
+                .isPresent();
 
         LintPatterns suppressedLintPatterns = new LintPatterns(AnnotationSupport.findRepeatableAnnotations(
                         extensionContext.getRequiredTestMethod(), TrymigrateSuppressLint.class).stream()

@@ -5,6 +5,7 @@ import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
+import org.junit.jupiter.api.Test;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
@@ -23,7 +24,8 @@ public class TrymigrateH2ExampleLintTest {
             .dataSource("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", null, null)
             .locations("classpath:db/migration/example/h2");
 
-    @TrymigrateTest(whenTarget = "1.0")
+    @Test
+    @TrymigrateWhenTarget("1.0")
     @TrymigrateSuppressLint(
             objectName = "TESTDB.EXAMPLE_SCHEMA.TAB1", // note: catalog name is part of object names in h2
             linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")

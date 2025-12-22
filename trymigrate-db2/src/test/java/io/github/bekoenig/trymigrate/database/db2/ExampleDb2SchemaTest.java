@@ -5,17 +5,16 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
+import io.github.bekoenig.trymigrate.core.TrymigrateCleanBefore;
+import io.github.bekoenig.trymigrate.core.TrymigrateGivenData;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.*;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.testcontainers.db2.Db2Container;
@@ -79,7 +78,8 @@ public class ExampleDb2SchemaTest {
         listAppender.list.clear();
     }
 
-    @TrymigrateTest(whenTarget = "1.0")
+    @Test
+    @TrymigrateWhenTarget("1.0")
     void test_Initial(Catalog catalog, Lints lints) {
         assertThat(listAppender.list)
                 .filteredOn(l -> l.getLoggerName().equals(LintsLogReporter.class.getName()))
@@ -105,7 +105,9 @@ public class ExampleDb2SchemaTest {
                 .constrainedColumn("ENTITY1_ID").isNotNull();
     }
 
-    @TrymigrateTest(givenData = "db/testdata/db2/initial.sql", whenTarget = "1.1")
+    @Test
+    @TrymigrateWhenTarget("1.1")
+    @TrymigrateGivenData("db/testdata/db2/initial.sql")
     @Order(1)
     void test_AddOptionalAttribute2_Schema(Catalog catalog,
                                            Lints lints) {
@@ -129,7 +131,8 @@ public class ExampleDb2SchemaTest {
                 .isNullable(true);
     }
 
-    @TrymigrateTest(whenTarget = "1.1")
+    @Test
+    @TrymigrateWhenTarget("1.1")
     @Order(2)
     void test_AddOptionalAttribute2_Data(Lints lints) {
         assertThat(listAppender.list)
@@ -140,13 +143,10 @@ public class ExampleDb2SchemaTest {
         assertThat(lints).hasSize(8);
     }
 
-    @TrymigrateTest(
-            cleanBefore = true,
-            givenData = {
-                    "INSERT INTO EXAMPLE_SCHEMA.EXAMPLE_ENTITY1 (ENTITY1_ID, ATTRIBUTE1, ATTRIBUTE2) VALUES ('3019e6cc-386a-4c15-af62-60bddb438faf', 'v1.1-value3', 4711);"
-            },
-            whenTarget = "1.3"
-    )
+    @Test
+    @TrymigrateCleanBefore
+    @TrymigrateWhenTarget("1.3")
+    @TrymigrateGivenData("INSERT INTO EXAMPLE_SCHEMA.EXAMPLE_ENTITY1 (ENTITY1_ID, ATTRIBUTE1, ATTRIBUTE2) VALUES ('3019e6cc-386a-4c15-af62-60bddb438faf', 'v1.1-value3', 4711);")
     void test_EnforceAttribute2(Catalog catalog,
                                 Lints lints) {
         assertThat(listAppender.list)

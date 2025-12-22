@@ -20,17 +20,25 @@ import java.lang.annotation.*;
  * plugins, prepares migration and executes all migrations. After each migration, the database model will be
  * checked for new lints. The lints are reported as HTML file and log message.
  * <p>
- * Use {@link TrymigrateTest} to add scenario data before migration, assert the database model after migration or
- * perform a clean before a migration.
- * <p>
- * Tests methods are executed in this order:
+ * Adds support for
  * <ol>
- *     <li>Test methods annotated with {@link TrymigrateTest} ascending the target version</li>
- *     <li>Test methods annotated with {@link org.junit.jupiter.api.Test}</li>
+ *     <li>{@link TrymigrateCleanBefore} to run a clean before migrate</li>
+ *     <li>{@link TrymigrateGivenData} to add scenario data before target migration is applied</li>
+ *     <li>{@link TrymigrateWhenTarget} to set the target version of migration</li>
  * </ol>
- * Sorting within a group is not unique. The order should therefore be explicitly defined via
- * {@link org.junit.jupiter.api.Order}. After executing the last annotated {@link TrymigrateTest}, all following
- * migrations are completed.
+ * on test methods (annotated with {@link org.junit.jupiter.api.Test}).
+ * <p>
+ * Tests annotated with {@link TrymigrateWhenTarget} are executed at first, in ascending order of their target version.
+ * All other tests are executed afterward. Sorting within a group is not unique. The order should therefore be
+ * explicitly defined via {@link org.junit.jupiter.api.Order}.
+ * <p>
+ * Enables parameter providers for
+ * <ul>
+ *     <li>{@link javax.sql.DataSource}: Datasource to database</li>
+ *     <li>{@link schemacrawler.schema.Catalog}: Database model after last migration (system schemas may be excluded)</li>
+ *     <li>{@link schemacrawler.tools.lint.Lints}: Lints of migrated schemas</li>
+ * </ul>
+ * on test methods.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

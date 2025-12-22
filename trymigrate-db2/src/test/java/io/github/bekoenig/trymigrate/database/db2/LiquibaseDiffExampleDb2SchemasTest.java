@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.database.db2;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import liquibase.GlobalConfiguration;
@@ -17,6 +17,7 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.diff.DiffResult;
+import org.junit.jupiter.api.Test;
 import org.testcontainers.db2.Db2Container;
 import org.testcontainers.utility.DockerImageName;
 import us.fatehi.utility.database.SqlScript;
@@ -42,7 +43,8 @@ public class LiquibaseDiffExampleDb2SchemasTest {
             new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:12.1.2.0"))
                     .acceptLicense();
 
-    @TrymigrateTest(whenTarget = "latest")
+    @Test
+    @TrymigrateWhenTarget("latest")
     void test_latest(DataSource dataSource) throws Exception {
         // GIVEN
         // WHEN

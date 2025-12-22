@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.migrate;
 
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.container.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
@@ -94,8 +93,7 @@ public class MigrateProcessor {
         if (currentTarget.isNewerThan(flyway.getConfiguration().getTarget())) {
             throw new IllegalStateException("Schema version " + currentTarget +
                     " is newer than target " + flyway.getConfiguration().getTarget() +
-                    " for test. Dispose database or set " + TrymigrateTest.class.getSimpleName() +
-                    "#cleanBefore=true on first migrate test.");
+                    " for test.");
         }
 
         // assert lints only for a newer target

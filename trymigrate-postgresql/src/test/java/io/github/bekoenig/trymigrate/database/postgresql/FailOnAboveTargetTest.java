@@ -1,7 +1,7 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
@@ -9,6 +9,7 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
@@ -40,7 +41,8 @@ public class FailOnAboveTargetTest implements TestInstancePostProcessor {
         FailOnAboveTargetTest.extensionContext = extensionContext;
     }
 
-    @TrymigrateTest(whenTarget = "1.1")
+    @Test
+    @TrymigrateWhenTarget("1.1")
     @Order(1)
     void migrate() {
         // GIVEN

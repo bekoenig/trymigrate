@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.MethodDescriptor;
 import org.junit.jupiter.api.MethodOrderer;
@@ -35,8 +35,9 @@ public class MigrateOrderer implements MethodOrderer {
         }
 
         private Optional<MigrationVersion> getMigrationVersion(MethodDescriptor m) {
-            return m.findAnnotation(TrymigrateTest.class)
-                    .map(x -> MigrationVersion.fromVersion(x.whenTarget()));
+            return m.findAnnotation(TrymigrateWhenTarget.class)
+                    .map(TrymigrateWhenTarget::value)
+                    .map(MigrationVersion::fromVersion);
         }
 
         private Integer getOrder(MethodDescriptor m) {

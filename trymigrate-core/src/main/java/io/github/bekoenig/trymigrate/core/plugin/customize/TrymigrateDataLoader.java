@@ -1,11 +1,11 @@
 package io.github.bekoenig.trymigrate.core.plugin.customize;
 
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateGivenData;
 
 import java.sql.Connection;
 
 /**
- * Handler to load data given by {@link TrymigrateTest#givenData()}.
+ * Handler to load data given by {@link TrymigrateGivenData}.
  */
 public interface TrymigrateDataLoader {
 

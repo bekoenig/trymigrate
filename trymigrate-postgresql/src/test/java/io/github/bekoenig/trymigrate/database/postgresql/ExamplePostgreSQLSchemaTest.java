@@ -5,8 +5,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
+import io.github.bekoenig.trymigrate.core.TrymigrateCleanBefore;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
-import io.github.bekoenig.trymigrate.core.TrymigrateTest;
+import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
@@ -76,7 +77,9 @@ public class ExamplePostgreSQLSchemaTest {
         listAppender.list.clear();
     }
 
-    @TrymigrateTest(whenTarget = "1.0", cleanBefore = true)
+    @Test
+    @TrymigrateCleanBefore
+    @TrymigrateWhenTarget("1.0")
     @TrymigrateSuppressLint(
             linterId = "schemacrawler.tools.linter.LinterTableAllNullableColumns",
             objectName = "example_schema.example_entity1")
@@ -144,7 +147,8 @@ public class ExamplePostgreSQLSchemaTest {
         };
     }
 
-    @TrymigrateTest(whenTarget = "1.1")
+    @Test
+    @TrymigrateWhenTarget("1.1")
     public void test_Comments(Lints lints) {
         assertThat(lints).hasSize(2);
     }
