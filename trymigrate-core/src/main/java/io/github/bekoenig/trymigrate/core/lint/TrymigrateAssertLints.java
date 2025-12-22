@@ -2,16 +2,15 @@ package io.github.bekoenig.trymigrate.core.lint;
 
 import schemacrawler.tools.lint.LintSeverity;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Enables lints assertion after all migrations are applied.
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Inherited
 public @interface TrymigrateAssertLints {
 
     /**

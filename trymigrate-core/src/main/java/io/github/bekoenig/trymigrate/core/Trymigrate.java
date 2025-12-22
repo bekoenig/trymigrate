@@ -35,6 +35,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Inherited
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith({
         MigrateInitializer.class,

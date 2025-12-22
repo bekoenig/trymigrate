@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Inherited
 @Repeatable(TrymigrateExcludeLint.TrymigrateExcludeLints.class)
 public @interface TrymigrateExcludeLint {
 
@@ -36,6 +37,7 @@ public @interface TrymigrateExcludeLint {
     @Target({ElementType.TYPE})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
+    @Inherited
     @interface TrymigrateExcludeLints {
 
         TrymigrateExcludeLint[] value();
