@@ -2,9 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public record BeanProvider(List<BeanDefinition> beanDefinitions) implements TrymigrateBeanProvider {
@@ -20,6 +18,13 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) implements Trym
     @Override
     public <T> List<T> all(Class<T> clazz) {
         return stream(clazz).toList();
+    }
+
+    @Override
+    public <T> List<T> allReservedOrder(Class<T> clazz) {
+        List<T> values = new ArrayList<>(all(clazz));
+        Collections.reverse(values);
+        return values;
     }
 
     @Override

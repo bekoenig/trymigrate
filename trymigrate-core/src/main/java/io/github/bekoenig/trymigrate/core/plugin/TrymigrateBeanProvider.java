@@ -11,13 +11,22 @@ import java.util.Optional;
 public interface TrymigrateBeanProvider {
 
     /**
-     * Gets all compatible beans for class ordered.
+     * Gets all compatible beans for class from highest to lowest order.
      *
      * @param clazz class
      * @return list of beans
      * @param <T> type of bean
      */
     <T> List<T> all(Class<T> clazz);
+
+    /**
+     * Gets all compatible beans for class from lowest to highest order.
+     *
+     * @param clazz class
+     * @return list of beans
+     * @param <T> type of bean
+     */
+    <T> List<T> allReservedOrder(Class<T> clazz);
 
     /**
      * Gets exactly one compatible bean for class.

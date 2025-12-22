@@ -37,34 +37,28 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 testConfiguration.discoverPlugin(), testConfiguration.excludePlugins()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
-                reverse(beanProvider.all(TrymigrateCatalogCustomizer.class)));
+                beanProvider.allReservedOrder(TrymigrateCatalogCustomizer.class));
 
         LintSeverity failOn = AnnotationSupport.findAnnotation(o.getClass(),
                 TrymigrateAssertLints.class).map(TrymigrateAssertLints::failOn).orElse(null);
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
-                new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
-                reverse(beanProvider.all(TrymigrateLintersConfigurer.class)),
+                new CompositeLinterRegistry(beanProvider.allReservedOrder(LinterProvider.class)),
+                beanProvider.allReservedOrder(TrymigrateLintersConfigurer.class),
                 new LintsHistory(),
-                beanProvider.all(TrymigrateLintsReporter.class),
+                beanProvider.allReservedOrder(TrymigrateLintsReporter.class),
                 new LintsAssert(failOn));
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
                 resolveJdbcDatabaseContainer(beanProvider),
-                beanProvider.all(TrymigrateFlywayCustomizer.class), // TODO: prefer reserved order
-                beanProvider.all(TrymigrateDataLoader.class),
+                beanProvider.allReservedOrder(TrymigrateFlywayCustomizer.class),
+                beanProvider.allReservedOrder(TrymigrateDataLoader.class),
                 catalogFactory,
                 lintProcessor);
         StoreSupport.putMigrateProcessor(extensionContext, migrateProcessor);
 
         migrateProcessor.prepare();
-    }
-
-    private <T> List<T> reverse(List<T> list) {
-        List<T> arrayList = new ArrayList<>(list);
-        Collections.reverse(arrayList);
-        return arrayList;
     }
 
     private LintPatterns excludedLintPatterns(AnnotatedElement annotatedElement) {
