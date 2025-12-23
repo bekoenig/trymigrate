@@ -2,6 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.catalog;
 
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
 import org.junit.platform.commons.util.ClassLoaderUtils;
+import schemacrawler.inclusionrule.RegularExpressionRule;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.*;
 import schemacrawler.tools.options.Config;
@@ -13,6 +14,7 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.LogManager;
@@ -30,11 +32,23 @@ public class CatalogFactory {
         }
     }
 
-    private final SchemaCrawlerOptions schemaCrawlerOptions;
-    private final Config additionalConfig;
+    private final List<TrymigrateCatalogCustomizer> customizers;
 
     public CatalogFactory(List<TrymigrateCatalogCustomizer> customizers) {
+        this.customizers = customizers;
+    }
+
+    private <B, C, O> O customizedBuild(B builder, List<C> customizers, Function<C, Consumer<B>> customizerAdapter,
+                                        Function<B, O> finalizer) {
+        customizers.forEach(customizer -> customizerAdapter.apply(customizer).accept(builder));
+        return finalizer.apply(builder);
+    }
+
+    public Catalog crawl(Connection connection, Set<String> schemas) {
         LimitOptions limitOptions = customizedBuild(LimitOptionsBuilder.builder()
+                        // include all managed schemas
+                        .includeSchemas(new RegularExpressionRule(
+                                "(.*\\.)?(" + String.join("|", schemas) + ")", null))
                         .includeAllRoutines()
                         .includeAllSequences()
                         .includeAllSynonyms(),
@@ -50,23 +64,15 @@ public class CatalogFactory {
                 LoadOptionsBuilder.builder().withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum()),
                 customizers, c -> c::customize, OptionsBuilder::build);
 
-        this.schemaCrawlerOptions = SchemaCrawlerOptionsBuilder.newSchemaCrawlerOptions()
+        SchemaCrawlerOptions schemaCrawlerOptions = SchemaCrawlerOptionsBuilder.newSchemaCrawlerOptions()
                 .withLimitOptions(limitOptions)
                 .withFilterOptions(filterOptions)
                 .withGrepOptions(grepOptions)
                 .withLoadOptions(loadOptions);
 
-        additionalConfig = customizedBuild(new HashMap<>(),
+        Config additionalConfig = customizedBuild(new HashMap<>(),
                 customizers, c -> c::customize, ConfigUtility::fromMap);
-    }
 
-    private <B, C, O> O customizedBuild(B builder, List<C> customizers, Function<C, Consumer<B>> customizerAdapter,
-                                        Function<B, O> finalizer) {
-        customizers.forEach(customizer -> customizerAdapter.apply(customizer).accept(builder));
-        return finalizer.apply(builder);
-    }
-
-    public Catalog crawl(Connection connection) {
         DatabaseConnectionSourceAdapter dataSource = new DatabaseConnectionSourceAdapter(connection);
         return SchemaCrawlerUtility.getCatalog(dataSource, SchemaCrawlerUtility.matchSchemaRetrievalOptions(dataSource),
                 schemaCrawlerOptions, additionalConfig);

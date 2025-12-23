@@ -7,6 +7,7 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.junit.jupiter.api.Test;
 import schemacrawler.schema.Catalog;
+import schemacrawler.schema.Schema;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
 
@@ -31,6 +32,11 @@ public class TrymigrateH2ExampleLintTest {
             linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
     void initial(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
+        SchemaCrawlerAssertions.assertThat(catalog)
+                .schemas()
+                .singleElement()
+                .extracting(Schema::getName)
+                .isEqualTo("EXAMPLE_SCHEMA");
         SchemaCrawlerAssertions.assertThat(catalog).schema("TESTDB.EXAMPLE_SCHEMA").isNotNull();
         assertThat(lints)
                 .anyMatch(x -> x.getLinterId().equals("schemacrawler.tools.linter.LinterTableWithNoRemarks"));

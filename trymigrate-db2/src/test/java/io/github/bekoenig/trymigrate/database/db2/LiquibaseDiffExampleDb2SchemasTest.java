@@ -3,6 +3,7 @@ package io.github.bekoenig.trymigrate.database.db2;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import liquibase.GlobalConfiguration;
 import liquibase.Scope;
@@ -20,6 +21,8 @@ import liquibase.diff.DiffResult;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.db2.Db2Container;
 import org.testcontainers.utility.DockerImageName;
+import schemacrawler.inclusionrule.RegularExpressionRule;
+import schemacrawler.schemacrawler.LimitOptionsBuilder;
 import us.fatehi.utility.database.SqlScript;
 
 import javax.sql.DataSource;
@@ -42,6 +45,14 @@ public class LiquibaseDiffExampleDb2SchemasTest {
     private final Db2Container db2Container =
             new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:12.1.2.0"))
                     .acceptLicense();
+
+    @TrymigrateBean
+    private final TrymigrateCatalogCustomizer catalogCustomizer = new TrymigrateCatalogCustomizer() {
+        @Override
+        public void customize(LimitOptionsBuilder builder) {
+            builder.includeSchemas(new RegularExpressionRule(FLYWAY_SCHEMA + ".*", null));
+        }
+    };
 
     @Test
     @TrymigrateWhenTarget("latest")

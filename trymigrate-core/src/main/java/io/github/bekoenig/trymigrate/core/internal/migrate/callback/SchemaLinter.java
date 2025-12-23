@@ -37,13 +37,13 @@ public class SchemaLinter implements Callback {
 
     @Override
     public void handle(Event event, Context context) {
-        Catalog catalog = catalogFactory.crawl(context.getConnection());
-        catalogCache.accept(catalog);
-
         String defaultSchema = ContextSupport.resolveDefaultSchema(context);
 
         Set<String> schemas = new HashSet<>(List.of(context.getConfiguration().getSchemas()));
         schemas.add(defaultSchema);
+
+        Catalog catalog = catalogFactory.crawl(context.getConnection(), schemas);
+        catalogCache.accept(catalog);
 
         RestrictedPattern tablePattern = new RestrictedPattern(
                 // include all tables from managed schemas
