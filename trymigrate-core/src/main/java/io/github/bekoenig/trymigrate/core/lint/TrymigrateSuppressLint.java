@@ -9,7 +9,7 @@ import java.lang.annotation.*;
  * <p>
  * Supports regex to accept multiple lints using single annotation.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(TrymigrateSuppressLint.TrymigrateSuppressLints.class)
@@ -34,7 +34,7 @@ public @interface TrymigrateSuppressLint {
      * <p>
      * Only necessary for compile time.
      */
-    @Target({ElementType.METHOD})
+    @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @interface TrymigrateSuppressLints {

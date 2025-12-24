@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * Loads scenario data before execution of migration to target version.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface TrymigrateGivenData {

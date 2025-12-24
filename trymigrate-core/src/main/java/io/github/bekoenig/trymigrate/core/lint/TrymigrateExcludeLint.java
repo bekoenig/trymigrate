@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * <p>
  * Supports regex to ignore multiple lints using single annotation.
  */
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
@@ -34,7 +34,7 @@ public @interface TrymigrateExcludeLint {
      * <p>
      * Only necessary for compile time.
      */
-    @Target({ElementType.TYPE})
+    @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     @Inherited

@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * Enables lints assertion after all migrations are applied.
  */
-@Target({ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited

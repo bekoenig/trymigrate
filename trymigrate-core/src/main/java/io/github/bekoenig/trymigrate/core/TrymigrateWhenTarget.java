@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * Limits target of database migration.
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface TrymigrateWhenTarget {

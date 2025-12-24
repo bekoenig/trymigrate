@@ -5,7 +5,7 @@ import java.lang.annotation.*;
 /**
  * Configures plugin discovery.
  */
-@Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface TrymigrateDiscoverPlugins {

@@ -10,7 +10,7 @@ import java.lang.annotation.*;
  * <p>
  * Use {@link org.junit.jupiter.api.Order} to explicit the priority in test instance or the same plugin hierarchy level.
  */
-@Target({ElementType.FIELD})
+@Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface TrymigrateBean {
