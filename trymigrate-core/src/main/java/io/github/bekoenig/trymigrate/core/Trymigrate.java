@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core;
 
-import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateExecutor;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateInitializer;
@@ -54,20 +54,6 @@ import java.lang.annotation.*;
         LintsParameterResolver.class
 })
 @TestMethodOrder(MigrateOrderer.class)
+@TrymigrateDiscoverPlugins
 public @interface Trymigrate {
-
-    /**
-     * Restricts the plugin discovery to a subtree of plugins.
-     *
-     * @return interface extension of {@link TrymigratePlugin}
-     */
-    Class<? extends TrymigratePlugin> discoverPlugin() default TrymigratePlugin.class;
-
-    /**
-     * Excludes plugin subtrees using interfaces or single plugins using class.
-     *
-     * @return interface or class of type {@link TrymigratePlugin}
-     */
-    Class<? extends TrymigratePlugin>[] excludePlugins() default {};
-
 }

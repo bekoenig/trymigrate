@@ -1,7 +1,5 @@
 package io.github.bekoenig.trymigrate.core.plugin;
 
-import io.github.bekoenig.trymigrate.core.Trymigrate;
-
 /**
  * Marker interface for plugins provided by {@link TrymigratePluginProvider}. Each plugin implementation supplies one
  * or more customizations by fields annotated with {@link TrymigrateBean}.
@@ -14,7 +12,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
  * <p>
  * The current test instance has always the highest priority.
  *
- * @see Trymigrate#discoverPlugin()
+ * @see TrymigrateDiscoverPlugins
  */
 public interface TrymigratePlugin {
 }

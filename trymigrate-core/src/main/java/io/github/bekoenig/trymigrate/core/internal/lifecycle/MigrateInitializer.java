@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
-import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.*;
@@ -13,6 +12,7 @@ import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
@@ -24,17 +24,16 @@ import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.LinterProvider;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.*;
 
 public class MigrateInitializer implements TestInstancePostProcessor {
 
     @Override
     public void postProcessTestInstance(Object o, ExtensionContext extensionContext) {
-        Trymigrate testConfiguration = AnnotationSupport.findAnnotation(o.getClass(),
-                Trymigrate.class).orElseThrow();
+        TrymigrateDiscoverPlugins discoverPlugins = AnnotationSupport.findAnnotation(o.getClass(),
+                TrymigrateDiscoverPlugins.class).orElseThrow();
 
         TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o, new PluginDiscovery().discover(
-                testConfiguration.discoverPlugin(), testConfiguration.excludePlugins()));
+                discoverPlugins.origin(), discoverPlugins.exclude()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
                 beanProvider.allReservedOrder(TrymigrateCatalogCustomizer.class));
