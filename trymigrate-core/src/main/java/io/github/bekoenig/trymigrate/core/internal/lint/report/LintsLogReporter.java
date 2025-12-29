@@ -19,17 +19,12 @@ public class LintsLogReporter implements TrymigrateLintsReporter {
 
     private final Logger logger = LoggerFactory.getLogger(LintsLogReporter.class);
 
-    private final LintOptions lintOptions;
-
-    public LintsLogReporter(LintOptions lintOptions) {
-        this.lintOptions = lintOptions;
+    public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion,
+                       LintOptions lintOptions) {
+        logger.atInfo().setMessage(() -> createTextReport(catalog, lints, lintOptions)).log();
     }
 
-    public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion) {
-        logger.atInfo().setMessage(() -> createTextReport(catalog, lints)).log();
-    }
-
-    private String createTextReport(Catalog catalog, Lints lints) {
+    private String createTextReport(Catalog catalog, Lints lints, LintOptions lintOptions) {
         StringWriter writer = new StringWriter();
 
         LintReportTextFormatter lintReportTextFormatter = new LintReportTextFormatter(

@@ -23,13 +23,8 @@ public class LintsHtmlReporter implements TrymigrateLintsReporter {
     public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.reports.html.skip-empty";
     public static final String PROPERTY_NAME = "trymigrate.lint.reports.html.basedir";
 
-    private final LintOptions lintOptions;
-
-    public LintsHtmlReporter(LintOptions lintOptions) {
-        this.lintOptions = lintOptions;
-    }
-
-    public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion) {
+    public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion,
+                       LintOptions lintOptions) {
         if (lints.isEmpty() && skipEmpty()) {
             return;
         }

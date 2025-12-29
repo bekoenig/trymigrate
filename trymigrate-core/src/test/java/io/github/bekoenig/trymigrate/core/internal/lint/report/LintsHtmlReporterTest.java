@@ -4,7 +4,6 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junitpioneer.jupiter.ClearSystemProperty;
-import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 
 import java.nio.file.Path;
 
@@ -12,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LintsHtmlReporterTest {
 
-    private final LintsHtmlReporter resolver = new LintsHtmlReporter(LintOptionsBuilder.builder().build());
+    private final LintsHtmlReporter resolver = new LintsHtmlReporter();
 
     @Test
     void resolve_defaultBaseDir() {

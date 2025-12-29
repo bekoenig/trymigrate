@@ -6,6 +6,7 @@ import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigure
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
+import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.Lints;
@@ -20,6 +21,7 @@ public class LintProcessor {
     private final List<TrymigrateLintersConfigurer> lintersConfigurers;
     private final LintsHistory lintsHistory;
     private final List<TrymigrateLintsReporter> lintsReporters;
+    private final LintOptions lintOptions;
     private final LintsAssert lintsAssert;
 
     public LintProcessor(LintPatterns excludedLintPatterns,
@@ -27,12 +29,14 @@ public class LintProcessor {
                          List<TrymigrateLintersConfigurer> lintersConfigurers,
                          LintsHistory lintsHistory,
                          List<TrymigrateLintsReporter> lintsReporters,
+                         LintOptions lintOptions,
                          LintsAssert lintsAssert) {
         this.excludedLintPatterns = excludedLintPatterns;
         this.linterInitializer = linterInitializer;
         this.lintersConfigurers = lintersConfigurers;
         this.lintsHistory = lintsHistory;
         this.lintsReporters = lintsReporters;
+        this.lintOptions = lintOptions;
         this.lintsAssert = lintsAssert;
     }
 
@@ -46,7 +50,7 @@ public class LintProcessor {
         Lints currentLints = new Lints(excludedLintPatterns.dropMatching(linters.getLints().stream()).toList());
 
         Lints newLints = lintsHistory.diffNewLints(migrationVersion, currentLints);
-        lintsReporters.forEach(x -> x.report(catalog, newLints, schema, migrationVersion));
+        lintsReporters.forEach(x -> x.report(catalog, newLints, schema, migrationVersion, lintOptions));
     }
 
     public boolean isAnalysed(MigrationVersion migrationVersion) {

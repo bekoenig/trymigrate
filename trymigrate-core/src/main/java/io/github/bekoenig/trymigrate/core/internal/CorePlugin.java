@@ -13,8 +13,6 @@ import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCusto
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import schemacrawler.tools.command.lint.options.LintOptions;
-import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
@@ -39,10 +37,10 @@ public class CorePlugin implements TrymigratePlugin {
     private final TrymigrateFlywayCustomizer containerDataSourceConfigurer;
 
     @TrymigrateBean
-    private final TrymigrateLintsReporter lintsLogReporter;
+    private final TrymigrateLintsReporter lintsLogReporter = new LintsLogReporter();
 
     @TrymigrateBean
-    private final TrymigrateLintsReporter lintsHtmlReporter;
+    private final TrymigrateLintsReporter lintsHtmlReporter = new LintsHtmlReporter();
 
     @TrymigrateBean
     private final CoreLinters coreLinters = new CoreLinters();
@@ -77,9 +75,5 @@ public class CorePlugin implements TrymigratePlugin {
             container.ifPresent(c -> configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
         };
 
-        LintOptions lintOptions = beanProvider.findFirst(LintOptions.class)
-                .orElseGet(() -> LintOptionsBuilder.builder().noInfo().toOptions());
-        lintsLogReporter = new LintsLogReporter(lintOptions);
-        lintsHtmlReporter = new LintsHtmlReporter(lintOptions);
     }
 }
