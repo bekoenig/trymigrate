@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
@@ -81,53 +80,6 @@ class BeanDefinitionTest {
 
         // THEN
         assertThat(compareTo).isLessThan(0);
-    }
-
-    @Test
-    void compareTo_differentNullable() {
-        // GIVEN
-        BeanDefinition beanDefinition1 = getBeanDefinition(new Object() {
-            @TrymigrateBean(nullable = true)
-            private final String attribute = null;
-        });
-        BeanDefinition beanDefinition2 = getBeanDefinition(new Object() {
-            private final String attribute = null;
-        });
-
-        // WHEN
-        int compareTo = beanDefinition1.compareTo(beanDefinition2);
-
-        // THEN
-        assertThat(compareTo).isLessThan(0);
-    }
-
-    @Test
-    void nonNullable_isTrue() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            private final String attribute = null;
-        });
-
-        // WHEN
-        boolean result = beanDefinition.nonNullable();
-
-        // THEN
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void nonNullable_isFalse() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            @TrymigrateBean(nullable = true)
-            private final String attribute = null;
-        });
-
-        // WHEN
-        boolean result = beanDefinition.nonNullable();
-
-        // THEN
-        assertThat(result).isFalse();
     }
 
     @Test
@@ -247,50 +199,6 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void isNullable_isTrue() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            @TrymigrateBean(nullable = true)
-            private final String attribute = "a";
-        });
-
-        // WHEN
-        boolean result = beanDefinition.isNullable();
-
-        // THEN
-        assertThat(result).isTrue();
-    }
-
-    @Test
-    void isNullable_isFalse() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            private final String attribute = "a";
-        });
-
-        // WHEN
-        boolean result = beanDefinition.isNullable();
-
-        // THEN
-        assertThat(result).isFalse();
-    }
-
-    @Test
-    void isNullable_isFalseOnAnnotation() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            @TrymigrateBean
-            private final String attribute = "a";
-        });
-
-        // WHEN
-        boolean result = beanDefinition.isNullable();
-
-        // THEN
-        assertThat(result).isFalse();
-    }
-
-    @Test
     void get_simpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
@@ -305,21 +213,6 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void get_nullOnNullable() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            @TrymigrateBean(nullable = true)
-            private String attribute;
-        });
-
-        // WHEN
-        Collection<String> attribute = beanDefinition.get();
-
-        // THEN
-        assertThat(attribute).isEmpty();
-    }
-
-    @Test
     void get_throwsOnIncompatibleSimpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
@@ -331,7 +224,7 @@ class BeanDefinitionTest {
     }
 
     @Test
-    void get_throwsOnNonNullableSimpleType() {
+    void get_throwsOnNullSimpleType() {
         // GIVEN
         BeanDefinition beanDefinition = getBeanDefinition(new Object() {
             private String attribute;
@@ -367,21 +260,6 @@ class BeanDefinitionTest {
 
         // THEN
         assertThat(collection).containsExactly("a");
-    }
-
-    @Test
-    void get_emptyOnNullable() {
-        // GIVEN
-        BeanDefinition beanDefinition = getBeanDefinition(new Object() {
-            @TrymigrateBean(nullable = true)
-            private final String attribute = null;
-        });
-
-        // WHEN
-        Collection<String> collection = beanDefinition.get();
-
-        // THEN
-        assertThat(collection).isEmpty();
     }
 
     void getOrder_valueOnAnnotation() {

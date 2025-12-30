@@ -17,8 +17,7 @@ public record BeanProvider(List<BeanDefinition> beanDefinitions) {
         return beanDefinitions.stream()
                 .filter(x -> x.isCompatible(clazz))
                 .flatMap(x -> x.get().stream())
-                .map(clazz::cast)
-                .filter(Objects::nonNull);
+                .map(clazz::cast);
     }
 
     /**

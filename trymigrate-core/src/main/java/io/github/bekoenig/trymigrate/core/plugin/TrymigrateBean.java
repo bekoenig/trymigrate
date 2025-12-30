@@ -14,18 +14,4 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface TrymigrateBean {
-
-    /**
-     * Default value for nullable attribute of this annotation.
-     */
-    boolean NULLABLE_DEFAULT = false;
-
-    /**
-     * Indicates that this bean is optional and can be null.
-     * When {@code false} and the field has a null value on wiring an exception will raise to fail fast.
-     *
-     * @return {@code true} on nullable (default is {@link TrymigrateBean#NULLABLE_DEFAULT})
-     */
-    boolean nullable() default NULLABLE_DEFAULT;
-
 }

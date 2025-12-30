@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import org.junit.jupiter.api.Order;
 import org.junit.platform.commons.support.ReflectionSupport;
 
@@ -39,24 +38,7 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
             return compareOrder;
         }
 
-        int compareRank = -Integer.compare(rank, other.rank);
-        if (compareRank != 0) {
-            return compareRank;
-        }
-
-        return Boolean.compare(nonNullable(), other.nonNullable());
-    }
-
-    public boolean isNullable() {
-        TrymigrateBean annotation = field.getAnnotation(TrymigrateBean.class);
-        if (Objects.isNull(annotation)) {
-            return TrymigrateBean.NULLABLE_DEFAULT;
-        }
-        return annotation.nullable();
-    }
-
-    public boolean nonNullable() {
-        return !isNullable();
+        return -Integer.compare(rank, other.rank);
     }
 
     private boolean isCollection() {
@@ -94,17 +76,10 @@ public class BeanDefinition implements Comparable<BeanDefinition> {
         Object value = ReflectionSupport.tryToReadFieldValue(field, instance)
                 .getOrThrow((e) -> new IllegalStateException("Failed to read field " + field.getName()));
 
-        if (nonNullable()) {
-            Objects.requireNonNull(value, instance.getClass().getName() + "#" + field.getName() +
-                    " is null. Initialize properly or mark as nullable.");
-        }
+        Objects.requireNonNull(value, instance.getClass().getName() + "#" + field.getName() + " is null.");
 
         if (isCollection()) {
             return (Collection<T>) value;
-        }
-
-        if (value == null) {
-            return Collections.emptyList();
         }
 
         return List.of((T) value);
