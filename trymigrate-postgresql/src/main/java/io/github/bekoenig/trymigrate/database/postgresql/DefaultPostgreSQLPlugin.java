@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 
 /**
@@ -10,7 +9,7 @@ public class DefaultPostgreSQLPlugin implements TrymigratePostgreSQLPlugin {
 
     public static class DefaultPostgreSQLPluginProvider implements TrymigratePluginProvider<DefaultPostgreSQLPlugin> {
         @Override
-        public DefaultPostgreSQLPlugin provide(TrymigrateBeanProvider beanProvider) {
+        public DefaultPostgreSQLPlugin provide() {
             return new DefaultPostgreSQLPlugin();
         }
     }

@@ -6,7 +6,6 @@ import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
@@ -17,7 +16,7 @@ public class CorePlugin implements TrymigratePlugin {
 
     public static class CorePluginProvider implements TrymigratePluginProvider<CorePlugin> {
         @Override
-        public CorePlugin provide(TrymigrateBeanProvider beanProvider) {
+        public CorePlugin provide() {
             return new CorePlugin();
         }
     }

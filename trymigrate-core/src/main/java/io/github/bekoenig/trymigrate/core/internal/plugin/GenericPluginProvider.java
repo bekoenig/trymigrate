@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 
@@ -24,8 +23,8 @@ public class GenericPluginProvider {
         this.rank = rank;
     }
 
-    public TrymigratePlugin provide(TrymigrateBeanProvider beanProvider) {
-        return delegate.provide(beanProvider);
+    public TrymigratePlugin provide() {
+        return delegate.provide();
     }
 
     public Integer getRank() {

@@ -25,7 +25,7 @@ public class BeanProviderFactory {
             BeanProvider currentLayerBeans = lastLayerBeans;
 
             for (GenericPluginProvider provider : layers.get(currentLayerRank)) {
-                TrymigratePlugin plugin = provider.provide(lastLayerBeans);
+                TrymigratePlugin plugin = provider.provide();
                 currentLayerBeans = create(currentLayerBeans, plugin, currentLayerRank);
             }
 

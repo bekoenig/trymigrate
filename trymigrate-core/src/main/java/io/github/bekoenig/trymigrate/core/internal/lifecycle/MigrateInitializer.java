@@ -5,6 +5,7 @@ import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.*;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CompositeLinterRegistry;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
+import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProvider;
 import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
@@ -12,7 +13,6 @@ import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintOptionsCustomizer;
 import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
@@ -38,7 +38,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         TrymigrateDiscoverPlugins discoverPlugins = AnnotationSupport.findAnnotation(o.getClass(),
                 TrymigrateDiscoverPlugins.class).orElseThrow();
 
-        TrymigrateBeanProvider beanProvider = new BeanProviderFactory().create(o, new PluginDiscovery().discover(
+        BeanProvider beanProvider = new BeanProviderFactory().create(o, new PluginDiscovery().discover(
                 discoverPlugins.origin(), discoverPlugins.exclude()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
@@ -82,7 +82,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         return lintOptionsBuilder.build();
     }
 
-    private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(TrymigrateBeanProvider beanProvider) {
+    private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(BeanProvider beanProvider) {
         try {
             return beanProvider.findOne(JdbcDatabaseContainer.class).orElse(null);
         } catch (NoClassDefFoundError e) {
