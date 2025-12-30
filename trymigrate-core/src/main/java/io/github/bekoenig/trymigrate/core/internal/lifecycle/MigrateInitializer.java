@@ -17,6 +17,8 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
+import org.flywaydb.core.api.callback.Callback;
+import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
@@ -58,6 +60,8 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         MigrateProcessor migrateProcessor = new MigrateProcessor(
                 resolveJdbcDatabaseContainer(beanProvider),
                 beanProvider.allReservedOrder(TrymigrateFlywayCustomizer.class),
+                beanProvider.all(Callback.class),
+                beanProvider.all(JavaMigration.class),
                 beanProvider.all(TrymigrateDataLoader.class),
                 catalogFactory,
                 lintProcessor);

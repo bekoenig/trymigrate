@@ -5,8 +5,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.assertj.schemacrawler.api.TableAssert;
-import io.github.bekoenig.trymigrate.core.TrymigrateCleanBefore;
 import io.github.bekoenig.trymigrate.core.Trymigrate;
+import io.github.bekoenig.trymigrate.core.TrymigrateCleanBefore;
 import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
@@ -59,8 +59,28 @@ public class ExamplePostgreSQLSchemaTest {
     @TrymigrateBean
     private final NoopJavaMigration moreNoop = new NoopJavaMigration("1.0.2");
 
-    @TrymigrateBean(nullable = true)
-    private Callback hookedCallback;
+    @TrymigrateBean
+    private final Callback callback = new Callback() {
+        @Override
+        public boolean supports(Event event, Context context) {
+            return true;
+        }
+
+        @Override
+        public boolean canHandleInTransaction(Event event, Context context) {
+            return true;
+        }
+
+        @Override
+        public void handle(Event event, Context context) {
+            System.out.println(event);
+        }
+
+        @Override
+        public String getCallbackName() {
+            return "NoName";
+        }
+    };
 
     private ListAppender<ILoggingEvent> listAppender;
 
@@ -123,28 +143,6 @@ public class ExamplePostgreSQLSchemaTest {
                 .matchesColumnDataTypeName(isEqual("varchar")).matchesSize(isEqual(250));
         tableAssert.tableConstraint("example_entity1_pk")
                 .constrainedColumn("entity1_id").isNotNull();
-
-        hookedCallback = new Callback() {
-            @Override
-            public boolean supports(Event event, Context context) {
-                return true;
-            }
-
-            @Override
-            public boolean canHandleInTransaction(Event event, Context context) {
-                return true;
-            }
-
-            @Override
-            public void handle(Event event, Context context) {
-                System.out.println(event);
-            }
-
-            @Override
-            public String getCallbackName() {
-                return "NoName";
-            }
-        };
     }
 
     @Test

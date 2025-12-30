@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal;
 
+import io.github.bekoenig.trymigrate.core.internal.data.SqlDataLoader;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
@@ -9,71 +10,26 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBeanProvider;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
-import org.flywaydb.core.api.callback.Callback;
-import org.flywaydb.core.api.migration.JavaMigration;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import us.fatehi.utility.database.SqlScript;
 
-import java.sql.Connection;
-import java.util.Optional;
-
-import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
-import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addJavaMigrations;
+import java.util.List;
 
 public class CorePlugin implements TrymigratePlugin {
 
     public static class CorePluginProvider implements TrymigratePluginProvider<CorePlugin> {
         @Override
         public CorePlugin provide(TrymigrateBeanProvider beanProvider) {
-            return new CorePlugin(beanProvider);
+            return new CorePlugin();
         }
     }
 
     @TrymigrateBean
-    private final TrymigrateFlywayCustomizer additionalBeanConfigurer;
-
-    @TrymigrateBean
-    private final TrymigrateFlywayCustomizer containerDataSourceConfigurer;
-
-    @TrymigrateBean
-    private final TrymigrateLintsReporter lintsLogReporter = new LintsLogReporter();
-
-    @TrymigrateBean
-    private final TrymigrateLintsReporter lintsHtmlReporter = new LintsHtmlReporter();
+    private final List<TrymigrateLintsReporter> lintsLogReporter = List.of(
+            new LintsLogReporter(), new LintsHtmlReporter());
 
     @TrymigrateBean
     private final CoreLinters coreLinters = new CoreLinters();
 
     @TrymigrateBean
-    private final TrymigrateDataLoader sqlDataLoadHandle = new TrymigrateDataLoader() {
-        @Override
-        public boolean supports(String resource, String extension) {
-            return extension.equalsIgnoreCase("sql");
-        }
+    private final TrymigrateDataLoader sqlDataLoadHandle = new SqlDataLoader();
 
-        @Override
-        public void load(String resource, Connection connection) {
-            SqlScript.executeScriptFromResource(resource, connection);
-        }
-    };
-
-    public CorePlugin(TrymigrateBeanProvider beanProvider) {
-        additionalBeanConfigurer = configuration -> {
-            addCallbacks(configuration, beanProvider.all(Callback.class));
-            addJavaMigrations(configuration, beanProvider.all(JavaMigration.class));
-        };
-
-        containerDataSourceConfigurer = configuration -> {
-            Optional<JdbcDatabaseContainer> container;
-            try {
-                container = beanProvider.findOne(JdbcDatabaseContainer.class);
-            } catch (NoClassDefFoundError e) {
-                // skip datasource autoconfiguration for container on missing optional dependency
-                return;
-            }
-            container.ifPresent(c -> configuration.dataSource(c.getJdbcUrl(), c.getUsername(), c.getPassword()));
-        };
-
-    }
 }
