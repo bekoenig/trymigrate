@@ -7,7 +7,6 @@ import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReport
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.command.lint.options.LintOptions;
-import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.Lints;
 
@@ -17,7 +16,6 @@ import java.util.List;
 public class LintProcessor {
 
     private final LintPatterns excludedLintPatterns;
-    private final LinterInitializer linterInitializer;
     private final List<TrymigrateLintersConfigurer> lintersConfigurers;
     private final LintsHistory lintsHistory;
     private final List<TrymigrateLintsReporter> lintsReporters;
@@ -25,14 +23,12 @@ public class LintProcessor {
     private final LintsAssert lintsAssert;
 
     public LintProcessor(LintPatterns excludedLintPatterns,
-                         LinterInitializer linterInitializer,
                          List<TrymigrateLintersConfigurer> lintersConfigurers,
                          LintsHistory lintsHistory,
                          List<TrymigrateLintsReporter> lintsReporters,
                          LintOptions lintOptions,
                          LintsAssert lintsAssert) {
         this.excludedLintPatterns = excludedLintPatterns;
-        this.linterInitializer = linterInitializer;
         this.lintersConfigurers = lintersConfigurers;
         this.lintsHistory = lintsHistory;
         this.lintsReporters = lintsReporters;
@@ -45,7 +41,7 @@ public class LintProcessor {
         LintersBuilder lintersBuilder = LintersBuilder.builder(tablePattern);
         lintersConfigurers.forEach(x -> x.accept(lintersBuilder));
 
-        Linters linters = lintersBuilder.build(linterInitializer);
+        Linters linters = lintersBuilder.build();
         linters.lint(catalog, connection);
         Lints currentLints = new Lints(excludedLintPatterns.dropMatching(linters.getLints().stream()).toList());
 

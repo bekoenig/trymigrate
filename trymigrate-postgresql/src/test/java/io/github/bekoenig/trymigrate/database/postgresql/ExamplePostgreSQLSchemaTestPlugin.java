@@ -18,11 +18,9 @@ public class ExamplePostgreSQLSchemaTestPlugin implements TrymigratePostgreSQLPl
     }
 
     @TrymigrateBean
-    private final DummyLinterProvider dummyLinterProvider = new DummyLinterProvider();
-
-    @TrymigrateBean
     private final TrymigrateLintersConfigurer lintersConfigurer = linterConfiguration ->
             linterConfiguration
+                    .register(new DummyLinterProvider())
                     .disable("schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
                     .reconfigure("schemacrawler.tools.linter.LinterTableWithNoRemarks").severity(LintSeverity.critical)
                     .configure("io.github.bekoenig.trymigrate.database.postgresql.DummyLinter")

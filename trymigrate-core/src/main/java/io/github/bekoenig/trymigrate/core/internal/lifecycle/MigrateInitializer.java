@@ -3,7 +3,6 @@ package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.*;
-import io.github.bekoenig.trymigrate.core.internal.lint.config.CompositeLinterRegistry;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
 import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProvider;
 import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
@@ -26,7 +25,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 import schemacrawler.tools.lint.LintSeverity;
-import schemacrawler.tools.lint.LinterProvider;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
@@ -49,7 +47,6 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
-                new CompositeLinterRegistry(beanProvider.all(LinterProvider.class)),
                 beanProvider.allReservedOrder(TrymigrateLintersConfigurer.class),
                 new LintsHistory(),
                 beanProvider.all(TrymigrateLintsReporter.class),

@@ -1,6 +1,7 @@
 package io.github.bekoenig.trymigrate.core.plugin.customize;
 
 import schemacrawler.tools.lint.LintSeverity;
+import schemacrawler.tools.lint.LinterProvider;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -19,6 +20,14 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
      * @see TrymigrateLintersConfigurer
      */
     interface TrymigrateLintersConfiguration {
+
+        /**
+         * Registers a linter provider avoiding SPI.
+         *
+         * @param linterProvider provider for linter
+         * @return root interface
+         */
+        TrymigrateLintersConfiguration register(LinterProvider linterProvider);
 
         /**
          * Enables a registered linter by adding a new config.

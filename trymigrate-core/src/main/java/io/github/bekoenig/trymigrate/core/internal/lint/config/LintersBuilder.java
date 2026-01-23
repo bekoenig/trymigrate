@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
 import schemacrawler.tools.lint.LintSeverity;
-import schemacrawler.tools.lint.LinterInitializer;
+import schemacrawler.tools.lint.LinterProvider;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.config.LinterConfig;
 import schemacrawler.tools.lint.config.LinterConfigs;
@@ -18,6 +18,7 @@ public class LintersBuilder implements
         TrymigrateLintersConfigurer.TrymigrateLintersConfiguration.TrymigrateLinterConfiguration {
 
     private final RestrictedPattern tablePattern;
+    private final List<LinterProvider> linterProviders = new ArrayList<>();
     private final List<LinterConfig> configs = new ArrayList<>();
 
     private LinterConfigBuilder currentLinterConfigBuilder;
@@ -43,6 +44,12 @@ public class LintersBuilder implements
             configs.add(currentLinterConfigBuilder.build());
             currentLinterConfigBuilder = null;
         }
+    }
+
+    @Override
+    public TrymigrateLintersConfigurer.TrymigrateLintersConfiguration register(LinterProvider linterProvider) {
+        this.linterProviders.add(linterProvider);
+        return this;
     }
 
     public TrymigrateLinterConfiguration configure(String linterId) {
@@ -99,14 +106,14 @@ public class LintersBuilder implements
         return this;
     }
 
-    public Linters build(LinterInitializer linterInitializer) {
+    public Linters build() {
         endLinterConfig();
 
         LinterConfigs linterConfigs = new LinterConfigs(ConfigUtility.newConfig());
         configs.forEach(linterConfigs::add);
 
         Linters linters = new Linters(linterConfigs, false);
-        linters.initialize(linterInitializer);
+        linters.initialize(new CompositeLinterRegistry(linterProviders));
         return linters;
     }
 }
