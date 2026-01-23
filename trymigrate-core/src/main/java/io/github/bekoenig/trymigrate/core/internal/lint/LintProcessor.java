@@ -2,8 +2,8 @@ package io.github.bekoenig.trymigrate.core.internal.lint;
 
 import io.github.bekoenig.trymigrate.core.internal.lint.config.RestrictedPattern;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LintersBuilder;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
-import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.command.lint.options.LintOptions;

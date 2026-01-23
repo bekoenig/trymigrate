@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.LinterInitializer;
 import schemacrawler.tools.lint.Linters;

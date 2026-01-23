@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.lint.config;
+package io.github.bekoenig.trymigrate.core.plugin.customize;
 
 import schemacrawler.tools.lint.LintSeverity;
 

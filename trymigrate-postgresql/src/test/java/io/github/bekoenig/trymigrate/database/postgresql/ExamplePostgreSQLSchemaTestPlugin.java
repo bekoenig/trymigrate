@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.database.postgresql;
 
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 import schemacrawler.tools.lint.LintSeverity;

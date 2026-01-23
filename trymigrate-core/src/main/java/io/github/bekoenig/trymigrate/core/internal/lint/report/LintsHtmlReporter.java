@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
-import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.IdentifiersBuilder;

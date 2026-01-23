@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.internal.data.SqlDataLoader;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;

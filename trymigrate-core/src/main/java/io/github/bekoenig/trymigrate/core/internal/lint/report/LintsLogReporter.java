@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
-import io.github.bekoenig.trymigrate.core.lint.report.TrymigrateLintsReporter;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

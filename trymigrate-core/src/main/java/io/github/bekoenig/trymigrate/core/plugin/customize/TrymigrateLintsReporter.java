@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.lint.report;
+package io.github.bekoenig.trymigrate.core.plugin.customize;
 
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;

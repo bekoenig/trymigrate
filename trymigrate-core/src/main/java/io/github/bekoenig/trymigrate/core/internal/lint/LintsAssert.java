@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.lint;
 
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
-import io.github.bekoenig.trymigrate.core.lint.config.TrymigrateLintersConfigurer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
 import schemacrawler.tools.lint.Lint;
 import schemacrawler.tools.lint.LintSeverity;
