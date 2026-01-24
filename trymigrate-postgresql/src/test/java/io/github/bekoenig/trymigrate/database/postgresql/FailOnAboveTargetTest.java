@@ -5,7 +5,7 @@ import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.Order;
@@ -26,12 +26,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 })
 public class FailOnAboveTargetTest implements TestInstancePostProcessor {
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
             .defaultSchema("example_schema")
             .locations("classpath:db/migration/example/postgresql");
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:18.0"));
 
     private static ExtensionContext extensionContext;

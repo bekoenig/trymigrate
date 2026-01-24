@@ -1,11 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.data;
 
+import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
 
-public class SqlDataLoader implements TrymigrateDataLoader {
+public class SqlDataLoader implements TrymigrateDataLoader, TrymigratePlugin {
 
     @Override
     public boolean supports(String resource, String extension) {

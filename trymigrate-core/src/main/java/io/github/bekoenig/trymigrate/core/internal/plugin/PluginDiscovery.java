@@ -1,56 +1,36 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigratePluginProvider;
 
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
 /**
- * Advanced discovery for {@link TrymigratePluginProvider} using {@link ServiceLoader}. Supports hierarchical ranking
- * for {@link TrymigratePlugin}, explicitly excludes and skipping of unloadable classes.
- * <p>
- * Note: Some implementations could be moved to {@link TrymigratePluginProvider} for a more flexible way of discovery.
+ * Advanced discovery for {@link TrymigratePlugin} using {@link ServiceLoader}. Supports hierarchical ranking
+ * for {@link TrymigratePlugin} and explicit excludes.
  */
 public class PluginDiscovery {
 
-    @SuppressWarnings("rawtypes")
-    private final ServiceLoader<TrymigratePluginProvider> serviceLoader;
+    private final ServiceLoader<TrymigratePlugin> serviceLoader;
 
     public PluginDiscovery() {
-        serviceLoader = ServiceLoader.load(TrymigratePluginProvider.class);
+        serviceLoader = ServiceLoader.load(TrymigratePlugin.class);
     }
 
-    public List<GenericPluginProvider> discover(Class<? extends TrymigratePlugin> interfaceType,
-                                                Class<? extends TrymigratePlugin>[] excludedTypes) {
+    public List<PluginProvider> discover(Class<? extends TrymigratePlugin> interfaceType,
+                                         Class<? extends TrymigratePlugin>[] excludedTypes) {
         if (!interfaceType.isInterface()) {
             throw new IllegalArgumentException("Only interfaces are supported.");
         }
 
         return serviceLoader
                 .stream()
-                .map(ServiceLoader.Provider::get)
-                .filter(PluginDiscovery::hasLoadableType)
-                .filter(p -> hasCommonSuperinterface(p.forType(), interfaceType))
-                .map(PluginDiscovery::toGenericType)
-                .filter(p -> !ofType(p.forType(), excludedTypes))
-                .map(p -> new GenericPluginProvider(p, calculateRank(p.forType())))
+                .filter(p -> hasCommonSuperinterface(p.type(), interfaceType))
+                .filter(p -> !ofType(p.type(), excludedTypes))
+                .map(p -> new PluginProvider(p.type(), p::get, calculateRank(p.type())))
+                .sorted()
                 .toList();
-    }
-
-    @SuppressWarnings("unchecked")
-    private static TrymigratePluginProvider<TrymigratePlugin> toGenericType(TrymigratePluginProvider<?> provider) {
-        return (TrymigratePluginProvider<TrymigratePlugin>) provider;
-    }
-
-    protected static boolean hasLoadableType(TrymigratePluginProvider<TrymigratePlugin> provider) {
-        try {
-            provider.forType();
-            return true;
-        } catch (NoClassDefFoundError e) {
-            return false;
-        }
     }
 
     protected static boolean hasCommonSuperinterface(Class<?> pluginType, Class<?> interfaceType) {

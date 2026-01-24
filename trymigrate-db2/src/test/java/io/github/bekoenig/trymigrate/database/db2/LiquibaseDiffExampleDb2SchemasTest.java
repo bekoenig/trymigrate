@@ -2,7 +2,7 @@ package io.github.bekoenig.trymigrate.database.db2;
 
 import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import liquibase.GlobalConfiguration;
@@ -36,17 +36,17 @@ public class LiquibaseDiffExampleDb2SchemasTest {
 
     protected static final String FLYWAY_SCHEMA = "EXAMPLE_SCHEMA";
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
             .defaultSchema(LiquibaseDiffExampleDb2SchemasTest.FLYWAY_SCHEMA)
             .locations("classpath:db/migration/example/db2");
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final Db2Container db2Container =
             new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:12.1.2.0"))
                     .acceptLicense();
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateCatalogCustomizer catalogCustomizer = new TrymigrateCatalogCustomizer() {
         @Override
         public void customize(LimitOptionsBuilder builder) {

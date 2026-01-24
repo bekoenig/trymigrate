@@ -4,18 +4,13 @@ import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.*;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
-import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProvider;
-import io.github.bekoenig.trymigrate.core.internal.plugin.BeanProviderFactory;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
+import io.github.bekoenig.trymigrate.core.internal.plugin.PluginRegistry;
+import io.github.bekoenig.trymigrate.core.internal.plugin.PluginRegistryFactory;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintOptionsCustomizer;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogCustomizer;
+import io.github.bekoenig.trymigrate.core.plugin.customize.*;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -36,30 +31,30 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         TrymigrateDiscoverPlugins discoverPlugins = AnnotationSupport.findAnnotation(o.getClass(),
                 TrymigrateDiscoverPlugins.class).orElseThrow();
 
-        BeanProvider beanProvider = new BeanProviderFactory().create(o, new PluginDiscovery().discover(
+        PluginRegistry pluginRegistry = new PluginRegistryFactory().create(o, new PluginDiscovery().discover(
                 discoverPlugins.origin(), discoverPlugins.exclude()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
-                beanProvider.allReservedOrder(TrymigrateCatalogCustomizer.class));
+                pluginRegistry.allReservedOrder(TrymigrateCatalogCustomizer.class));
 
         LintSeverity failOn = AnnotationSupport.findAnnotation(o.getClass(),
                 TrymigrateAssertLints.class).map(TrymigrateAssertLints::failOn).orElse(null);
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
-                beanProvider.allReservedOrder(TrymigrateLintersConfigurer.class),
+                pluginRegistry.allReservedOrder(TrymigrateLintersConfigurer.class),
                 new LintsHistory(),
-                beanProvider.all(TrymigrateLintsReporter.class),
-                buildLintOptions(beanProvider.all(TrymigrateLintOptionsCustomizer.class)),
+                pluginRegistry.all(TrymigrateLintsReporter.class),
+                buildLintOptions(pluginRegistry.all(TrymigrateLintOptionsCustomizer.class)),
                 new LintsAssert(failOn)
         );
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
-                resolveJdbcDatabaseContainer(beanProvider),
-                beanProvider.allReservedOrder(TrymigrateFlywayCustomizer.class),
-                beanProvider.all(Callback.class),
-                beanProvider.all(JavaMigration.class),
-                beanProvider.all(TrymigrateDataLoader.class),
+                resolveJdbcDatabaseContainer(pluginRegistry),
+                pluginRegistry.allReservedOrder(TrymigrateFlywayCustomizer.class),
+                pluginRegistry.all(Callback.class),
+                pluginRegistry.all(JavaMigration.class),
+                pluginRegistry.all(TrymigrateDataLoader.class),
                 catalogFactory,
                 lintProcessor);
         StoreSupport.putMigrateProcessor(extensionContext, migrateProcessor);
@@ -79,9 +74,9 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         return lintOptionsBuilder.build();
     }
 
-    private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(BeanProvider beanProvider) {
+    private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(PluginRegistry pluginRegistry) {
         try {
-            return beanProvider.findOne(JdbcDatabaseContainer.class).orElse(null);
+            return pluginRegistry.findOne(JdbcDatabaseContainer.class).orElse(null);
         } catch (NoClassDefFoundError e) {
             return null;
         }

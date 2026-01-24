@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core.internal.lint;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import schemacrawler.tools.lint.Lint;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.Lints;
@@ -63,7 +63,7 @@ public class LintsAssert {
                         .collect(Collectors.joining(System.lineSeparator())),
                 TrymigrateSuppressLint.class.getSimpleName(),
                 TrymigrateExcludeLint.class.getSimpleName(),
-                TrymigrateBean.class.getSimpleName(),
+                TrymigrateRegisterPlugin.class.getSimpleName(),
                 TrymigrateLintersConfigurer.class.getSimpleName()));
     }
 

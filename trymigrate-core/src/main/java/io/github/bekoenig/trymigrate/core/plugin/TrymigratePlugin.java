@@ -1,16 +1,14 @@
 package io.github.bekoenig.trymigrate.core.plugin;
 
 /**
- * Marker interface for plugins provided by {@link TrymigratePluginProvider}. Each plugin implementation supplies one
- * or more customizations by fields annotated with {@link TrymigrateBean}.
+ * Marker interface for plugins provided by {@link java.util.ServiceLoader}.
  * <p>
- * The priority of a plugin is the forced order for beans. It is specified by the number of interface extensions
- * above {@link TrymigratePlugin} and the directly implemented interface of the plugin. All core plugins, which
- * implement {@link TrymigratePlugin}, have the lowest priority. Database-specific plugins should implement an interface
- * extension located in the database module. Context and database-specific plugins and more detailed abstractions are
- * also supported.
+ * The priority of a plugin is specified by the number of interface extensions above {@link TrymigratePlugin} and the
+ * directly implemented interface of the plugin. All core plugins, which implement {@link TrymigratePlugin}, have the
+ * lowest priority. Database-specific plugins should implement an interface extension located in the database module.
+ * Context and database-specific plugins and more detailed abstractions are also supported.
  * <p>
- * The current test instance has always the highest priority.
+ * Plugins registered by {@link TrymigrateRegisterPlugin} have always the highest priority.
  *
  * @see TrymigrateDiscoverPlugins
  */

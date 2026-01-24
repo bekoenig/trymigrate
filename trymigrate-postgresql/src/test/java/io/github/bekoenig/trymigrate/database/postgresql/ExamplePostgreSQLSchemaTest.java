@@ -12,7 +12,7 @@ import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
@@ -32,7 +32,6 @@ import schemacrawler.tools.lint.Lints;
 import javax.sql.DataSource;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.List;
 
 import static java.util.function.Predicate.isEqual;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,23 +42,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
 public class ExamplePostgreSQLSchemaTest {
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
             .defaultSchema("example_schema")
             .locations("classpath:db/migration/example/postgresql")
             .cleanDisabled(false);
 
-    @TrymigrateBean
-    private final List<PostgreSQLContainer> containerDatabase = List.of(new PostgreSQLContainer(
-            DockerImageName.parse("postgres:18.0")));
+    @TrymigrateRegisterPlugin
+    private final PostgreSQLContainer containerDatabase = new PostgreSQLContainer(
+            DockerImageName.parse("postgres:18.0"));
 
-    @TrymigrateBean
-    private final List<NoopJavaMigration> javaMigrations = List.of(new NoopJavaMigration("1.0.1"));
+    @TrymigrateRegisterPlugin
+    private final NoopJavaMigration javaMigrations = new NoopJavaMigration("1.0.1");
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final NoopJavaMigration moreNoop = new NoopJavaMigration("1.0.2");
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final Callback callback = new Callback() {
         @Override
         public boolean supports(Event event, Context context) {

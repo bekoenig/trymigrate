@@ -11,7 +11,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.junit.jupiter.api.*;
@@ -37,18 +37,18 @@ public class ExampleDb2SchemaTest {
 
     private boolean trymigrateDataLoadHandleInvoked;
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
             .defaultSchema("EXAMPLE_SCHEMA")
             .locations("classpath:db/migration/example/db2")
             .cleanDisabled(false);
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final Db2Container db2Container =
             new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:12.1.2.0"))
                     .acceptLicense();
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateDataLoader dataLoadHandle = new TrymigrateDataLoader() {
 
         @Override

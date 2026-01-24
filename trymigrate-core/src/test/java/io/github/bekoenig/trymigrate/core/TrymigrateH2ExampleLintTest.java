@@ -3,7 +3,7 @@ package io.github.bekoenig.trymigrate.core;
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
-import io.github.bekoenig.trymigrate.core.plugin.TrymigrateBean;
+import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.junit.jupiter.api.Test;
 import schemacrawler.schema.Catalog;
@@ -19,16 +19,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TrymigrateAssertLints(failOn = LintSeverity.medium)
 public class TrymigrateH2ExampleLintTest {
 
-    @TrymigrateBean
+    @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
             .defaultSchema("EXAMPLE_SCHEMA")
-            .dataSource("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", null, null)
+            .dataSource("jdbc:h2:mem:testdb1;DB_CLOSE_DELAY=-1", null, null)
             .locations("classpath:db/migration/example/h2");
 
     @Test
     @TrymigrateWhenTarget("1.0")
     @TrymigrateSuppressLint(
-            objectName = "TESTDB.EXAMPLE_SCHEMA.TAB1", // note: catalog name is part of object names in h2
+            objectName = "TESTDB1.EXAMPLE_SCHEMA.TAB1", // note: catalog name is part of object names in h2
             linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
     void initial(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
@@ -37,7 +37,7 @@ public class TrymigrateH2ExampleLintTest {
                 .singleElement()
                 .extracting(Schema::getName)
                 .isEqualTo("EXAMPLE_SCHEMA");
-        SchemaCrawlerAssertions.assertThat(catalog).schema("TESTDB.EXAMPLE_SCHEMA").isNotNull();
+        SchemaCrawlerAssertions.assertThat(catalog).schema("TESTDB1.EXAMPLE_SCHEMA").isNotNull();
         assertThat(lints)
                 .anyMatch(x -> x.getLinterId().equals("schemacrawler.tools.linter.LinterTableWithNoRemarks"));
     }
