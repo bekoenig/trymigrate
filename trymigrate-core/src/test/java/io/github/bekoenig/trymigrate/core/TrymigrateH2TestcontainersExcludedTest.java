@@ -6,7 +6,7 @@ import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCusto
 import org.junit.jupiter.api.Test;
 
 @Trymigrate
-@Classpath(exclude = "org.testcontainers:testcontainers-jdbc", excludeTransitive = true)
+@Classpath(exclude = "org.testcontainers:testcontainers-jdbc")
 public class TrymigrateH2TestcontainersExcludedTest {
 
     @TrymigrateRegisterPlugin

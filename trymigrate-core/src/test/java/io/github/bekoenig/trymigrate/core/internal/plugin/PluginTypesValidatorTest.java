@@ -34,7 +34,7 @@ class PluginTypesValidatorTest {
     }
 
     @Test
-    @Classpath(exclude = "org.testcontainers:testcontainers-jdbc", excludeTransitive = true)
+    @Classpath(exclude = "org.testcontainers:testcontainers-jdbc")
     void isSupportedType_false() {
         // GIVEN
         Class<?> clazz = String.class;
