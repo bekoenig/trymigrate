@@ -6,7 +6,7 @@ import org.flywaydb.core.api.MigrationVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import schemacrawler.schema.Catalog;
-import schemacrawler.schemacrawler.IdentifiersBuilder;
+import schemacrawler.schema.IdentifiersBuilder;
 import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintReportOutputFormat;
 import schemacrawler.tools.lint.Lints;

@@ -4,7 +4,7 @@ import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
 import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
-import schemacrawler.schemacrawler.IdentifiersBuilder;
+import schemacrawler.schema.IdentifiersBuilder;
 import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintReportOutputFormat;
 import schemacrawler.tools.lint.Lints;
