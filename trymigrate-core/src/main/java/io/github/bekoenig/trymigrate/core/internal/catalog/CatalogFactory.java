@@ -7,6 +7,8 @@ import schemacrawler.schemacrawler.*;
 import schemacrawler.tools.options.Config;
 import schemacrawler.tools.options.ConfigUtility;
 import schemacrawler.tools.utility.SchemaCrawlerUtility;
+import us.fatehi.utility.datasource.DatabaseConnectionSource;
+import us.fatehi.utility.datasource.DatabaseConnectionSources;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -58,7 +60,7 @@ public class CatalogFactory {
         Config additionalConfig = customizedBuild(new HashMap<>(),
                 customizers, c -> c::customize, ConfigUtility::fromMap);
 
-        DatabaseConnectionSourceAdapter dataSource = new DatabaseConnectionSourceAdapter(connection);
+        DatabaseConnectionSource dataSource = DatabaseConnectionSources.fromConnection(connection);
         return SchemaCrawlerUtility.getCatalog(dataSource, SchemaCrawlerUtility.matchSchemaRetrievalOptions(dataSource),
                 schemaCrawlerOptions, additionalConfig);
     }
