@@ -98,6 +98,9 @@ public class MigrateProcessor {
 
         if (cleanBefore) {
             flyway.clean();
+
+            // assume empty on clean
+            currentTarget = EMPTY;
         }
 
         MigrationVersion lastTarget = currentTarget;
