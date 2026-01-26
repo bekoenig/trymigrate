@@ -15,14 +15,15 @@ import java.util.Optional;
 
 public class DataLoader implements Callback {
 
-    private final List<TrymigrateDataLoader> handles;
+    private final List<TrymigrateDataLoader> dataLoaders;
     private final MigrationVersion target;
     private final List<String> resources;
 
     private boolean applied;
 
-    public DataLoader(List<TrymigrateDataLoader> handles, MigrationVersion target, List<String> resources) {
-        this.handles = handles;
+    public DataLoader(List<TrymigrateDataLoader> dataLoaders, MigrationVersion target,
+                      List<String> resources) {
+        this.dataLoaders = dataLoaders;
         this.target = target;
         this.resources = resources;
     }
@@ -53,12 +54,12 @@ public class DataLoader implements Callback {
     }
 
     private void load(String resource, Connection connection) {
-        Optional<TrymigrateDataLoader> handle = handles.stream()
+        Optional<TrymigrateDataLoader> dataLoader = dataLoaders.stream()
                 .filter(h -> h.supports(resource, IOUtility.getFileExtension(resource)))
                 .findFirst();
 
-        if (handle.isPresent()) {
-            handle.get().load(resource, connection);
+        if (dataLoader.isPresent()) {
+            dataLoader.get().load(resource, connection);
         } else {
             try (Statement statement = connection.createStatement()) {
                 statement.execute(resource);
