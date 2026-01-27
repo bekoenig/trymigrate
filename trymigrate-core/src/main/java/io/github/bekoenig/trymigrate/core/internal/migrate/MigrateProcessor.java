@@ -83,11 +83,6 @@ public class MigrateProcessor {
 
     public void migrate(MigrationVersion target, List<String> resources, boolean cleanBefore,
                         LintPatterns suppressedLintPatterns) {
-        // nothing to do on latest
-        if (LATEST.equals(currentTarget)) {
-            return;
-        }
-
         FluentConfiguration fluentConfiguration = getConfiguration();
         fluentConfiguration.target(target);
         addCallbacks(fluentConfiguration, List.of(
