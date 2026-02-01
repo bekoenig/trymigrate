@@ -16,8 +16,7 @@ import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestInstancePostProcessor;
 import org.junit.platform.commons.support.AnnotationSupport;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import schemacrawler.tools.command.lint.options.LintOptions;
+ import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.command.lint.options.LintOptionsBuilder;
 import schemacrawler.tools.lint.LintSeverity;
 
@@ -50,7 +49,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         );
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
-                resolveJdbcDatabaseContainer(pluginRegistry),
+                pluginRegistry.findOne(TrymigrateDatabase.class).orElse(null),
                 pluginRegistry.allReservedOrder(TrymigrateFlywayCustomizer.class),
                 pluginRegistry.all(Callback.class),
                 pluginRegistry.all(JavaMigration.class),
@@ -72,14 +71,6 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         LintOptionsBuilder lintOptionsBuilder = LintOptionsBuilder.builder().noInfo();
         customizers.forEach(x -> x.accept(lintOptionsBuilder));
         return lintOptionsBuilder.build();
-    }
-
-    private JdbcDatabaseContainer<?> resolveJdbcDatabaseContainer(PluginRegistry pluginRegistry) {
-        try {
-            return pluginRegistry.findOne(JdbcDatabaseContainer.class).orElse(null);
-        } catch (NoClassDefFoundError e) {
-            return null;
-        }
     }
 
 }

@@ -1,12 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.migrate;
 
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
-import io.github.bekoenig.trymigrate.core.internal.container.StaticPortBinding;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintProcessor;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.SchemaLinter;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
@@ -14,8 +14,6 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.flywaydb.core.api.output.MigrateResult;
-import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.lifecycle.Startable;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.Lints;
 
@@ -29,7 +27,7 @@ import static org.flywaydb.core.api.MigrationVersion.*;
 
 public class MigrateProcessor {
 
-    private final JdbcDatabaseContainer<?> jdbcDatabaseContainer;
+    private final TrymigrateDatabase database;
     private final List<TrymigrateFlywayCustomizer> flywayCustomizers;
     private final List<Callback> callbacks;
     private final List<JavaMigration> javaMigrations;
@@ -41,11 +39,11 @@ public class MigrateProcessor {
     private Catalog catalog;
     private MigrationVersion currentTarget;
 
-    public MigrateProcessor(JdbcDatabaseContainer<?> jdbcDatabaseContainer,
+    public MigrateProcessor(TrymigrateDatabase database,
                             List<TrymigrateFlywayCustomizer> flywayCustomizers, List<Callback> callbacks,
                             List<JavaMigration> javaMigrations, List<TrymigrateDataLoader> dataLoaders,
                             CatalogFactory catalogFactory, LintProcessor lintProcessor) {
-        this.jdbcDatabaseContainer = jdbcDatabaseContainer;
+        this.database = database;
         this.flywayCustomizers = flywayCustomizers;
         this.callbacks = callbacks;
         this.javaMigrations = javaMigrations;
@@ -56,11 +54,11 @@ public class MigrateProcessor {
 
     private FluentConfiguration getConfiguration() {
         FluentConfiguration fluentConfiguration = new FluentConfiguration();
-        if (Objects.nonNull(jdbcDatabaseContainer)) {
+        if (Objects.nonNull(database)) {
             fluentConfiguration.dataSource(
-                    jdbcDatabaseContainer.getJdbcUrl(),
-                    jdbcDatabaseContainer.getUsername(),
-                    jdbcDatabaseContainer.getPassword());
+                    database.getJdbcUrl(),
+                    database.getUsername(),
+                    database.getPassword());
         }
         flywayCustomizers.forEach(x -> x.accept(fluentConfiguration));
         addCallbacks(fluentConfiguration, callbacks);
@@ -69,8 +67,8 @@ public class MigrateProcessor {
     }
 
     public void prepare() {
-        if (Objects.nonNull(jdbcDatabaseContainer)) {
-            new StaticPortBinding().andThen(Startable::start).accept(jdbcDatabaseContainer);
+        if (Objects.nonNull(database)) {
+            database.prepare();
         }
 
         Flyway flyway = getConfiguration().load();
@@ -126,8 +124,8 @@ public class MigrateProcessor {
     }
 
     public void finish() {
-        if (Objects.nonNull(jdbcDatabaseContainer)) {
-            jdbcDatabaseContainer.stop();
+        if (Objects.nonNull(database)) {
+            database.dispose();
         }
     }
 }
