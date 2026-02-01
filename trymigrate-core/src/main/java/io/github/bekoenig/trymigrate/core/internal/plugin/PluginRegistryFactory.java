@@ -35,7 +35,7 @@ public class PluginRegistryFactory {
     private PluginProvider toProvider(Object testInstance, Field field) {
         Class<?> type = field.getType();
 
-        if (JdbcDatabaseContainer.class.isAssignableFrom(type)) {
+        if (isJdbcDatabaseContainer(type)) {
             return new PluginProvider(
                     TrymigrateDatabase.class,
                     () -> new JdbcDatabaseContainerAdapter(
@@ -47,6 +47,14 @@ public class PluginRegistryFactory {
 
         validate(field);
         return new PluginProvider(type, () -> getValue(testInstance, field), TEST_INSTANCE_RANK);
+    }
+
+    private boolean isJdbcDatabaseContainer(Class<?> type) {
+        try {
+            return JdbcDatabaseContainer.class.isAssignableFrom(type);
+        } catch (NoClassDefFoundError e) {
+            return false;
+        }
     }
 
     private Object getValue(Object testInstance, Field field) {
