@@ -6,6 +6,9 @@ import us.fatehi.utility.database.SqlScript;
 
 import java.sql.Connection;
 
+/**
+ * Plugin to load data from SQL resources in classpath.
+ */
 public class SqlDataLoader implements TrymigrateDataLoader, TrymigratePlugin {
 
     @Override
