@@ -12,8 +12,7 @@ public class StoreSupport {
     }
 
     private static ExtensionContext.Store getStore(ExtensionContext extensionContext) {
-        return extensionContext.getStore(ExtensionContext.Namespace.create(Trymigrate.class,
-                extensionContext.getRequiredTestClass()));
+        return extensionContext.getStore(ExtensionContext.Namespace.create(Trymigrate.class));
     }
 
     public static MigrateProcessor getMigrateProcessor(ExtensionContext extensionContext) {
