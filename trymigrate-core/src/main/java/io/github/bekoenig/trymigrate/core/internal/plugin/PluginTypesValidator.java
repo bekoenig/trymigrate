@@ -8,7 +8,6 @@ public class PluginTypesValidator {
     private PluginTypesValidator() {
     }
 
-
     public static boolean isSupportedType(Class<?> type) {
         return TrymigratePlugin.SUPPORTED_TYPES.stream()
                 .anyMatch(supportedType -> supportedType.isAssignableFrom(type));
