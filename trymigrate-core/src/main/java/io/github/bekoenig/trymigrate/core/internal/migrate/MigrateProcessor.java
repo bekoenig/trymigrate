@@ -14,6 +14,7 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.flywaydb.core.api.output.MigrateResult;
+import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.Lints;
 
@@ -25,7 +26,7 @@ import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlyw
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addJavaMigrations;
 import static org.flywaydb.core.api.MigrationVersion.*;
 
-public class MigrateProcessor {
+public class MigrateProcessor implements CloseableResource, AutoCloseable {
 
     private final TrymigrateDatabase database;
     private final List<TrymigrateFlywayCustomizer> flywayCustomizers;
@@ -50,6 +51,21 @@ public class MigrateProcessor {
         this.dataLoaders = dataLoaders;
         this.catalogFactory = catalogFactory;
         this.lintProcessor = lintProcessor;
+
+        initialize();
+    }
+
+    private void initialize() {
+        if (Objects.nonNull(database)) {
+            database.prepare();
+        }
+
+        Flyway flyway = getConfiguration().load();
+        flyway.info();
+        dataSource = flyway.getConfiguration().getDataSource();
+
+        // assume empty as the initial version
+        currentTarget = EMPTY;
     }
 
     private FluentConfiguration getConfiguration() {
@@ -64,19 +80,6 @@ public class MigrateProcessor {
         addCallbacks(fluentConfiguration, callbacks);
         addJavaMigrations(fluentConfiguration, javaMigrations);
         return fluentConfiguration;
-    }
-
-    public void prepare() {
-        if (Objects.nonNull(database)) {
-            database.prepare();
-        }
-
-        Flyway flyway = getConfiguration().load();
-        flyway.info();
-        dataSource = flyway.getConfiguration().getDataSource();
-
-        // assume empty as the initial version
-        currentTarget = EMPTY;
     }
 
     public void migrate(MigrationVersion target, List<String> resources, boolean cleanBefore,
@@ -123,7 +126,7 @@ public class MigrateProcessor {
         return catalog;
     }
 
-    public void finish() {
+    public void close() {
         if (Objects.nonNull(database)) {
             database.dispose();
         }

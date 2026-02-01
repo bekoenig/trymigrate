@@ -1,7 +1,6 @@
 package io.github.bekoenig.trymigrate.core;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
-import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateCompleter;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateExecutor;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateInitializer;
 import io.github.bekoenig.trymigrate.core.internal.lifecycle.MigrateOrderer;
@@ -48,7 +47,6 @@ import java.lang.annotation.*;
 @ExtendWith({
         MigrateInitializer.class,
         MigrateExecutor.class,
-        MigrateCompleter.class,
         DataSourceParameterResolver.class,
         CatalogParameterResolver.class,
         LintsParameterResolver.class

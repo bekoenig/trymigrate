@@ -57,8 +57,6 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 catalogFactory,
                 lintProcessor);
         StoreSupport.putMigrateProcessor(extensionContext, migrateProcessor);
-
-        migrateProcessor.prepare();
     }
 
     private LintPatterns excludedLintPatterns(AnnotatedElement annotatedElement) {
