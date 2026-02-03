@@ -51,7 +51,7 @@
 
         <mockito.version>5.21.0</mockito.version>
         <assertj.version>3.27.7</assertj.version>
-        <assertj-schemacrawler.version>2.0.1</assertj-schemacrawler.version>
+        <assertj-schemacrawler.version>2.1.0</assertj-schemacrawler.version>
 
         <flyway.version>12.0.0</flyway.version>
         <schemacrawler.version>17.6.0</schemacrawler.version>
