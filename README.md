@@ -1,4 +1,6 @@
-# try{migrate}
+<img width="1193" height="456" alt="trymigrate-logo" src="https://github.com/user-attachments/assets/4af1eea5-0056-4ff7-81c0-9063727d3ce1" />
+
+# try { migrate(); }
 
 _TDD in database migration using Flyway, SchemaCrawler, Testcontainers and AssertJ._
 
