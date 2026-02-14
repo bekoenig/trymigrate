@@ -108,8 +108,14 @@ public class MigrateProcessor implements CloseableResource, AutoCloseable {
                     " for test.");
         }
 
-        // assert lints only for a newer target
         if (currentTarget.isNewerThan(lastTarget)) {
+            if (migrate.migrations.isEmpty()) {
+                throw new IllegalStateException("Schema is at version " + currentTarget +
+                        ", but no migrations were applied after the last target version " + lastTarget +
+                        ". This issue typically occurs when reusing the schema after a previous test.");
+            }
+
+            // assert lints only for a newer target
             lintProcessor.assertLints(lastTarget, currentTarget, suppressedLintPatterns);
         }
     }
