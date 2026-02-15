@@ -88,7 +88,7 @@ public class MigrateProcessor implements CloseableResource, AutoCloseable {
         fluentConfiguration.target(target);
         addCallbacks(fluentConfiguration, List.of(
                 new SchemaLinter(catalogFactory, catalog -> this.catalog = catalog, lintProcessor),
-                new DataLoader(dataLoaders, target, resources)));
+                new DataLoader(database, dataLoaders, target, resources)));
 
         Flyway flyway = fluentConfiguration.load();
 

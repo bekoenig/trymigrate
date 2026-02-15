@@ -13,6 +13,7 @@ import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.junit.jupiter.api.*;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,8 @@ public class ExampleDb2SchemaTest {
     private final TrymigrateDataLoader dataLoadHandle = new TrymigrateDataLoader() {
 
         @Override
-        public boolean supports(String resource, String extension) {
+        public boolean supports(String resource, String extension, TrymigrateDatabase database) {
+            assertThat(database).isNotNull();
             if (resource.equalsIgnoreCase("db/testdata/db2/initial.sql")) {
                 trymigrateDataLoadHandleInvoked = true;
             }
@@ -60,7 +62,8 @@ public class ExampleDb2SchemaTest {
         }
 
         @Override
-        public void load(String classpathResource, Connection connection) {
+        public void load(String classpathResource, Connection connection, TrymigrateDatabase database) {
+            assertThat(database).isNotNull();
         }
     };
 
