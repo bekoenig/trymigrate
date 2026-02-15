@@ -22,7 +22,7 @@ public class MigrateExecutor implements BeforeEachCallback {
                         extensionContext.getRequiredTestMethod(), TrymigrateWhenTarget.class)
                 .map(TrymigrateWhenTarget::value)
                 .map(MigrationVersion::fromVersion)
-                .orElse(MigrationVersion.LATEST);
+                .orElse(null);
 
         List<String> resources = AnnotationSupport.findAnnotation(
                         extensionContext.getRequiredTestMethod(), TrymigrateGivenData.class)

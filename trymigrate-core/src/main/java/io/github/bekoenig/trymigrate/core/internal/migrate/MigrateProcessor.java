@@ -85,7 +85,9 @@ public class MigrateProcessor implements CloseableResource, AutoCloseable {
     public void migrate(MigrationVersion target, List<String> resources, boolean cleanBefore,
                         LintPatterns suppressedLintPatterns) {
         FluentConfiguration fluentConfiguration = getConfiguration();
-        fluentConfiguration.target(target);
+        if (target != null) {
+            fluentConfiguration.target(target);
+        }
         addCallbacks(fluentConfiguration, List.of(
                 new SchemaLinter(catalogFactory, catalog -> this.catalog = catalog, lintProcessor),
                 new DataLoader(database, dataLoaders, target, resources)));
