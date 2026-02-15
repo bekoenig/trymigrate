@@ -111,7 +111,7 @@ public class MigrateProcessor implements CloseableResource, AutoCloseable {
         }
 
         if (currentTarget.isNewerThan(lastTarget)) {
-            if (migrate.migrations.isEmpty()) {
+            if (migrate.getSuccessfulMigrations().isEmpty()) {
                 throw new IllegalStateException("Schema is at version " + currentTarget +
                         ", but no migrations were applied after the last target version " + lastTarget +
                         ". This issue typically occurs when reusing the schema after a previous test.");
