@@ -21,8 +21,8 @@ import java.util.Objects;
 
 public class LintsHtmlReporter implements TrymigrateLintsReporter, TrymigratePlugin {
 
-    public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.reports.html.skip-empty";
-    public static final String PROPERTY_NAME = "trymigrate.lint.reports.html.basedir";
+    public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.report.html.skip-empty";
+    public static final String PROPERTY_NAME = "trymigrate.lint.report.html.basedir";
 
     public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion,
                        LintOptions lintOptions) {
