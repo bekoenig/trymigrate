@@ -64,6 +64,7 @@ public class ExampleDb2SchemaTest {
         @Override
         public void load(String classpathResource, Connection connection, TrymigrateDatabase database) {
             assertThat(database).isNotNull();
+            assertThat(database.unwrap(Db2Container.class)).isPresent();
         }
     };
 
