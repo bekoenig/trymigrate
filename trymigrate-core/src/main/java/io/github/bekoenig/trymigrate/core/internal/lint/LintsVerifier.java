@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class LintsAssert {
+public class LintsVerifier {
 
     private final LintSeverity failOn;
 
-    public LintsAssert(LintSeverity failOn) {
+    public LintsVerifier(LintSeverity failOn) {
         this.failOn = failOn;
     }
 
@@ -26,17 +26,17 @@ public class LintsAssert {
         return Objects.isNull(failOn);
     }
 
-    public void assertLints(Lints lints, LintPatterns suppressedLintPatterns) {
+    public void verify(Lints lints, LintPatterns suppressedLintPatterns) {
         if (isDisabled()) {
             return;
         }
 
-        List<Lint<? extends Serializable>> assertLints = suppressedLintPatterns
+        List<Lint<? extends Serializable>> exceededLints = suppressedLintPatterns
                 .dropMatching(lints.getLints().stream())
                 .filter(x -> hasOrExceedsSeverity(x, failOn))
                 .toList();
 
-        if (assertLints.isEmpty()) {
+        if (exceededLints.isEmpty()) {
             return;
         }
 
@@ -58,7 +58,7 @@ public class LintsAssert {
                 a field annotated with @{4} to test class or a custom plugin and implement a {5}
                 """,
                 failOn.name(),
-                assertLints.stream()
+                exceededLints.stream()
                         .map(x -> x.getLinterId() + ": " + x)
                         .collect(Collectors.joining(System.lineSeparator())),
                 TrymigrateSuppressLint.class.getSimpleName(),

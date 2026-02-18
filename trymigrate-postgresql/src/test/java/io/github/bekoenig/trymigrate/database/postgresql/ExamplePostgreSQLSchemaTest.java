@@ -9,7 +9,7 @@ import io.github.bekoenig.trymigrate.core.Trymigrate;
 import io.github.bekoenig.trymigrate.core.TrymigrateCleanBefore;
 import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
 import io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter;
-import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
@@ -37,7 +37,7 @@ import static java.util.function.Predicate.isEqual;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Trymigrate
-@TrymigrateAssertLints(failOn = LintSeverity.medium)
+@TrymigrateVerifyLints(failOn = LintSeverity.medium)
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableSql")
 @TrymigrateExcludeLint(linterId = "schemacrawler.tools.linter.LinterTableEmpty")
 public class ExamplePostgreSQLSchemaTest {

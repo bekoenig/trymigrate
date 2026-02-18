@@ -5,13 +5,13 @@ import schemacrawler.tools.lint.LintSeverity;
 import java.lang.annotation.*;
 
 /**
- * Enables lints assertion after all migrations are applied.
+ * Enables lint verification when a new target version is applied for the first time.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-public @interface TrymigrateAssertLints {
+public @interface TrymigrateVerifyLints {
 
     /**
      * Threshold to fail on lints. Indicates mistakes in the database model on migration.

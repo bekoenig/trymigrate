@@ -4,7 +4,7 @@ import java.lang.annotation.*;
 
 /**
  * Marker annotation to suppress lints for test method. Use this annotation to allowlist lints which break the
- * quality gate of {@link TrymigrateAssertLints#failOn()}. The lints are not removed. They are still included in the
+ * quality gate of {@link TrymigrateVerifyLints#failOn()}. The lints are not removed. They are still included in the
  * report and in the method parameter set for further asserts.
  * <p>
  * Supports regex to accept multiple lints using single annotation.

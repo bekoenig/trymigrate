@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.lint;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.LintsAssert;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class LintsAssertTest {
+class LintsVerifierTest {
 
     public static Stream<Arguments> hasOrExceedsSeverityArguments() {
         List<LintSeverity> matchingThresholds = List.of(LintSeverity.low, LintSeverity.medium);
@@ -31,7 +30,7 @@ class LintsAssertTest {
         when(lint.getSeverity()).thenReturn(LintSeverity.medium);
 
         // WHEN
-        boolean result = LintsAssert.hasOrExceedsSeverity(lint, threshold);
+        boolean result = LintsVerifier.hasOrExceedsSeverity(lint, threshold);
 
         // THEN
         assertThat(result).isEqualTo(expected);

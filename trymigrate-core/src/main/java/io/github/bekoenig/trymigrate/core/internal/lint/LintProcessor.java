@@ -20,20 +20,20 @@ public class LintProcessor {
     private final LintsHistory lintsHistory;
     private final List<TrymigrateLintsReporter> lintsReporters;
     private final LintOptions lintOptions;
-    private final LintsAssert lintsAssert;
+    private final LintsVerifier lintsVerifier;
 
     public LintProcessor(LintPatterns excludedLintPatterns,
                          List<TrymigrateLintersConfigurer> lintersConfigurers,
                          LintsHistory lintsHistory,
                          List<TrymigrateLintsReporter> lintsReporters,
                          LintOptions lintOptions,
-                         LintsAssert lintsAssert) {
+                         LintsVerifier lintsVerifier) {
         this.excludedLintPatterns = excludedLintPatterns;
         this.lintersConfigurers = lintersConfigurers;
         this.lintsHistory = lintsHistory;
         this.lintsReporters = lintsReporters;
         this.lintOptions = lintOptions;
-        this.lintsAssert = lintsAssert;
+        this.lintsVerifier = lintsVerifier;
     }
 
     public void lint(Connection connection, String schema, Catalog catalog, MigrationVersion migrationVersion,
@@ -53,9 +53,9 @@ public class LintProcessor {
         return lintsHistory.isAnalysed(migrationVersion);
     }
 
-    public void assertLints(MigrationVersion lastVersion, MigrationVersion currentVersion,
-                            LintPatterns suppressedLintPatterns) {
-        lintsAssert.assertLints(lintsHistory.diffLints(lastVersion, currentVersion), suppressedLintPatterns);
+    public void verify(MigrationVersion lastVersion, MigrationVersion currentVersion,
+                       LintPatterns suppressedLintPatterns) {
+        lintsVerifier.verify(lintsHistory.diffLints(lastVersion, currentVersion), suppressedLintPatterns);
     }
 
     public Lints getLints(MigrationVersion currentVersion) {

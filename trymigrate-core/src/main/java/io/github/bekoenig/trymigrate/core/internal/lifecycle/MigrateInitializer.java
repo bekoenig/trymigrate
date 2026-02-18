@@ -7,7 +7,7 @@ import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginRegistry;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginRegistryFactory;
-import io.github.bekoenig.trymigrate.core.lint.TrymigrateAssertLints;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateExcludeLint;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateDiscoverPlugins;
 import io.github.bekoenig.trymigrate.core.plugin.customize.*;
@@ -37,7 +37,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 pluginRegistry.allReservedOrder(TrymigrateCatalogCustomizer.class));
 
         LintSeverity failOn = AnnotationSupport.findAnnotation(o.getClass(),
-                TrymigrateAssertLints.class).map(TrymigrateAssertLints::failOn).orElse(null);
+                TrymigrateVerifyLints.class).map(TrymigrateVerifyLints::failOn).orElse(null);
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
@@ -45,7 +45,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 new LintsHistory(),
                 pluginRegistry.all(TrymigrateLintsReporter.class),
                 buildLintOptions(pluginRegistry.all(TrymigrateLintOptionsCustomizer.class)),
-                new LintsAssert(failOn)
+                new LintsVerifier(failOn)
         );
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(

@@ -117,8 +117,8 @@ public class MigrateProcessor implements CloseableResource, AutoCloseable {
                         ". This issue typically occurs when reusing the schema after a previous test.");
             }
 
-            // assert lints only for a newer target
-            lintProcessor.assertLints(lastTarget, currentTarget, suppressedLintPatterns);
+            // verify lints only for a newer target
+            lintProcessor.verify(lastTarget, currentTarget, suppressedLintPatterns);
         }
     }
 
