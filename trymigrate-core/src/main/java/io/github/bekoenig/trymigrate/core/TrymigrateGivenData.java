@@ -17,6 +17,6 @@ public @interface TrymigrateGivenData {
      *
      * @return resources as input for {@link TrymigrateDataLoader}
      */
-    String[] value() default {};
+    String[] value();
 
 }
