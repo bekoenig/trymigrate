@@ -9,6 +9,7 @@ import schemacrawler.schema.Catalog;
 import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.lint.Linters;
 import schemacrawler.tools.lint.Lints;
+import us.fatehi.utility.datasource.DatabaseConnectionSources;
 
 import java.sql.Connection;
 import java.util.List;
@@ -42,7 +43,7 @@ public class LintProcessor {
         lintersConfigurers.forEach(x -> x.accept(lintersBuilder));
 
         Linters linters = lintersBuilder.build();
-        linters.lint(catalog, connection);
+        linters.lint(catalog, DatabaseConnectionSources.fromConnection(connection));
         Lints currentLints = new Lints(excludedLintPatterns.dropMatching(linters.getLints().stream()).toList());
 
         Lints newLints = lintsHistory.diffNewLints(migrationVersion, currentLints);
