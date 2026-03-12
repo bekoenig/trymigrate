@@ -3,16 +3,35 @@ package io.github.bekoenig.trymigrate.core.plugin.customize;
 import java.util.Optional;
 
 /**
- * Integrates a test database.
+ * Abstraction for the database used during migration testing.
+ * <p>
+ * This interface provides trymigrate with the necessary connection details and lifecycle
+ * hooks to manage the test database.
+ * <p>
+ * <b>Standard Implementation:</b>
+ * The most common way to use this is through trymigrate's automatic wrapping of
+ * Testcontainers' {@code JdbcDatabaseContainer} via {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}.
+ * <p>
+ * <b>Custom Implementation:</b>
+ * You can implement this interface to connect trymigrate to:
+ * <ul>
+ *     <li>A shared external database instance.</li>
+ *     <li>A custom-managed container lifecycle.</li>
+ *     <li>An in-memory database like H2 or HSQLDB.</li>
+ * </ul>
+ *
+ * @see io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin
  */
 public interface TrymigrateDatabase {
 
     /**
-     * Provides access to the underlying instance if it matches the given type.
+     * Provides access to the underlying database instance if it matches the given type.
+     * <p>
+     * This is useful for accessing vendor-specific features of a database container.
      *
      * @param <T>  the target type
      * @param type the class of the target type
-     * @return an {@link Optional} with the instance, or empty if type doesn't match
+     * @return an {@link Optional} with the instance, or empty if the type doesn't match
      */
     default <T> Optional<T> unwrap(Class<T> type) {
         if (type.isInstance(this)) {
@@ -22,27 +41,39 @@ public interface TrymigrateDatabase {
     }
 
     /**
-     * Prepares the database for test instance.
+     * Prepares the database for use.
+     * <p>
+     * This method is called exactly once before any migrations are executed.
+     * For containers, this typically triggers the {@code start()} method.
      */
     void prepare();
 
     /**
-     * @return jdbc-url
+     * Returns the JDBC URL for the database connection.
+     *
+     * @return the JDBC connection string
      */
     String getJdbcUrl();
 
     /**
-     * @return username
+     * Returns the username for the database connection.
+     *
+     * @return the database username
      */
     String getUsername();
 
     /**
-     * @return password
+     * Returns the password for the database connection.
+     *
+     * @return the database password
      */
     String getPassword();
 
     /**
-     * Disposes the database after test instance.
+     * Disposes of the database after use.
+     * <p>
+     * This method is called when the database is no longer needed.
+     * For containers, this typically triggers the {@code stop()} method.
      */
     void dispose();
 

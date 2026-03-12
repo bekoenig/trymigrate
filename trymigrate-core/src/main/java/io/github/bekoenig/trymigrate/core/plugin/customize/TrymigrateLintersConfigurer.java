@@ -7,110 +7,125 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * Configurer for {@link TrymigrateLintersConfigurer.TrymigrateLintersConfiguration}. The entire entry point to add
- * fluent linter configurations.
+ * Plugin interface for fluent SchemaCrawler linter configuration.
+ * <p>
+ * This is the primary entry point for programmatic control over linters. It allows you to
+ * enable, disable, and fine-tune linters without needing to create {@code schemacrawler.config.properties}
+ * or use Java SPI for every minor change.
+ * <p>
+ * <b>Key Features:</b>
+ * <ul>
+ *     <li><b>SPI-less Registration:</b> Directly register custom linter providers.</li>
+ *     <li><b>Fine-grained Control:</b> Overwrite severity levels and filter by table or column patterns.</li>
+ *     <li><b>Dynamic Configuration:</b> Pass custom key-value pairs to specific linters.</li>
+ * </ul>
+ * <p>
+ * <b>Example:</b>
+ * <pre>{@code
+ * @TrymigrateRegisterPlugin
+ * private final TrymigrateLintersConfigurer linterConfig = config -> config
+ *     .register(new MyCustomLinterProvider())
+ *     .configure("schemacrawler.tools.linter.LinterTableWithNoRemarks")
+ *         .severity(LintSeverity.high)
+ *         .tableInclusionPattern("APP_.*")
+ *     .disable("schemacrawler.tools.linter.LinterTableSql");
+ * }</pre>
  *
  * @see TrymigrateLintersConfigurer.TrymigrateLintersConfiguration
  */
 public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersConfigurer.TrymigrateLintersConfiguration> {
 
     /**
-     * Root interface to configure linters on a fluent way.
-     *
-     * @see TrymigrateLintersConfigurer
+     * Entry point for the fluent linter configuration DSL.
      */
     interface TrymigrateLintersConfiguration {
 
         /**
-         * Registers a linter provider avoiding SPI.
+         * Registers a new linter provider. This avoids the need for standard Java SPI discovery.
          *
-         * @param linterProvider provider for linter
-         * @return root interface
+         * @param linterProvider the provider to register
+         * @return the configuration root
          */
         TrymigrateLintersConfiguration register(LinterProvider linterProvider);
 
         /**
-         * Enables a registered linter by adding a new config.
+         * Enables and starts configuring a specific linter.
          *
-         * @param linterId id of linter
-         * @return intermediate interface for specific configuration of the enabled linter
+         * @param linterId the ID of the linter to configure
+         * @return a configuration interface for the specific linter
          */
         TrymigrateLinterConfiguration configure(String linterId);
 
         /**
-         * Disables an enabled linter by removing all configs.
+         * Completely disables a specific linter.
          *
-         * @param linterId id of linter
-         * @return root interface
+         * @param linterId the ID of the linter to disable
+         * @return the configuration root
          */
         TrymigrateLintersConfiguration disable(String linterId);
 
         /**
-         * Re-enables a linter by removing all configs and adding a new config.
+         * Discards any existing configuration for a linter and starts fresh.
          *
-         * @param linterId id of linter
-         * @return intermediate interface for specific configuration of the enabled linter
+         * @param linterId the ID of the linter to reconfigure
+         * @return a configuration interface for the specific linter
          */
         TrymigrateLinterConfiguration reconfigure(String linterId);
 
         /**
-         * Intermediate interface to add specific configurations to the enabled linter or configure the next linter.
-         *
-         * @see TrymigrateLintersConfigurer
-         * @see TrymigrateLintersConfiguration
+         * Fluent DSL for configuring a specific linter instance.
          */
         interface TrymigrateLinterConfiguration extends TrymigrateLintersConfiguration {
 
             /**
-             * Defines config properties.
+             * Sets custom configuration properties for the linter.
              *
-             * @param config config properties as key, value
-             * @return intermediate interface
+             * @param config a map of configuration keys and values
+             * @return this configuration instance
              */
             TrymigrateLinterConfiguration config(Map<String, Object> config);
 
             /**
-             * Overwrites predefined severity.
+             * Overrides the default severity of this linter.
              *
-             * @param severity new severity
-             * @return intermediate interface
+             * @param severity the new severity level
+             * @return this configuration instance
              */
             TrymigrateLinterConfiguration severity(LintSeverity severity);
 
             /**
-             * Defines the inclusion pattern for table.
+             * Sets a regular expression to restrict which tables this linter applies to.
              *
-             * @param tableInclusionPattern inclusion pattern for table
-             * @return intermediate interface
+             * @param tableInclusionPattern the regex pattern for table inclusion
+             * @return this configuration instance
              */
             TrymigrateLinterConfiguration tableInclusionPattern(String tableInclusionPattern);
 
             /**
-             * Defines the exclusion pattern for table.
+             * Sets a regular expression to exclude specific tables from this linter.
              *
-             * @param tableExclusionPattern exclusion pattern for table
-             * @return intermediate interface
+             * @param tableExclusionPattern the regex pattern for table exclusion
+             * @return this configuration instance
              */
             TrymigrateLinterConfiguration tableExclusionPattern(String tableExclusionPattern);
 
             /**
-             * Defines the inclusion pattern for column.
+             * Sets a regular expression to restrict which columns this linter applies to.
              *
-             * @param columnInclusionPattern inclusion pattern for column
-             * @return intermediate interface
+             * @param columnInclusionPattern the regex pattern for column inclusion
+             * @return this configuration instance
              */
             TrymigrateLinterConfiguration columnInclusionPattern(String columnInclusionPattern);
 
             /**
-             * Defines the exclusion pattern for column.
+             * Sets a regular expression to exclude specific columns from this linter.
              *
-             * @param columnExclusionPattern exclusion pattern for column
-             * @return intermediate interface
+             * @param columnExclusionPattern the regex pattern for column exclusion
+             * @return this configuration instance
              */
             TrymigrateLinterConfiguration columnExclusionPattern(String columnExclusionPattern);
         }
 
     }
-
 
 }

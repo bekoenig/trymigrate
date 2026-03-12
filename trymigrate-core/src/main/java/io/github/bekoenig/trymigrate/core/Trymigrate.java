@@ -15,29 +15,41 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.lang.annotation.*;
 
 /**
- * Root annotation to activate database migration testing for test instance. Loads beans from test instance and all
- * plugins, prepares migration and executes all migrations. After each migration, the database model will be
- * checked for new lints. The lints are reported as HTML file and log message.
+ * Root annotation to activate database migration testing for a JUnit 5 test class.
  * <p>
- * Adds support for
+ * This annotation orchestrates the entire trymigrate lifecycle:
  * <ol>
- *     <li>{@link TrymigrateCleanBefore} to run a clean before migrate</li>
- *     <li>{@link TrymigrateGivenData} to add scenario data before target migration is applied</li>
- *     <li>{@link TrymigrateWhenTarget} to set the target version of migration</li>
+ *     <li>Starts the database (e.g., via Testcontainers).</li>
+ *     <li>Loads and registers all plugins (customizers, data loaders, etc.).</li>
+ *     <li>Automatically orders tests by their migration version (see {@link TrymigrateWhenTarget}).</li>
+ *     <li>Executes Flyway migrations before each test.</li>
+ *     <li>Injects database-related parameters into test methods.</li>
+ *     <li>Performs schema linting and generates reports after migrations.</li>
  * </ol>
- * on test methods (annotated with {@link org.junit.jupiter.api.Test}).
  * <p>
- * Tests annotated with {@link TrymigrateWhenTarget} are executed at first, in ascending order of their target version.
- * All other tests are executed afterward. Sorting within a group is not unique. The order should therefore be
- * explicitly defined via {@link org.junit.jupiter.api.Order}.
- * <p>
- * Enables parameter providers for
+ * Adds support for method-level control via:
  * <ul>
- *     <li>{@link javax.sql.DataSource}: Datasource to database</li>
- *     <li>{@link schemacrawler.schema.Catalog}: Database model after last migration (system schemas may be excluded)</li>
- *     <li>{@link schemacrawler.tools.lint.Lints}: Lints of migrated schemas</li>
+ *     <li>{@link TrymigrateWhenTarget}: Defines the Flyway version to migrate to for a specific test.</li>
+ *     <li>{@link TrymigrateGivenData}: Seeds data into the database before the migration is applied.</li>
+ *     <li>{@link TrymigrateCleanBefore}: Wipes the schema before executing the migration for a fresh state.</li>
  * </ul>
- * on test methods.
+ * <p>
+ * <b>Parameter Injection:</b> Test methods can receive the following parameters:
+ * <ul>
+ *     <li>{@link javax.sql.DataSource}: The live connection to the test database.</li>
+ *     <li>{@link schemacrawler.schema.Catalog}: The analyzed database model (schema, tables, columns).</li>
+ *     <li>{@link schemacrawler.tools.lint.Lints}: The detected schema violations (filtered for new lints).</li>
+ * </ul>
+ * <p>
+ * <b>Ordering:</b> Tests are executed in ascending order of their target versions. Tests without
+ * {@link TrymigrateWhenTarget} are executed last. To define order within the same version, use
+ * {@link org.junit.jupiter.api.Order}.
+ * <p>
+ * This annotation sets {@link TestInstance.Lifecycle#PER_CLASS} to ensure efficient resource management.
+ *
+ * @see TrymigrateWhenTarget
+ * @see TrymigrateGivenData
+ * @see TrymigrateCleanBefore
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

@@ -3,13 +3,32 @@ package io.github.bekoenig.trymigrate.core.plugin;
 import java.lang.annotation.*;
 
 /**
- * Annotation to mark a field (each visibility) in the test instance of {@link TrymigratePlugin#SUPPORTED_TYPES} as
- * plugin.
+ * Annotation used to register trymigrate plugins directly within a test class.
  * <p>
- * Provides optional support for autowrapping {@link org.testcontainers.containers.JdbcDatabaseContainer} as
- * {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase}. The container will be started
- * before and stopped after test instance. Use a static field to avoid container stop after test instance for sharing
- * the container between multiple tests.
+ * Apply this annotation to any field that implements one of the supported plugin interfaces
+ * (see {@link TrymigratePlugin#SUPPORTED_TYPES}). Plugins registered this way have the
+ * <b>highest priority</b> and override any SPI-discovered plugins.
+ * <p>
+ * <b>Native Testcontainers Support:</b>
+ * This annotation has special support for {@code org.testcontainers.containers.JdbcDatabaseContainer}
+ * (e.g., {@code PostgreSQLContainer}). trymigrate will:
+ * <ol>
+ *     <li>Automatically start the container before tests begin.</li>
+ *     <li>Wrap it into a {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase} plugin.</li>
+ *     <li>Provide the connection details to Flyway and SchemaCrawler.</li>
+ *     <li>Stop the container according to the field's lifecycle.</li>
+ * </ol>
+ * <p>
+ * <b>Lifecycle & Container Reuse:</b>
+ * <ul>
+ *     <li><b>Instance Fields:</b> The container is started before the test class and stopped
+ *     immediately after all tests in the class are finished.</li>
+ *     <li><b>Static Fields:</b> The container is started once and shared across multiple test classes.
+ *     It is only stopped when the JVM exits. This is highly recommended for large test suites to save startup time.</li>
+ * </ul>
+ *
+ * @see TrymigratePlugin
+ * @see TrymigrateDiscoverPlugins
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
