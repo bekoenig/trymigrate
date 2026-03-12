@@ -61,8 +61,11 @@ public class CatalogFactory {
                 customizers, c -> c::customize, ConfigUtility::fromMap);
 
         DatabaseConnectionSource dataSource = DatabaseConnectionSources.fromConnection(connection);
-        return SchemaCrawlerUtility.getCatalog(dataSource, SchemaCrawlerUtility.matchSchemaRetrievalOptions(dataSource),
-                schemaCrawlerOptions, additionalConfig);
+        SchemaRetrievalOptions schemaRetrievalOptions = SchemaCrawlerUtility.matchSchemaRetrievalOptions(dataSource);
+        // TODO: remove connection initializer trigger after fix of schemacrawler
+        schemaRetrievalOptions.getConnectionInitializer().accept(connection);
+        return SchemaCrawlerUtility.getCatalog(dataSource, schemaRetrievalOptions, schemaCrawlerOptions,
+                additionalConfig);
     }
 
 }

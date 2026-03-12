@@ -28,8 +28,9 @@ public class TrymigrateH2ExampleLintTest {
     @Test
     @TrymigrateWhenTarget("1.0")
     @TrymigrateSuppressLint(
-            objectName = "TESTDB1.EXAMPLE_SCHEMA.TAB1", // note: catalog name is part of object names in h2
-            linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns")
+            linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns",
+            objectName = "TESTDB1.EXAMPLE_SCHEMA.TAB1" // note: catalog name is part of object names in h2
+    )
     void initial(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
         SchemaCrawlerAssertions.assertThat(catalog)
@@ -46,7 +47,7 @@ public class TrymigrateH2ExampleLintTest {
     void someTest(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
         assertThat(catalog).isNotNull();
-        assertThat(lints.isEmpty()).isFalse();
+        assertThat(lints).isNotEmpty();
     }
 
 }
