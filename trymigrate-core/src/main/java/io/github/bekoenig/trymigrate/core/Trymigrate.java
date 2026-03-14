@@ -24,12 +24,12 @@ import java.lang.annotation.*;
  *     <li>Automatically orders tests by their migration version (see {@link TrymigrateWhenTarget}).</li>
  *     <li>Executes Flyway migrations before each test.</li>
  *     <li>Injects database-related parameters into test methods.</li>
- *     <li>Performs schema linting and generates reports after migrations.</li>
+ *     <li>Performs schema linting and generates reports after <b>each migration</b> (even for intermediate versions).</li>
  * </ol>
  * <p>
  * Adds support for method-level control via:
  * <ul>
- *     <li>{@link TrymigrateWhenTarget}: Defines the Flyway version to migrate to for a specific test.</li>
+ *     <li>{@link TrymigrateWhenTarget}: Defines the Flyway version to migrate to for a specific test (acting as a "verification point").</li>
  *     <li>{@link TrymigrateGivenData}: Seeds data into the database before the migration is applied.</li>
  *     <li>{@link TrymigrateCleanBefore}: Wipes the schema before executing the migration for a fresh state.</li>
  * </ul>
@@ -38,7 +38,7 @@ import java.lang.annotation.*;
  * <ul>
  *     <li>{@link javax.sql.DataSource}: The live connection to the test database.</li>
  *     <li>{@link schemacrawler.schema.Catalog}: The analyzed database model (schema, tables, columns).</li>
- *     <li>{@link schemacrawler.tools.lint.Lints}: The detected schema violations (filtered for new lints).</li>
+ *     <li>{@link schemacrawler.tools.lint.Lints}: The detected schema violations (representing the <b>full current state</b> minus global excludes).</li>
  * </ul>
  * <p>
  * <b>Ordering:</b> Tests are executed in ascending order of their target versions. Tests without

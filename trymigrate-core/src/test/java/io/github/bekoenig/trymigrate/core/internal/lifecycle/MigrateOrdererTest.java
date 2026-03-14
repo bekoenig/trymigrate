@@ -1,6 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
 import io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodDescriptor;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import static org.mockito.Mockito.when;
 class MigrateOrdererTest {
 
     @Test
+    @DisplayName("GIVEN two identical method descriptors WHEN compared THEN return zero")
     void compare_same() {
         // GIVEN
         MethodDescriptor md1 = mock();
@@ -28,6 +30,7 @@ class MigrateOrdererTest {
     }
 
     @Test
+    @DisplayName("GIVEN two descriptors with different @Order values WHEN compared THEN follow order values")
     void compare_differentOrder() {
         // GIVEN
         MethodDescriptor md1 = mock();
@@ -44,6 +47,7 @@ class MigrateOrdererTest {
     }
 
     @Test
+    @DisplayName("GIVEN a descriptor with @TrymigrateWhenTarget and one without WHEN compared THEN target comes first")
     void compare_targetBeforeNonTarget1() {
         // GIVEN
         MethodDescriptor md1 = mock();
@@ -59,6 +63,7 @@ class MigrateOrdererTest {
     }
 
     @Test
+    @DisplayName("GIVEN a descriptor without @TrymigrateWhenTarget and one with WHEN compared THEN target comes first")
     void compare_targetBeforeNonTarget2() {
         // GIVEN
         MethodDescriptor md1 = mock();
@@ -74,6 +79,7 @@ class MigrateOrdererTest {
     }
 
     @Test
+    @DisplayName("GIVEN two descriptors with different target versions WHEN compared THEN lower version comes first")
     void compare_differentTarget() {
         // GIVEN
         MethodDescriptor md1 = mock();
@@ -90,6 +96,7 @@ class MigrateOrdererTest {
     }
 
     @Test
+    @DisplayName("GIVEN two descriptors with same target but different order WHEN compared THEN follow order values")
     void compare_sameTargetDifferentOrder() {
         // GIVEN
         MethodDescriptor md1 = mock();

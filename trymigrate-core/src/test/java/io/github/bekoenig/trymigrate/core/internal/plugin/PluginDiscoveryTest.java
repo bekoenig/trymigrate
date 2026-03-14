@@ -1,24 +1,42 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PluginDiscoveryTest {
 
-    interface P1 extends TrymigratePlugin {}
-    interface P2 extends P1 {}
-    interface P3 extends P2 {}
-    interface O1 extends P1 {}
+    interface P1 extends TrymigratePlugin {
+    }
 
-    static class P0Impl implements TrymigratePlugin {}
-    static class P1Impl implements P1 {}
-    static class P2Impl implements P2 {}
-    static class P3Impl implements P3 {}
-    static class O1Impl implements O1 {}
+    interface P2 extends P1 {
+    }
+
+    interface P3 extends P2 {
+    }
+
+    interface O1 extends P1 {
+    }
+
+    static class P0Impl implements TrymigratePlugin {
+    }
+
+    static class P1Impl implements P1 {
+    }
+
+    static class P2Impl implements P2 {
+    }
+
+    static class P3Impl implements P3 {
+    }
+
+    static class O1Impl implements O1 {
+    }
 
     @Test
+    @DisplayName("GIVEN a plugin class and an interface WHEN checked THEN return true if they share a common super-interface")
     void hasCommonSuperinterface() {
         assertThat(PluginDiscovery.hasCommonSuperinterface(P0Impl.class, P1.class)).isTrue();
         assertThat(PluginDiscovery.hasCommonSuperinterface(P1Impl.class, P2.class)).isTrue();
@@ -38,37 +56,42 @@ class PluginDiscoveryTest {
 
     @SuppressWarnings("unchecked")
     @Test
+    @DisplayName("GIVEN a plugin type and a list of types WHEN checked THEN return true if matches any")
     void ofType() {
-        assertThat(PluginDiscovery.ofType(P0Impl.class, new Class[]{ P0Impl.class })).isTrue();
-        assertThat(PluginDiscovery.ofType(P0Impl.class, new Class[]{ TrymigratePlugin.class })).isTrue();
-        assertThat(PluginDiscovery.ofType(P0Impl.class, new Class[]{ TrymigratePlugin.class, P0Impl.class })).isTrue();
+        assertThat(PluginDiscovery.ofType(P0Impl.class, new Class[]{P0Impl.class})).isTrue();
+        assertThat(PluginDiscovery.ofType(P0Impl.class, new Class[]{TrymigratePlugin.class})).isTrue();
+        assertThat(PluginDiscovery.ofType(P0Impl.class, new Class[]{TrymigratePlugin.class, P0Impl.class})).isTrue();
 
-        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{ P0Impl.class, P1Impl.class })).isTrue();
-        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{ P1.class })).isTrue();
-        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{ P0Impl.class })).isFalse();
+        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{P0Impl.class, P1Impl.class})).isTrue();
+        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{P1.class})).isTrue();
+        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{P0Impl.class})).isFalse();
 
-        assertThat(PluginDiscovery.ofType(P3Impl.class, new Class[]{ P2.class })).isTrue();
-        assertThat(PluginDiscovery.ofType(P3Impl.class, new Class[]{ P2Impl.class })).isFalse();
+        assertThat(PluginDiscovery.ofType(P3Impl.class, new Class[]{P2.class})).isTrue();
+        assertThat(PluginDiscovery.ofType(P3Impl.class, new Class[]{P2Impl.class})).isFalse();
 
-        assertThat(PluginDiscovery.ofType(O1Impl.class, new Class[]{ P1.class })).isTrue();
-        assertThat(PluginDiscovery.ofType(O1Impl.class, new Class[]{ P1Impl.class })).isFalse();
-        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{ O1.class })).isFalse();
+        assertThat(PluginDiscovery.ofType(O1Impl.class, new Class[]{P1.class})).isTrue();
+        assertThat(PluginDiscovery.ofType(O1Impl.class, new Class[]{P1Impl.class})).isFalse();
+        assertThat(PluginDiscovery.ofType(P1Impl.class, new Class[]{O1.class})).isFalse();
     }
 
     @Test
+    @DisplayName("GIVEN an interface hierarchy WHEN calculating rank THEN return the depth of the interface inheritance")
     void calculateRank() {
         assertThat(PluginDiscovery.calculateRank(TrymigratePlugin.class)).isEqualTo(0);
         assertThat(PluginDiscovery.calculateRank(P1.class)).isEqualTo(1);
         assertThat(PluginDiscovery.calculateRank(P2.class)).isEqualTo(2);
         assertThat(PluginDiscovery.calculateRank(P3.class)).isEqualTo(3);
 
-        class P0Impl implements TrymigratePlugin {}
+        class P0Impl implements TrymigratePlugin {
+        }
         assertThat(PluginDiscovery.calculateRank(P0Impl.class)).isEqualTo(0);
 
-        interface P12 extends P1, P2 {}
+        interface P12 extends P1, P2 {
+        }
         assertThat(PluginDiscovery.calculateRank(P12.class)).isEqualTo(3);
 
-        interface P02 extends TrymigratePlugin, P2 {}
+        interface P02 extends TrymigratePlugin, P2 {
+        }
         assertThat(PluginDiscovery.calculateRank(P02.class)).isEqualTo(3);
     }
 }

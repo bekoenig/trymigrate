@@ -3,11 +3,12 @@ package io.github.bekoenig.trymigrate.core;
 import cr.Classpath;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @Trymigrate
 @Classpath(exclude = "org.testcontainers:testcontainers-jdbc")
-public class TrymigrateH2TestcontainersExcludedTest {
+class TrymigrateH2TestcontainersExcludedTest {
 
     @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
@@ -17,6 +18,7 @@ public class TrymigrateH2TestcontainersExcludedTest {
 
     @Test
     @TrymigrateWhenTarget("1.0")
+    @DisplayName("GIVEN no testcontainers dependency WHEN migrating THEN still function using manual datasource")
     void initial() {
     }
 

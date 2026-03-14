@@ -7,6 +7,7 @@ import org.flywaydb.core.api.callback.Event;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.flywaydb.core.internal.database.base.Connection;
 import org.flywaydb.core.internal.database.h2.H2Connection;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ContextSupportTest {
 
     @Test
+    @DisplayName("GIVEN a default schema property WHEN resolving default schema THEN return that property")
     void resolveDefaultSchema_fromDefaultSchemaProperty() {
         assertContext(
                 // GIVEN
@@ -33,6 +35,7 @@ class ContextSupportTest {
     }
 
     @Test
+    @DisplayName("GIVEN multiple schemas property WHEN resolving default schema THEN return the first schema")
     void resolveDefaultSchema_fromSchemasProperty() {
         assertContext(
                 // GIVEN
@@ -50,6 +53,7 @@ class ContextSupportTest {
     }
 
     @Test
+    @DisplayName("GIVEN no explicit schema property WHEN resolving default schema THEN return schema from connection")
     void resolveDefaultSchema_fromConnection() {
         assertContext(
                 // GIVEN
@@ -66,6 +70,7 @@ class ContextSupportTest {
     }
 
     @Test
+    @DisplayName("GIVEN a Flyway context WHEN getting internal connection THEN return vendor-specific connection instance")
     void getInternalConnection() {
         assertContext(
                 // GIVEN

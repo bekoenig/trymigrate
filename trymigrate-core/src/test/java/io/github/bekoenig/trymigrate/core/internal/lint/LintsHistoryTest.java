@@ -2,6 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.lint;
 
 import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import schemacrawler.tools.lint.Lint;
 import schemacrawler.tools.lint.LintObjectType;
@@ -24,6 +25,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN an analyzed version WHEN checked THEN return true")
     void isAnalysed_isTrue() {
         // GIVEN
         lintsHistory.put(MigrationVersion.fromVersion("1.0"), new Lints(List.of()));
@@ -37,6 +39,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN a non-analyzed version WHEN checked THEN return false")
     void isAnalysed_isFalse() {
         // GIVEN
         lintsHistory.put(MigrationVersion.fromVersion("1.0"), new Lints(List.of()));
@@ -50,6 +53,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN lints for a version WHEN put into history THEN they are retrievable")
     void put() {
         // GIVEN
         Lints lints = new Lints(List.of());
@@ -62,6 +66,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN existing lints WHEN retrieved THEN return correct instance")
     void getLints_contains() {
         // GIVEN
         Lints lints = new Lints(List.of());
@@ -75,6 +80,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN no lints for a version WHEN retrieved THEN return null")
     void getLints_doesNotContains() {
         // GIVEN
         Lints lints = new Lints(List.of());
@@ -88,6 +94,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN lints in history WHEN diffed against EMPTY version THEN return all lints")
     void diffLints_oneHit() {
         // GIVEN
         Lint<? extends Serializable> lint = mock();
@@ -102,6 +109,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN same lints in both versions WHEN diffed THEN return empty list")
     void diffLints_noHit() {
         // GIVEN
         Lint<? extends Serializable> lint = mock();
@@ -117,6 +125,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN multiple versions WHEN getting last analyzed THEN return highest version")
     void getLastAnalyzedVersion() {
         // GIVEN
         lintsHistory.put(MigrationVersion.fromVersion("1.0"), new Lints(List.of()));
@@ -130,6 +139,7 @@ class LintsHistoryTest {
     }
 
     @Test
+    @DisplayName("GIVEN incremental versions WHEN calculating new lints THEN return only the delta")
     void diffNewLints() {
         // GIVEN
         Lint<? extends Serializable> lint0 = mock();

@@ -1,10 +1,11 @@
 package io.github.bekoenig.trymigrate.core;
 
 import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
-import io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints;
 import io.github.bekoenig.trymigrate.core.lint.TrymigrateSuppressLint;
+import io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Schema;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Trymigrate
 @TrymigrateVerifyLints(failOn = LintSeverity.medium)
-public class TrymigrateH2ExampleLintTest {
+class TrymigrateH2ExampleLintTest {
 
     @TrymigrateRegisterPlugin
     private final TrymigrateFlywayCustomizer flywayCustomizer = configuration -> configuration
@@ -31,6 +32,7 @@ public class TrymigrateH2ExampleLintTest {
             linterId = "schemacrawler.tools.linter.LinterTableWithBadlyNamedColumns",
             objectName = "TESTDB1.EXAMPLE_SCHEMA.TAB1" // note: catalog name is part of object names in h2
     )
+    @DisplayName("GIVEN a baseline migration WHEN executed THEN verify schema and check for lints with suppressions")
     void initial(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
         SchemaCrawlerAssertions.assertThat(catalog)
@@ -44,6 +46,7 @@ public class TrymigrateH2ExampleLintTest {
     }
 
     @Test
+    @DisplayName("GIVEN a simple test WHEN executed THEN verify parameter injection")
     void someTest(DataSource dataSource, Catalog catalog, Lints lints) {
         assertThat(dataSource).isNotNull();
         assertThat(catalog).isNotNull();

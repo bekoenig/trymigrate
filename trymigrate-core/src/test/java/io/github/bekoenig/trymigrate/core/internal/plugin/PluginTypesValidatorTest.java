@@ -2,6 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import cr.Classpath;
 import org.flywaydb.core.api.migration.JavaMigration;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
 
@@ -10,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PluginTypesValidatorTest {
 
     @Test
+    @DisplayName("GIVEN a subclass of a supported plugin type WHEN checked THEN return true")
     void isSupportedType_trueOnSubclass() {
         // GIVEN
         Class<?> clazz = MyJavaMigration.class;
@@ -22,6 +24,7 @@ class PluginTypesValidatorTest {
     }
 
     @Test
+    @DisplayName("GIVEN a superclass of a supported plugin type WHEN checked THEN return false")
     void isSupportedType_falseOnSuperclass() {
         // GIVEN
         Class<?> clazz = GenericContainer.class;
@@ -34,6 +37,7 @@ class PluginTypesValidatorTest {
     }
 
     @Test
+    @DisplayName("GIVEN an unsupported type WHEN checked THEN return false")
     @Classpath(exclude = "org.testcontainers:testcontainers-jdbc")
     void isSupportedType_false() {
         // GIVEN

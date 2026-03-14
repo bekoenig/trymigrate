@@ -1,7 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.LintPattern;
-import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import schemacrawler.tools.lint.Lint;
 
@@ -23,6 +22,7 @@ class LintPatternsTest {
     }
 
     @Test
+    @DisplayName("GIVEN a set of lint patterns WHEN matched against a lint THEN return true if any pattern matches")
     void matchesAndNotMatches() {
         // GIVEN
         LintPattern lintPattern0 = new LintPattern("a.b.c.SomeLinter", "SCHEMA.TABLE");
@@ -41,6 +41,7 @@ class LintPatternsTest {
     }
 
     @Test
+    @DisplayName("GIVEN a set of lint patterns WHEN dropping matching lints from a stream THEN only non-matching lints remain")
     void dropMatching() {
         // GIVEN
         LintPatterns lintPatterns = new LintPatterns(List.of(

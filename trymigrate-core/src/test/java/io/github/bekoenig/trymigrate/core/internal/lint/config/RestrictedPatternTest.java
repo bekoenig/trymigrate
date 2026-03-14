@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import schemacrawler.inclusionrule.RegularExpressionRule;
@@ -14,6 +15,7 @@ class RestrictedPatternTest {
      * This test asserts the side effects between {@link RestrictedPattern} and {@link RegularExpressionRule}.
      */
     @ParameterizedTest
+    @DisplayName("GIVEN a restricted pattern and overlays WHEN tested against a table name THEN return expected match result")
     @CsvSource({
             // no additional patterns
             "SCHEMA_A.INTERNAL_DUMMY_ID,,,true",

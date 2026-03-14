@@ -11,9 +11,17 @@ import java.lang.annotation.*;
  * (using SchemaCrawler) after each migration. If new violations are detected that meet or exceed
  * the specified severity threshold, the test will fail.
  * <p>
- * <b>Smart Diffing:</b>
- * Verification only fails for <b>new</b> lints introduced by the current migration version.
- * Violations already present in previous versions are ignored to avoid noise from legacy schema issues.
+ * <b>Verification Points & Smart Diffing:</b>
+ * Each test method annotated with {@link io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget} acts as a
+ * "verification point" in the migration timeline. Verification only fails for <b>new</b> lints introduced since the
+ * previous verification point. Violations already present in previous versions are ignored to avoid noise from legacy
+ * schema issues.
+ * <p>
+ * <b>Intermediate Reporting:</b>
+ * Even if a test method skips several migration versions (e.g., from 1.0 to 1.3), trymigrate
+ * still performs linting and generates reports for every intermediate migration version (1.1, 1.2, etc.).
+ * However, the quality gate verification only occurs once the migration to the target version
+ * of the test method is complete.
  * <p>
  * <b>Example:</b>
  * <pre>{@code

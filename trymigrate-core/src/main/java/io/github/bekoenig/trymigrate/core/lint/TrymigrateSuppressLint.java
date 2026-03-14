@@ -3,12 +3,19 @@ package io.github.bekoenig.trymigrate.core.lint;
 import java.lang.annotation.*;
 
 /**
- * Suppresses specific lints locally for a single test method.
+ * Suppresses specific lints locally for a single migration version.
  * <p>
  * This annotation is used to "allowlist" certain schema violations that would otherwise trigger
  * a quality gate failure via {@link TrymigrateVerifyLints}. Unlike {@link TrymigrateExcludeLint},
  * these lints are <b>not</b> removed; they still appear in HTML reports and are available
  * in the injected {@link schemacrawler.tools.lint.Lints} parameter for further manual assertion.
+ * <p>
+ * <b>Verification Points and Multiple Tests:</b>
+ * Quality gate verification is only performed the <b>first time</b> a migration version is
+ * reached (based on test execution order). If you have multiple tests for the same target
+ * version (e.g., to verify different data scenarios), you only need to apply this annotation
+ * to the first test method. Applying it to subsequent tests for the same version will have
+ * no effect, as the quality gate has already been verified for this version.
  * <p>
  * <b>Regex Support:</b>
  * Both {@link #linterId()} and {@link #objectName()} support regular expressions.

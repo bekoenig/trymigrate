@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.config;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import schemacrawler.tools.lint.LintSeverity;
 import schemacrawler.tools.lint.config.LinterConfig;
@@ -11,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LinterConfigBuilderTest {
 
     @Test
+    @DisplayName("GIVEN a builder WHEN all options are set THEN the built LinterConfig contains all values")
     void build() {
         // GIVEN
 

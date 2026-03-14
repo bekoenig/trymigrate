@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>The TDD Sandbox for Database Migrations.</strong><br>
-  <em>Stop guessing if your SQL works. Start verifying it—step by step, version by version.</em>
+  <em>Stop guessing if your SQL works. Start verifying it—version by version, script by script.</em>
 </p>
 
 <p align="center">
@@ -39,9 +39,50 @@ Database migrations are often the most fragile part of an application. **trymigr
 
 ---
 
+## 🚀 Quick Start
+
+1. **Add the Dependency** (e.g., for PostgreSQL):
+```xml
+<dependency>
+    <groupId>io.github.bekoenig.trymigrate</groupId>
+    <artifactId>trymigrate-postgresql</artifactId>
+    <version>${trymigrate.version}</version>
+    <scope>test</scope>
+</dependency>
+```
+
+2. **Write Your First Test**:
+```java
+@Trymigrate // 1. Activate the extension
+class MySchemaTest {
+
+    // 2. Register your database container
+    @TrymigrateRegisterPlugin
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+
+    @Test
+    @TrymigrateWhenTarget("1.0") // 3. Set the target version
+    void should_HaveCorrectUserTable(Catalog catalog) {
+        // 4. Assert your schema state
+        assertThat(catalog).table("users").column("email").isNotNull();
+    }
+}
+```
+
+---
+
 ## 🧪 The TDD Experience
 
-`trymigrate` encourages an iterative workflow. Verify that version `1.0` provides a solid foundation before evolving to `1.1`. Parameters like `Catalog`, `DataSource`, and `Lints` are automatically injected into your test methods.
+`trymigrate` encourages an iterative workflow. Verify that version `1.0` provides a solid foundation before evolving to `1.1`. 
+
+### Available Parameters
+Test methods can receive the following parameters automatically:
+
+| Parameter | Type | Purpose |
+| :--- | :--- | :--- |
+| `Catalog` | `schemacrawler.schema.Catalog` | The full database model for structural assertions. |
+| `Lints` | `schemacrawler.tools.lint.Lints` | All current schema violations (Full State minus global excludes). |
+| `DataSource` | `javax.sql.DataSource` | A live connection to the test database for data-level assertions. |
 
 ```java
 @Trymigrate
@@ -82,16 +123,19 @@ class SchemaEvolutionTest {
 
 ## 🛡️ Automated Quality Gates
 
-Every migration step is automatically inspected for architectural anti-patterns using SchemaCrawler's powerful linting engine.
+Every migration version is automatically inspected for architectural anti-patterns using SchemaCrawler's powerful linting engine.
 
-*   **Smart Diffing:** `trymigrate` only reports **new** lints introduced by the current migration version. Legacy issues are filtered out to keep your focus sharp.
+*   **Verification Points & Smart Diffing:** Each test method acts as a **Verification Point**. The automated quality gate only reports **new** lints introduced since the previous Verification Point. Legacy issues are filtered out to keep your focus sharp.
+*   **Complete State Visibility:** While the quality gate focuses on the delta, the injected `Lints` parameter always provides the **full current state** (minus global excludes). This allows you to verify if existing violations were fixed or transformed.
+
+*   **Intermediate Reporting:** Even if a test method skips several migration versions (e.g., from `1.0` to `1.5`), `trymigrate` still performs linting and generates reports for every intermediate migration version. You can find these in `target/trymigrate-lint-reports/`.
 *   **The Gatekeeper:** Use `@TrymigrateVerifyLints` to fail tests if new violations (e.g., missing primary keys, bad naming) exceed your severity threshold.
-*   **Observability:** Lints are logged to the console and saved as detailed HTML reports in `target/trymigrate-lint-reports/{schema}/{version}.html`.
+*   **Multi-Test Efficiency:** If multiple tests target the same version, the quality gate is only checked for the **first test** (according to execution order). Subsequent tests for the same version do not need to repeat the check as the version has already been verified.
 
 ### Suppressing & Excluding
 Handle legacy debt or edge cases with granular control:
 *   **`@TrymigrateExcludeLint`**: Globally ignore specific rules or objects for the entire test class.
-*   **`@TrymigrateSuppressLint`**: Locally allow specific lints for a single migration step without removing them from the reports.
+*   **`@TrymigrateSuppressLint`**: Locally allow specific lints for a single migration version without removing them from the reports.
 
 ### Custom Linter Configuration
 For advanced needs, use `TrymigrateLintersConfigurer` to fluently configure, enable, or disable specific linters. This allows you to override default severities, restrict linters to specific naming patterns, or **register custom linters without SPI**:
@@ -110,6 +154,36 @@ private final TrymigrateLintersConfigurer linterConfig = config -> config
 > You can also register custom linters via the standard Java SPI mechanism by adding your `LinterProvider` implementation to `META-INF/services/schemacrawler.tools.lint.LinterProvider`.
 
 ---
+
+## 💾 Data Seeding & Scenarios
+
+Testing migrations often requires more than just an empty schema. `trymigrate` allows you to seed data at specific points in the timeline to verify transformation logic or handle data-dependent constraints.
+
+### The Role of `@TrymigrateGivenData`
+This annotation seeds data **immediately before** the migration script of the target version is executed. It supports two formats by default:
+*   **Raw SQL Strings:** Directly execute statements like `INSERT INTO ...`.
+*   **Classpath Resources:** Provide a path to a file ending in `.sql` (e.g., `db/testdata/baseline.sql`).
+
+*   **Initial Inventory (Baseline Data):** Seed representative, production-like records into version `1.0` to verify that your `1.1` migration script correctly handles data transformations (e.g., migrating a `JSON` blob into structured columns).
+*   **Scenario-based Testing:** Load specific datasets to test edge cases, such as very large tables or "dirty" data, before a `NOT NULL` or `UNIQUE` constraint is applied.
+
+### Custom Loaders with `TrymigrateDataLoader`
+While `trymigrate` handles SQL out of the box, you can implement `TrymigrateDataLoader` to support custom formats or **DBMS-specific loading mechanisms**:
+
+```java
+@TrymigrateRegisterPlugin
+private final TrymigrateDataLoader postgresCopyLoader = new TrymigrateDataLoader() {
+    @Override
+    public boolean supports(String resource, String extension, TrymigrateDatabase database) {
+        return "pgbin".equals(extension); // Trigger for .pgbin files
+    }
+
+    @Override
+    public void load(String resource, Connection connection, TrymigrateDatabase database) {
+        // Use the native PostgreSQL COPY API for massive speed
+    }
+};
+```
 
 ## 🏗️ Multi-Schema Support
 
@@ -153,10 +227,10 @@ When using **static fields** (shared containers) or testing non-incremental scen
 | `@Trymigrate` | Class | Entry point. Activates the extension. |
 | `@TrymigrateWhenTarget` | Method | Sets the Flyway version to migrate to. Supports `"latest"`. |
 | `@TrymigrateGivenData` | Method | Seeds SQL or custom data *before* the target migration. |
-| `@TrymigrateCleanBefore` | Method | Wipes the database before the current migration step. |
+| `@TrymigrateCleanBefore` | Method | Wipes the database before the current migration version. |
 | `@TrymigrateVerifyLints` | Class | Configures the quality gate severity threshold. |
 | `@TrymigrateExcludeLint` | Class | Globally ignores specific lints (supports Regex). |
-| `@TrymigrateSuppressLint` | Method | Locally allows specific lints for a migration step. |
+| `@TrymigrateSuppressLint` | Method | Locally allows specific lints for a migration version. |
 | `@TrymigrateRegisterPlugin` | Field | Registers customizers or Testcontainers. |
 | `@TrymigrateDiscoverPlugins`| Class | Fine-tunes SPI-based plugin discovery. |
 
@@ -191,20 +265,11 @@ When using **static fields** (shared containers) or testing non-incremental scen
 
 Trymigrate provides pre-configured modules for all major databases:
 
-<table>
-  <tr>
-    <td align="center"><b>PostgreSQL</b><br><code>trymigrate-postgresql</code></td>
-    <td align="center"><b>MySQL</b><br><code>trymigrate-mysql</code></td>
-    <td align="center"><b>MariaDB</b><br><code>trymigrate-mariadb</code></td>
-    <td align="center"><b>SQL Server</b><br><code>trymigrate-sqlserver</code></td>
-  </tr>
-  <tr>
-    <td align="center"><b>Oracle</b><br><code>trymigrate-oracle</code></td>
-    <td align="center"><b>DB2</b><br><code>trymigrate-db2</code></td>
-    <td align="center"><b>HSQLDB</b><br><code>trymigrate-hsqldb</code></td>
-    <td align="center">...and more</td>
-  </tr>
-</table>
+| PostgreSQL | MySQL | MariaDB | SQL Server |
+| :---: | :---: | :---: | :---: |
+| `trymigrate-postgresql` | `trymigrate-mysql` | `trymigrate-mariadb` | `trymigrate-sqlserver` |
+| **Oracle** | **DB2** | **HSQLDB** | **...and more** |
+| `trymigrate-oracle` | `trymigrate-db2` | `trymigrate-hsqldb` | |
 
 ---
 

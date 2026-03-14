@@ -13,6 +13,14 @@ import java.lang.annotation.*;
  *     target version. Tests with lower versions are executed before tests with higher versions.</li>
  * </ol>
  * <p>
+ * <b>Verification Points:</b>
+ * Each test method annotated with {@code @TrymigrateWhenTarget} acts as a "Verification Point" in the
+ * database timeline. While the injected {@link schemacrawler.tools.lint.Lints} parameter provides
+ * the <b>full current state</b> of violations, the automated quality gates (see
+ * {@link io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints}) use these points to
+ * isolate only the new violations introduced since the previous Verification Point.
+
+ * <p>
  * <b>Special Keywords:</b>
  * <ul>
  *     <li>{@code "latest"}: Migrates the database to the most recent version available in your migration scripts.</li>

@@ -14,6 +14,12 @@ import java.lang.annotation.*;
  * If the database is already at or above the target version, an {@link IllegalStateException}
  * will be thrown. Use {@link TrymigrateCleanBefore} to ensure a fresh state if necessary.
  * <p>
+ * <b>Plain Execution:</b>
+ * Data loading via this annotation is performed independently of Flyway's SQL processing.
+ * Standard Flyway features like <b>placeholders</b>, <b>default schema selection</b>, or
+ * <b>vendor-specific script enhancements</b> are NOT supported. SQL must be provided in
+ * its final, executable form (e.g., using schema-qualified table names).
+ * <p>
  * The value can be a resource path (e.g., "db/testdata/initial.sql") or a raw SQL string,
  * depending on the supported types of registered
  * {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader} plugins.

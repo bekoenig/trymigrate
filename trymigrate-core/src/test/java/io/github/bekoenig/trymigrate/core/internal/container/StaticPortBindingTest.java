@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.container;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
 import org.junitpioneer.jupiter.SetSystemProperty;
@@ -15,6 +16,7 @@ class StaticPortBindingTest {
     private final StaticPortBinding customizer = new StaticPortBinding();
 
     @Test
+    @DisplayName("GIVEN no port property WHEN accepting container THEN do nothing")
     @ClearSystemProperty(key = StaticPortBinding.PROPERTY_NAME)
     void accept_onUndefined() {
         // GIVEN
@@ -28,6 +30,7 @@ class StaticPortBindingTest {
     }
 
     @Test
+    @DisplayName("GIVEN a host port property WHEN accepting container THEN bind host port to single exposed port")
     @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "20000")
     void accept_hostPort() {
         // GIVEN
@@ -42,6 +45,7 @@ class StaticPortBindingTest {
     }
 
     @Test
+    @DisplayName("GIVEN a combined port property WHEN accepting container THEN bind specified host and container ports")
     @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "20000:40000")
     void accept_hostAndContainerPort() {
         // GIVEN
@@ -55,6 +59,7 @@ class StaticPortBindingTest {
     }
 
     @Test
+    @DisplayName("GIVEN an invalid port property WHEN accepting container THEN throw IllegalArgumentException")
     @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "abc:20000")
     void accept_failOnWrongFormat() {
         // GIVEN
@@ -65,6 +70,7 @@ class StaticPortBindingTest {
     }
 
     @Test
+    @DisplayName("GIVEN a host port property but no container port WHEN accepting container THEN throw IllegalStateException")
     @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "40000")
     void accept_failOnNonExposedPort() {
         // GIVEN
@@ -76,6 +82,7 @@ class StaticPortBindingTest {
     }
 
     @Test
+    @DisplayName("GIVEN a host port property but multiple container ports WHEN accepting container THEN throw IllegalStateException due to ambiguity")
     @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "40000")
     void accept_failOnMultipleExposedPort() {
         // GIVEN

@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint;
 
-import io.github.bekoenig.trymigrate.core.internal.lint.LintPattern;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import schemacrawler.tools.lint.Lint;
@@ -22,6 +22,7 @@ class LintPatternTest {
             "a.b.c.SomeLinter, SCHEMA2.*, false",
     })
     @ParameterizedTest
+    @DisplayName("GIVEN a lint pattern WHEN matched against a lint THEN return expected result based on linter ID and object name")
     void matches(String linterId, String objectName, boolean expectedMatch) {
         // GIVEN
         LintPattern lintPattern = new LintPattern(linterId, objectName);

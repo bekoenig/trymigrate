@@ -1,6 +1,7 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
 import org.flywaydb.core.api.MigrationVersion;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junitpioneer.jupiter.ClearSystemProperty;
@@ -14,6 +15,7 @@ class LintsHtmlReporterTest {
     private final LintsHtmlReporter resolver = new LintsHtmlReporter();
 
     @Test
+    @DisplayName("GIVEN no base directory property WHEN resolving path THEN return path in default target directory")
     void resolve_defaultBaseDir() {
         // GIVEN
         String schema = "MY_SCHEMA";
@@ -27,6 +29,7 @@ class LintsHtmlReporterTest {
     }
 
     @Test
+    @DisplayName("GIVEN a custom base directory property WHEN resolving path THEN return path in specified directory")
     @ClearSystemProperty(key = LintsHtmlReporter.PROPERTY_NAME)
     void resolve_propertyBaseDir(@TempDir Path tempDir) {
         System.setProperty(LintsHtmlReporter.PROPERTY_NAME, tempDir.toString());
