@@ -11,7 +11,7 @@ import java.lang.annotation.*;
  * (using SchemaCrawler) after each migration. If new violations are detected that meet or exceed
  * the specified severity threshold, the test will fail.
  * <p>
- * <b>Verification Points & Smart Diffing:</b>
+ * <b>Verification Points &#38; Smart Diffing:</b>
  * Each test method annotated with {@link io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget} acts as a
  * "verification point" in the migration timeline. Verification only fails for <b>new</b> lints introduced since the
  * previous verification point. Violations already present in previous versions are ignored to avoid noise from legacy

@@ -19,7 +19,7 @@ import java.lang.annotation.*;
  *     <li>Stop the container according to the field's lifecycle.</li>
  * </ol>
  * <p>
- * <b>Lifecycle & Container Reuse:</b>
+ * <b>Lifecycle &#38; Container Reuse:</b>
  * <ul>
  *     <li><b>Instance Fields:</b> The container is started before the test class and stopped
  *     immediately after all tests in the class are finished.</li>
