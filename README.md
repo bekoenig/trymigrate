@@ -1,33 +1,30 @@
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/4af1eea5-0056-4ff7-81c0-9063727d3ce1" alt="trymigrate logo" width="600">
-</p>
+# trymigrate
 
-<h1 align="center">trymigrate</h1>
+![trymigrate logo](https://github.com/user-attachments/assets/4af1eea5-0056-4ff7-81c0-9063727d3ce1)
 
-<p align="center">
-  <strong>The TDD Sandbox for Database Migrations.</strong><br>
-  <em>Stop guessing if your SQL works. Start verifying it—version by version, script by script.</em>
-</p>
+**The TDD Sandbox for Database Migrations.**
+*Stop guessing if your SQL works. Start verifying it—version by version, script by script.*
 
-<p align="center">
-  <a href="https://search.maven.org/artifact/io.github.bekoenig.trymigrate/trymigrate-core"><img src="https://img.shields.io/maven-central/v/io.github.bekoenig.trymigrate/trymigrate-core.svg?style=flat-square" alt="Maven Central"></a>
-  <a href="https://github.com/bekoenig/trymigrate/actions/workflows/build-verify.yml"><img src="https://img.shields.io/github/actions/workflow/status/bekoenig/trymigrate/build-verify.yml?branch=main&style=flat-square" alt="Build Status"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT"></a>
-  <a href="https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html"><img src="https://img.shields.io/badge/Java-17%2B-orange.svg?style=flat-square" alt="Java Support"></a>
-</p>
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.bekoenig.trymigrate/trymigrate-core.svg?style=flat-square)](https://search.maven.org/artifact/io.github.bekoenig.trymigrate/trymigrate-core)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/bekoenig/trymigrate/build-verify.yml?branch=main&style=flat-square)](https://github.com/bekoenig/trymigrate/actions/workflows/build-verify.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Java Support](https://img.shields.io/badge/Java-17%2B-orange.svg?style=flat-square)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 
 ---
 
 ## 📖 Table of Contents
 - [🧐 What is trymigrate?](#-what-is-trymigrate)
+- [🚀 Quick Start](#-quick-start)
 - [🧪 The TDD Experience](#-the-tdd-experience)
 - [🛡️ Automated Quality Gates](#-automated-quality-gates)
+- [💾 Data Seeding & Scenarios](#-data-seeding--scenarios)
 - [🏗️ Multi-Schema Support](#️-multi-schema-support)
 - [🗄️ Database Lifecycle](#️-database-lifecycle)
 - [🔌 Supported Databases](#-supported-databases)
 - [📖 API Reference](#-api-reference)
 - [🧩 Plugin System](#-plugin-system)
 - [⚙️ Configuration](#️-configuration)
+- [🤝 Contributing](#-contributing)
 
 ---
 
@@ -64,7 +61,7 @@ class MySchemaTest {
     @TrymigrateWhenTarget("1.0") // 3. Set the target version
     void should_HaveCorrectUserTable(Catalog catalog) {
         // 4. Assert your schema state
-        assertThat(catalog).table("users").column("email").isNotNull();
+        assertThat(catalog).table("public", "users").column("email").isNotNull();
     }
 }
 ```
@@ -129,7 +126,7 @@ Every migration version is automatically inspected for architectural anti-patter
 *   **Complete State Visibility:** While the quality gate focuses on the delta, the injected `Lints` parameter always provides the **full current state** (minus global excludes). This allows you to verify if existing violations were fixed or transformed.
 
 *   **Intermediate Reporting:** Even if a test method skips several migration versions (e.g., from `1.0` to `1.5`), `trymigrate` still performs linting and generates reports for every intermediate migration version. You can find these in `target/trymigrate-lint-reports/`.
-*   **The Gatekeeper:** Use `@TrymigrateVerifyLints` to fail tests if new violations (e.g., missing primary keys, bad naming) exceed your severity threshold.
+*   **The Gatekeeper:** Use `@TrymigrateVerifyLints` to fail tests if new violations (e.g., missing primary keys, bad naming) exceed your severity threshold. Supported levels are: `INFO`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`.
 *   **Multi-Test Efficiency:** If multiple tests target the same version, the quality gate is only checked for the **first test** (according to execution order). Subsequent tests for the same version do not need to repeat the check as the version has already been verified.
 
 ### Suppressing & Excluding
@@ -138,17 +135,22 @@ Handle legacy debt or edge cases with granular control:
 *   **`@TrymigrateSuppressLint`**: Locally allow specific lints for a single migration version without removing them from the reports.
 
 ### Custom Linter Configuration
-For advanced needs, use `TrymigrateLintersConfigurer` to fluently configure, enable, or disable specific linters. This allows you to override default severities, restrict linters to specific naming patterns, or **register custom linters without SPI**:
+For advanced needs, use `TrymigrateLintersConfigurer` to fluently configure, enable, or disable specific linters. This allows you to override default severities, restrict linters to specific naming patterns, or **register custom linter providers without SPI**:
 
 ```java
 @TrymigrateRegisterPlugin
 private final TrymigrateLintersConfigurer linterConfig = config -> config
-    .register(new MyCustomLinterProvider()) // Register directly!
-    .configure("schemacrawler.tools.linter.LinterTableWithNoRemarks")
-        .severity(LintSeverity.high)
-        .tableInclusionPattern("app_schema\\..*")
-    .disable("schemacrawler.tools.linter.LinterTableSql");
+    .register(new MyCustomLinterProvider()) // Register a custom linter
+    .configure("schemacrawler.tools.linter.LinterTableWithNoRemarks") // Configure an existing linter
+        .severity(LintSeverity.high) // Set severity to high
+        .tableInclusionPattern("app_schema\\..*") // Apply only to tables starting with "APP_"
+    .disable("schemacrawler.tools.linter.LinterTableSql"); // Disable a specific linter
 ```
+
+**Default Linting & Scope:**
+*   **Defaults:** By default, trymigrate applies a comprehensive set of SchemaCrawler linters as defined in `io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters`.
+*   **Flyway History:** The Flyway schema history table is **automatically excluded** from linting to prevent false positives. However, it remains present in the `Catalog`.
+*   **Schema Scope:** Linting is strictly limited to schemas **managed by Flyway**. It is not possible to extend linting to schemas outside of Flyway's control.
 
 > [!TIP]
 > You can also register custom linters via the standard Java SPI mechanism by adding your `LinterProvider` implementation to `META-INF/services/schemacrawler.tools.lint.LinterProvider`.
@@ -185,6 +187,8 @@ private final TrymigrateDataLoader postgresCopyLoader = new TrymigrateDataLoader
 };
 ```
 
+---
+
 ## 🏗️ Multi-Schema Support
 
 Building enterprise-grade architectures? `trymigrate` handles complex databases with multiple schemas natively:
@@ -193,12 +197,24 @@ Building enterprise-grade architectures? `trymigrate` handles complex databases 
 *   **Cross-Schema Assertions:** Verify foreign keys and joins that span multiple schemas using a single injected `Catalog`.
 *   **Selective Enforcement:** Enforce strict standards in new schemas while being lenient with legacy ones.
 
+### Catalog Customization
+By default, `trymigrate` uses Flyway's schema configuration (e.g., `flyway.defaultSchema` or `flyway.schemas`) to determine which schemas to crawl. You can provide custom implementations of `TrymigrateCatalogCustomizer` to override or refine this behavior.
+
+> [!NOTE]
+> The `Catalog` includes **all** discovered objects within the configured schemas, including the Flyway migration history table (e.g., `flyway_schema_history`). This differs from linting, which excludes the history table by default.
+
+**Example:**
 ```java
+// In your test class:
 @TrymigrateRegisterPlugin
-private final TrymigrateFlywayCustomizer flyway = config -> config
-    .defaultSchema("app_core")
-    .schemas("app_audit", "app_reporting")
-    .cleanDisabled(false); // Enable for @TrymigrateCleanBefore support
+private final TrymigrateCatalogCustomizer catalogCustomizer = new TrymigrateCatalogCustomizer() {
+    @Override
+    public void customize(LimitOptionsBuilder builder) {
+        // Override default schema selection and include only schemas starting with "APP_"
+        // and exclude those starting with "SYS_" using SchemaCrawler's RegularExpressionRule.
+        builder.includeSchemas(new RegularExpressionRule("APP_.*", "SYS_.*"));
+    }
+};
 ```
 
 ---
@@ -214,7 +230,8 @@ Any `JdbcDatabaseContainer` annotated with `@TrymigrateRegisterPlugin` is automa
 
 ### 🧼 Fresh State with `@TrymigrateCleanBefore`
 When using **static fields** (shared containers) or testing non-incremental scenarios, the database will likely contain "leftovers" from previous runs. Use `@TrymigrateCleanBefore` to trigger a `flyway clean` before the current test's migration starts.
-> [!IMPORTANT]  
+
+> [!IMPORTANT]
 > Flyway 9+ disables `clean` by default. You must set `.cleanDisabled(false)` in your `TrymigrateFlywayCustomizer` for this to work.
 
 ---
@@ -245,6 +262,7 @@ When using **static fields** (shared containers) or testing non-incremental scen
 | `TrymigrateFlywayCustomizer` | Configure Flyway (locations, placeholders, schemas). |
 | `TrymigrateLintersConfigurer` | Fluently configure SchemaCrawler linters (Severity, Regex). |
 | `TrymigrateCatalogCustomizer` | Customize the database crawl (filter types, schemas). |
+| `TrymigrateLintOptionsCustomizer` | Customize general linting options (e.g., report titles). |
 | `TrymigrateDataLoader` | Support custom data formats (CSV, JSON, etc.). |
 | `TrymigrateDatabase` | Abstraction for custom DB lifecycle/connection. |
 | `TrymigrateLintsReporter` | Send lint results to Slack, Jira, or custom tools. |
@@ -277,7 +295,7 @@ Trymigrate provides pre-configured modules for all major databases:
 
 We love contributions! Whether it's a bug report, a new database module, or a feature request.
 
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > **By executing tests for enterprise modules** (e.g., DB2 or SQL Server), you programmatically accept the respective vendor's license agreements, as the test code explicitly triggers the acceptance (e.g., via `.acceptLicense()`). Ensure you are familiar with the vendor's terms before running these tests.
 
 1.  **Fork** the repository.
@@ -291,6 +309,5 @@ We love contributions! Whether it's a bug report, a new database module, or a fe
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
-<p align="center">
-  <i>Bringing the power of TDD to the foundation of your application.</i>
-</p>
+
+*Bringing the power of TDD to the foundation of your application.*

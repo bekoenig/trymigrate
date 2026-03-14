@@ -10,6 +10,9 @@ import java.lang.annotation.*;
  * these lints are <b>not</b> removed; they still appear in HTML reports and are available
  * in the injected {@link schemacrawler.tools.lint.Lints} parameter for further manual assertion.
  * <p>
+ * <b>Note:</b> The Flyway migration history table is explicitly excluded by default and does not require
+ * suppression.
+ * <p>
  * <b>Verification Points and Multiple Tests:</b>
  * Quality gate verification is only performed the <b>first time</b> a migration version is
  * reached (based on test execution order). If you have multiple tests for the same target

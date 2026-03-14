@@ -17,6 +17,14 @@ import java.lang.annotation.*;
  * previous verification point. Violations already present in previous versions are ignored to avoid noise from legacy
  * schema issues.
  * <p>
+ * <b>Important Notes:</b>
+ * <ul>
+ *     <li><b>Flyway History:</b> The Flyway schema history table is automatically excluded from verification to prevent
+ *     false positives.</li>
+ *     <li><b>Schema Scope:</b> Verification is strictly limited to schemas managed by Flyway. Issues in other schemas
+ *     are not detected.</li>
+ * </ul>
+ * <p>
  * <b>Intermediate Reporting:</b>
  * Even if a test method skips several migration versions (e.g., from 1.0 to 1.3), trymigrate
  * still performs linting and generates reports for every intermediate migration version (1.1, 1.2, etc.).
@@ -32,6 +40,7 @@ import java.lang.annotation.*;
  * @see TrymigrateExcludeLint
  * @see TrymigrateSuppressLint
  * @see schemacrawler.tools.lint.LintSeverity
+ * @see io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintOptionsCustomizer
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

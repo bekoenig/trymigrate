@@ -32,7 +32,7 @@ public interface TrymigrateDataLoader {
      * Determines if this loader can handle the specified resource.
      *
      * @param resource  the data resource (e.g., a file path or a raw string)
-     * @param extension the file extension of the resource (if available), or {@code null}
+     * @param extension the file extension of the resource (if available, without dot), or {@code null}
      * @param database  the current test database instance
      * @return {@code true} if this loader can process the resource, {@code false} otherwise
      */

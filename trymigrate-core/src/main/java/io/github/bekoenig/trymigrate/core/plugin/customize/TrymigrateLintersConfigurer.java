@@ -13,6 +13,18 @@ import java.util.function.Consumer;
  * enable, disable, and fine-tune linters without needing to create {@code schemacrawler.config.properties}
  * or use Java SPI for every minor change.
  * <p>
+ * By default, trymigrate applies a comprehensive set of SchemaCrawler linters as defined in
+ * {@code CoreLinters.java}. You can provide custom implementations of this interface to
+ * configure, disable, or enable specific linters, or to register custom linter providers.
+ * <p>
+ * <b>Important Notes:</b>
+ * <ul>
+ *     <li><b>Flyway History:</b> The Flyway schema history table is automatically excluded from linting to prevent
+ *     false positives. However, it remains present in the {@code Catalog}.</li>
+ *     <li><b>Schema Scope:</b> Linting is strictly limited to schemas managed by Flyway. It is not possible to extend
+ *     linting to schemas outside of Flyway's control, even if they are present in the catalog.</li>
+ * </ul>
+ * <p>
  * <b>Key Features:</b>
  * <ul>
  *     <li><b>SPI-less Registration:</b> Directly register custom linter providers.</li>
@@ -24,11 +36,11 @@ import java.util.function.Consumer;
  * <pre>{@code
  * @TrymigrateRegisterPlugin
  * private final TrymigrateLintersConfigurer linterConfig = config -> config
- *     .register(new MyCustomLinterProvider())
- *     .configure("schemacrawler.tools.linter.LinterTableWithNoRemarks")
- *         .severity(LintSeverity.high)
- *         .tableInclusionPattern("APP_.*")
- *     .disable("schemacrawler.tools.linter.LinterTableSql");
+ *     .register(new MyCustomLinterProvider()) // Register a linter without SPI
+ *     .configure("schemacrawler.tools.linter.LinterTableWithNoRemarks") // Configure a registered linter
+ *         .severity(LintSeverity.high) // Set severity to high
+ *         .tableInclusionPattern("APP_.*") // Apply only to tables starting with "APP_"
+ *     .disable("schemacrawler.tools.linter.LinterTableSql"); // Disable a specific linter
  * }</pre>
  *
  * @see TrymigrateLintersConfigurer.TrymigrateLintersConfiguration
@@ -41,15 +53,16 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
     interface TrymigrateLintersConfiguration {
 
         /**
-         * Registers a new linter provider. This avoids the need for standard Java SPI discovery.
+         * Registers a new linter provider. This avoids the need for standard Java SPI discovery
+         * and allows direct registration of custom linters.
          *
          * @param linterProvider the provider to register
-         * @return the configuration root
+         * @return the configuration root for further chaining
          */
         TrymigrateLintersConfiguration register(LinterProvider linterProvider);
 
         /**
-         * Enables and starts configuring a specific linter.
+         * Enables and starts configuring a specific linter by its ID.
          *
          * @param linterId the ID of the linter to configure
          * @return a configuration interface for the specific linter
@@ -65,7 +78,8 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
         TrymigrateLintersConfiguration disable(String linterId);
 
         /**
-         * Discards any existing configuration for a linter and starts fresh.
+         * Discards any existing configuration for a linter and starts fresh. This is useful if you want to completely
+         * redefine a linter's settings.
          *
          * @param linterId the ID of the linter to reconfigure
          * @return a configuration interface for the specific linter
@@ -78,7 +92,7 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
         interface TrymigrateLinterConfiguration extends TrymigrateLintersConfiguration {
 
             /**
-             * Sets custom configuration properties for the linter.
+             * Sets custom configuration properties for the linter. These properties are passed directly to the linter.
              *
              * @param config a map of configuration keys and values
              * @return this configuration instance
@@ -95,6 +109,7 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
 
             /**
              * Sets a regular expression to restrict which tables this linter applies to.
+             * Only tables matching this pattern will be checked by this linter.
              *
              * @param tableInclusionPattern the regex pattern for table inclusion
              * @return this configuration instance
@@ -103,6 +118,7 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
 
             /**
              * Sets a regular expression to exclude specific tables from this linter.
+             * Tables matching this pattern will be ignored by this linter, even if they match the inclusion pattern.
              *
              * @param tableExclusionPattern the regex pattern for table exclusion
              * @return this configuration instance
@@ -111,6 +127,7 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
 
             /**
              * Sets a regular expression to restrict which columns this linter applies to.
+             * Only columns matching this pattern will be checked by this linter.
              *
              * @param columnInclusionPattern the regex pattern for column inclusion
              * @return this configuration instance
@@ -119,6 +136,7 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
 
             /**
              * Sets a regular expression to exclude specific columns from this linter.
+             * Columns matching this pattern will be ignored by this linter, even if they match the inclusion pattern.
              *
              * @param columnExclusionPattern the regex pattern for column exclusion
              * @return this configuration instance

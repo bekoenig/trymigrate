@@ -10,14 +10,9 @@ import java.lang.annotation.*;
  * <b>highest priority</b> and override any SPI-discovered plugins.
  * <p>
  * <b>Native Testcontainers Support:</b>
- * This annotation has special support for {@code org.testcontainers.containers.JdbcDatabaseContainer}
- * (e.g., {@code PostgreSQLContainer}). trymigrate will:
- * <ol>
- *     <li>Automatically start the container before tests begin.</li>
- *     <li>Wrap it into a {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase} plugin.</li>
- *     <li>Provide the connection details to Flyway and SchemaCrawler.</li>
- *     <li>Stop the container according to the field's lifecycle.</li>
- * </ol>
+ * This annotation has special support for {@code org.testcontainers.containers.JdbcDatabaseContainer}.
+ * trymigrate automatically manages the container's lifecycle (start/stop) and integrates it as a
+ * {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase} plugin.
  * <p>
  * <b>Lifecycle &#38; Container Reuse:</b>
  * <ul>

@@ -11,6 +11,9 @@ import java.lang.annotation.*;
  * This is useful for ignoring persistent issues in legacy schemas or excluding specific rules that
  * are not relevant to your project's standards.
  * <p>
+ * <b>Note:</b> Linting is restricted to Flyway-managed schemas. The Flyway migration history table is
+ * explicitly excluded. Use this annotation to exclude additional application-specific objects.
+ * <p>
  * <b>Regex Support:</b>
  * Both {@link #linterId()} and {@link #objectName()} support regular expressions, allowing you to
  * match multiple linters or objects with a single annotation.

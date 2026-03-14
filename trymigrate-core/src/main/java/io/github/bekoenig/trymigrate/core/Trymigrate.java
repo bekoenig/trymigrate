@@ -18,18 +18,18 @@ import java.lang.annotation.*;
  * Root annotation to activate database migration testing for a JUnit 5 test class.
  * <p>
  * This annotation orchestrates the entire trymigrate lifecycle:
- * <ol>
- *     <li>Starts the database (e.g., via Testcontainers).</li>
- *     <li>Loads and registers all plugins (customizers, data loaders, etc.).</li>
+ * <ul>
+ *     <li>Starts the database and registers all plugins (customizers, data loaders, etc.).</li>
  *     <li>Automatically orders tests by their migration version (see {@link TrymigrateWhenTarget}).</li>
  *     <li>Executes Flyway migrations before each test.</li>
  *     <li>Injects database-related parameters into test methods.</li>
- *     <li>Performs schema linting and generates reports after <b>each migration</b> (even for intermediate versions).</li>
- * </ol>
+ *     <li>Performs schema linting and generates reports after <b>each migration</b>.</li>
+ * </ul>
  * <p>
  * Adds support for method-level control via:
  * <ul>
- *     <li>{@link TrymigrateWhenTarget}: Defines the Flyway version to migrate to for a specific test (acting as a "verification point").</li>
+ *     <li>{@link TrymigrateWhenTarget}: Defines the Flyway version to migrate to for a specific test (acting as a
+ *     "verification point").</li>
  *     <li>{@link TrymigrateGivenData}: Seeds data into the database before the migration is applied.</li>
  *     <li>{@link TrymigrateCleanBefore}: Wipes the schema before executing the migration for a fresh state.</li>
  * </ul>
@@ -37,8 +37,10 @@ import java.lang.annotation.*;
  * <b>Parameter Injection:</b> Test methods can receive the following parameters:
  * <ul>
  *     <li>{@link javax.sql.DataSource}: The live connection to the test database.</li>
- *     <li>{@link schemacrawler.schema.Catalog}: The analyzed database model (schema, tables, columns).</li>
- *     <li>{@link schemacrawler.tools.lint.Lints}: The detected schema violations (representing the <b>full current state</b> minus global excludes).</li>
+ *     <li>{@link schemacrawler.schema.Catalog}: The database model of the Flyway managed schemas. Note that this
+ *     includes the Flyway history table.</li>
+ *     <li>{@link schemacrawler.tools.lint.Lints}: The detected schema violations (representing the <b>full current
+ *     state</b> of Flyway-managed schemas, minus global excludes and the history table).</li>
  * </ul>
  * <p>
  * <b>Ordering:</b> Tests are executed in ascending order of their target versions. Tests without
