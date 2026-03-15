@@ -36,6 +36,14 @@ Database migrations are often the most fragile part of an application. **trymigr
 
 ---
 
+## 📋 Prerequisites
+
+Before you start, ensure you have the following installed:
+*   **Java 17** or higher.
+*   **Docker** (required by Testcontainers for orchestrating database instances).
+
+---
+
 ## 🚀 Quick Start
 
 1. **Add the Dependency** (e.g., for PostgreSQL):
@@ -266,6 +274,20 @@ When using **static fields** (shared containers) or testing non-incremental scen
 | `TrymigrateDataLoader` | Support custom data formats (CSV, JSON, etc.). |
 | `TrymigrateDatabase` | Abstraction for custom DB lifecycle/connection. |
 | `TrymigrateLintsReporter` | Send lint results to Slack, Jira, or custom tools. |
+
+### Registration & Hierarchy
+
+Plugins can be registered in two ways, forming a clear hierarchy:
+
+1.  **Local Registration (`@TrymigrateRegisterPlugin`):** Register plugins directly as fields within your test class. These have the **highest priority** and override any global settings.
+2.  **Global Registration (Java SPI):** Register plugins via the standard Java SPI mechanism (`META-INF/services/`). These are automatically discovered and applied to all tests.
+
+### Discovery & Control
+
+Fine-tune how global plugins are discovered using `@TrymigrateDiscoverPlugins`:
+
+*   **Selective Loading:** Use `@TrymigrateDiscoverPlugins(origin = MyDatabasePlugin.class)` to only load plugins belonging to a specific hierarchy (e.g., only PostgreSQL-specific customizers).
+*   **Exclusion:** Use `@TrymigrateDiscoverPlugins(exclude = {LegacyLinter.class, GenericReporter.class})` to explicitly block certain plugins or entire interface groups from being loaded.
 
 ---
 

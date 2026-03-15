@@ -12,10 +12,9 @@ import java.lang.annotation.*;
  * the specified severity threshold, the test will fail.
  * <p>
  * <b>Verification Points &#38; Smart Diffing:</b>
- * Each test method annotated with {@link io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget} acts as a
- * "verification point" in the migration timeline. Verification only fails for <b>new</b> lints introduced since the
- * previous verification point. Violations already present in previous versions are ignored to avoid noise from legacy
- * schema issues.
+ * This annotation <b>uses</b> the Verification Points defined by {@link io.github.bekoenig.trymigrate.core.TrymigrateWhenTarget}
+ * for smart diffing. The quality gate only fails for <b>new</b> lints introduced since the previous
+ * Verification Point, ignoring pre-existing violations to avoid noise from legacy schema issues.
  * <p>
  * <b>Important Notes:</b>
  * <ul>

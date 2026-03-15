@@ -46,7 +46,13 @@ Plugins are implementations of `TrymigratePlugin`.
 ### 1. Test Skeleton (Copy & Adapt)
 Use this structure when creating new migration tests.
 
+> [!NOTE]
+> **Mandatory Dependency:** To use `SchemaCrawlerAssertions`, ensure your `pom.xml` includes `io.github.bekoenig:assertj-schemacrawler`.
+
 ```java
+import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Trymigrate
 @TrymigrateVerifyLints(failOn = LintSeverity.medium) // 1. Set quality gate
 class UserSchemaTest {
@@ -71,21 +77,22 @@ class UserSchemaTest {
             .table("public", "users")
             .column("email").isNotNull().hasType("varchar");
         
-        // 7. Assert Lints (Legacy debt handling)
+        // 7. Assert Lints (Full state available in parameter)
         assertThat(lints).isEmpty();
     }
 }
 ```
 
 ### 2. Assertion Patterns
-*   **Structure:** Use `SchemaCrawlerAssertions` (fluent API for tables, columns, FKs).
-*   **Lints:** Use AssertJ on the `Lints` object. `assertThat(lints).isEmpty()` is the gold standard for greenfield projects.
+*   **Structure:** Use `SchemaCrawlerAssertions` from `assertj-schemacrawler` (fluent API for tables, columns, FKs).
+*   **Lints:** Use AssertJ on the `Lints` object. `assertThat(lints).isEmpty()` checks the **full current state** (minus excludes).
 *   **Data:** Use standard JDBC or `JdbcTemplate` with the injected `DataSource` to query and verify data content.
 
 ### 3. Common Pitfalls
 *   **Missing `cleanDisabled(false)`:** If using `@TrymigrateCleanBefore`, Flyway config must explicitly enable cleaning or it will fail.
 *   **Version Ordering:** `trymigrate` runs tests in version order. A test for "1.0" runs before "1.1". If "1.1" runs first, the DB state remains at "1.1" for subsequent tests unless `@TrymigrateCleanBefore` is used.
 *   **Scope:** `Catalog` contains EVERYTHING in the schema. `Lints` contains EVERYTHING (minus excludes). The *Quality Gate* only checks the *difference*.
+*   **First-Run Only Gate:** If multiple tests target the same version (e.g., with different `@TrymigrateGivenData`), the `@TrymigrateVerifyLints` quality gate is only triggered for the **first** test of that version. Subsequent tests for the same version skip the automated check but still receive the full `Lints` parameter.
 
 ## 🛠️ Development Rules
 - **Javadoc:** Mandatory for all public classes and annotations. Must include `@see` links to related components.

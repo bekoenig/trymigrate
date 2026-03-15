@@ -14,12 +14,9 @@ import java.lang.annotation.*;
  * </ol>
  * <p>
  * <b>Verification Points:</b>
- * Each test method annotated with {@code @TrymigrateWhenTarget} acts as a "Verification Point" in the
- * database timeline. While the injected {@link schemacrawler.tools.lint.Lints} parameter provides
- * the <b>full current state</b> of violations, the automated quality gates (see
- * {@link io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints}) use these points to
- * isolate only the new violations introduced since the previous Verification Point.
-
+ * This annotation <b>defines</b> a "Verification Point" in the database timeline. Automated quality gates
+ * (see {@link io.github.bekoenig.trymigrate.core.lint.TrymigrateVerifyLints}) use these points to
+ * isolate new violations introduced since the previous Verification Point.
  * <p>
  * <b>Special Keywords:</b>
  * <ul>
