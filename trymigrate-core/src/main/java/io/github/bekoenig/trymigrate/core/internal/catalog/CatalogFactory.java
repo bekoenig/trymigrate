@@ -6,6 +6,7 @@ import schemacrawler.schema.Catalog;
 import schemacrawler.schemacrawler.*;
 import schemacrawler.tools.options.Config;
 import schemacrawler.tools.options.ConfigUtility;
+import schemacrawler.tools.utility.DatabaseConnectorUtility;
 import schemacrawler.tools.utility.SchemaCrawlerUtility;
 import us.fatehi.utility.datasource.DatabaseConnectionSource;
 import us.fatehi.utility.datasource.DatabaseConnectionSources;
@@ -60,12 +61,9 @@ public class CatalogFactory {
         Config additionalConfig = customizedBuild(new HashMap<>(),
                 customizers, c -> c::customize, ConfigUtility::fromMap);
 
-        DatabaseConnectionSource dataSource = DatabaseConnectionSources.fromConnection(connection);
-        SchemaRetrievalOptions schemaRetrievalOptions = SchemaCrawlerUtility.matchSchemaRetrievalOptions(dataSource);
-        // TODO: remove connection initializer trigger after fix of schemacrawler
-        schemaRetrievalOptions.getConnectionInitializer().accept(connection);
-        return SchemaCrawlerUtility.getCatalog(dataSource, schemaRetrievalOptions, schemaCrawlerOptions,
-                additionalConfig);
+        DatabaseConnectionSource connectionSource = DatabaseConnectionSources.fromConnection(connection);
+        SchemaRetrievalOptions schemaRetrievalOptions = DatabaseConnectorUtility.matchSchemaRetrievalOptions(connectionSource);
+        return SchemaCrawlerUtility.getCatalog(connectionSource, schemaRetrievalOptions, schemaCrawlerOptions, additionalConfig);
     }
 
 }

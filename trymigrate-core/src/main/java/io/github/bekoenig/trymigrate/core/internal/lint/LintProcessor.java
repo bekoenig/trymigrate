@@ -43,7 +43,9 @@ public class LintProcessor {
         lintersConfigurers.forEach(x -> x.accept(lintersBuilder));
 
         Linters linters = lintersBuilder.build();
-        linters.lint(catalog, DatabaseConnectionSources.fromConnection(connection));
+        linters.setCatalog(catalog);
+        linters.setConnectionSource(DatabaseConnectionSources.fromConnection(connection));
+        linters.lint();
         Lints currentLints = new Lints(excludedLintPatterns.dropMatching(linters.getLints().stream()).toList());
 
         Lints newLints = lintsHistory.diffNewLints(migrationVersion, currentLints);

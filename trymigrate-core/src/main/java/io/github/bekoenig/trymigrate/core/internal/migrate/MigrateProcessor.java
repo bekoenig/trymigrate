@@ -14,7 +14,7 @@ import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.flywaydb.core.api.output.MigrateResult;
-import org.junit.jupiter.api.extension.ExtensionContext.Store.CloseableResource;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.lint.Lints;
 
@@ -24,9 +24,10 @@ import java.util.Objects;
 
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addCallbacks;
 import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer.addJavaMigrations;
-import static org.flywaydb.core.api.MigrationVersion.*;
+import static org.flywaydb.core.api.MigrationVersion.EMPTY;
+import static org.flywaydb.core.api.MigrationVersion.fromVersion;
 
-public class MigrateProcessor implements CloseableResource, AutoCloseable {
+    public class MigrateProcessor implements ExtensionContext.Store.CloseableResource, AutoCloseable {
 
     private final TrymigrateDatabase database;
     private final List<TrymigrateFlywayCustomizer> flywayCustomizers;

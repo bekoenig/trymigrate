@@ -70,9 +70,10 @@ class LintProcessorTest {
 
     @Test
     @DisplayName("GIVEN lints WHEN linting THEN process and report new lints")
-    void shouldLintAndReport() {
+    void shouldLintAndReport() throws Exception {
         // GIVEN
         Connection connection = mock();
+        when(connection.isValid(anyInt())).thenReturn(true);
         Catalog catalog = mock();
         MigrationVersion version = MigrationVersion.fromVersion("1.0");
         RestrictedPattern pattern = new RestrictedPattern(".*", "");
