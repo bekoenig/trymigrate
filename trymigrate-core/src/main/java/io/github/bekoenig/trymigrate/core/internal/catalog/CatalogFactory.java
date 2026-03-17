@@ -49,7 +49,10 @@ public class CatalogFactory {
                 customizers, c -> c::customize, OptionsBuilder::build);
 
         LoadOptions loadOptions = customizedBuild(
-                LoadOptionsBuilder.builder().withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum()),
+                LoadOptionsBuilder.builder()
+                        // note: parallel load causes race conditions in connection initializer with some databases
+                        .withMaxThreads(1)
+                        .withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum()),
                 customizers, c -> c::customize, OptionsBuilder::build);
 
         SchemaCrawlerOptions schemaCrawlerOptions = SchemaCrawlerOptionsBuilder.newSchemaCrawlerOptions()
