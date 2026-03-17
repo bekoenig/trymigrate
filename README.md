@@ -237,7 +237,7 @@ Any `JdbcDatabaseContainer` annotated with `@TrymigrateRegisterPlugin` is automa
 *   **Static Field:** The container is **not stopped** after the test class. It is shared across multiple test classes for maximum performance and only disposed of when the JVM exits.
 
 ### 🧼 Fresh State with `@TrymigrateCleanBefore`
-When using **static fields** (shared containers) or testing non-incremental scenarios, the database will likely contain "leftovers" from previous runs. Use `@TrymigrateCleanBefore` to trigger a `flyway clean` before the current test's migration starts.
+The database instance is reused for all test methods within a class. Data seeded in one method remains visible in subsequent ones. Use `@TrymigrateCleanBefore` to trigger a `flyway clean` before a test starts to ensure a fresh state (especially when seeding data or testing specific versions in isolation).
 
 > [!IMPORTANT]
 > Flyway 9+ disables `clean` by default. You must set `.cleanDisabled(false)` in your `TrymigrateFlywayCustomizer` for this to work.
@@ -254,8 +254,8 @@ When using **static fields** (shared containers) or testing non-incremental scen
 | `@TrymigrateGivenData` | Method | Seeds SQL or custom data *before* the target migration. |
 | `@TrymigrateCleanBefore` | Method | Wipes the database before the current migration version. |
 | `@TrymigrateVerifyLints` | Class | Configures the quality gate severity threshold. |
-| `@TrymigrateExcludeLint` | Class | Globally ignores specific lints (supports Regex). |
-| `@TrymigrateSuppressLint` | Method | Locally allows specific lints for a migration version. |
+| `@TrymigrateExcludeLint` | Class | Globally **drops** specific lints (hidden from reports and quality gate). |
+| `@TrymigrateSuppressLint` | Method | Locally **allows** specific lints (visible in reports, ignored by quality gate). |
 | `@TrymigrateRegisterPlugin` | Field | Registers customizers or Testcontainers. |
 | `@TrymigrateDiscoverPlugins`| Class | Fine-tunes SPI-based plugin discovery. |
 
@@ -333,3 +333,6 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 ---
 
 *Bringing the power of TDD to the foundation of your application.*
+
+> [!NOTE]
+> This documentation was created with the support of AI to ensure clarity and technical precision.
