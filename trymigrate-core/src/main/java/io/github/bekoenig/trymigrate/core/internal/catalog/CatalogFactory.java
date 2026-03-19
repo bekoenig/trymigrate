@@ -50,8 +50,6 @@ public class CatalogFactory {
 
         LoadOptions loadOptions = customizedBuild(
                 LoadOptionsBuilder.builder()
-                        // note: parallel load causes race conditions in connection initializer with some databases
-                        .withMaxThreads(1)
                         .withSchemaInfoLevel(SchemaInfoLevelBuilder.maximum()),
                 customizers, c -> c::customize, OptionsBuilder::build);
 
