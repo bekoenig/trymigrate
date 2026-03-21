@@ -305,12 +305,17 @@ Fine-tune how global plugins are discovered using `@TrymigrateDiscoverPlugins`:
 
 Trymigrate provides pre-configured modules for all major databases:
 
-| PostgreSQL | MySQL | MariaDB | SQL Server |
-| :---: | :---: | :---: | :---: |
-| `trymigrate-postgresql` | `trymigrate-mysql` | `trymigrate-mariadb` | `trymigrate-sqlserver` |
-| **Oracle** | **DB2** | **HSQLDB** | **...and more** |
-| `trymigrate-oracle` | `trymigrate-db2` | `trymigrate-hsqldb` | |
-
+| Datenbank | Modul |
+| :--- | :--- |
+| DB2 | `trymigrate-db2` |
+| H2 | `trymigrate-h2` |
+| HSQLDB | `trymigrate-hsqldb` |
+| MariaDB | `trymigrate-mariadb` |
+| MySQL | `trymigrate-mysql` |
+| Oracle | `trymigrate-oracle` |
+| PostgreSQL | `trymigrate-postgresql` |
+| SQL Server | `trymigrate-sqlserver` |
+    
 ---
 
 ## 🤝 Contributing
