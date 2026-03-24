@@ -22,6 +22,10 @@ import java.util.function.Consumer;
  *     .withTitle("My Custom Schema Report")
  *     .showUnlintedObjects(true);
  * }</pre>
+ * <p>
+ * Register this customizer locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it globally discoverable by
+ * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
  *
  * @see TrymigrateLintersConfigurer
  * @see schemacrawler.tools.command.lint.options.LintOptions

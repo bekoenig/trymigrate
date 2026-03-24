@@ -22,6 +22,10 @@ import java.sql.Connection;
  *     <li>Integrate with data generation tools (e.g., Datafaker).</li>
  *     <li>Execute complex setup logic using a custom Java-based DSL.</li>
  * </ul>
+ * <p>
+ * Register a loader locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it discoverable through SPI by
+ * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
  *
  * @see TrymigrateGivenData
  * @see TrymigrateDatabase
@@ -32,7 +36,7 @@ public interface TrymigrateDataLoader {
      * Determines if this loader can handle the specified resource.
      *
      * @param resource  the data resource (e.g., a file path or a raw string)
-     * @param extension the file extension of the resource (if available, without dot), or {@code null}
+     * @param extension the file extension of the resource, if available and without the leading dot
      * @param database  the current test database instance
      * @return {@code true} if this loader can process the resource, {@code false} otherwise
      */

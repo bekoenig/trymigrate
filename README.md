@@ -46,7 +46,7 @@ Before you start, ensure you have the following installed:
 
 ## 🚀 Quick Start
 
-1. **Add the Dependency** (e.g., for PostgreSQL):
+1. **Add the Dependencies** (e.g., for PostgreSQL):
 ```xml
 <dependency>
     <groupId>io.github.bekoenig.trymigrate</groupId>
@@ -54,7 +54,22 @@ Before you start, ensure you have the following installed:
     <version>${trymigrate.version}</version>
     <scope>test</scope>
 </dependency>
+<dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>testcontainers-postgresql</artifactId>
+    <version>${testcontainers.version}</version>
+    <scope>test</scope>
+</dependency>
+<dependency>
+    <groupId>io.github.bekoenig</groupId>
+    <artifactId>assertj-schemacrawler</artifactId>
+    <version>${assertj-schemacrawler.version}</version>
+    <scope>test</scope>
+</dependency>
 ```
+
+`trymigrate-postgresql` provides the extension itself together with Flyway PostgreSQL support, the JDBC driver, and SchemaCrawler integration.
+`testcontainers-postgresql` and `assertj-schemacrawler` are shown separately because the example uses both APIs directly.
 
 2. **Write Your First Test**:
 ```java
@@ -63,7 +78,7 @@ class MySchemaTest {
 
     // 2. Register your database container
     @TrymigrateRegisterPlugin
-    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+    final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
 
     @Test
     @TrymigrateWhenTarget("1.0") // 3. Set the target version
@@ -109,7 +124,8 @@ class SchemaEvolutionTest {
     @TrymigrateWhenTarget("1.0")
     void should_EstablishBaseline(Catalog catalog) {
         assertThat(catalog).table("app_schema", "users")
-            .column("id").isPrimaryKey().hasType("uuid")
+            .column("id").isPartOfPrimaryKey(true);
+        assertThat(catalog).table("app_schema", "users")
             .column("email").isNotNull();
     }
 
@@ -118,7 +134,7 @@ class SchemaEvolutionTest {
     @TrymigrateGivenData("INSERT INTO app_schema.users (id, email) VALUES (gen_random_uuid(), 'test@example.com');")
     void should_MigrateDataSafety(Catalog catalog, Lints lints) {
         // Verify migration 1.1 didn't break existing data or constraints
-        assertThat(catalog).table("app_schema", "users").hasColumn("last_login");
+        assertThat(catalog).table("app_schema", "users").column("last_login").isNotNull();
         assertThat(lints).isEmpty(); // No new regressions
     }
 }
@@ -156,7 +172,7 @@ private final TrymigrateLintersConfigurer linterConfig = config -> config
 ```
 
 **Default Linting & Scope:**
-*   **Defaults:** By default, trymigrate applies a comprehensive set of SchemaCrawler linters as defined in `io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters`.
+*   **Defaults:** By default, trymigrate enables a curated set of SchemaCrawler linters suitable for migration testing.
 *   **Flyway History:** The Flyway schema history table is **automatically excluded** from linting to prevent false positives. However, it remains present in the `Catalog`.
 *   **Schema Scope:** Linting is strictly limited to schemas **managed by Flyway**. It is not possible to extend linting to schemas outside of Flyway's control.
 
@@ -173,6 +189,11 @@ Testing migrations often requires more than just an empty schema. `trymigrate` a
 This annotation seeds data **immediately before** the migration script of the target version is executed. It supports two formats by default:
 *   **Raw SQL Strings:** Directly execute statements like `INSERT INTO ...`.
 *   **Classpath Resources:** Provide a path to a file ending in `.sql` (e.g., `db/testdata/baseline.sql`).
+
+Important behavior:
+*   The built-in SQL loader expects a plain classpath resource path such as `db/testdata/baseline.sql`, not `classpath:db/testdata/baseline.sql`.
+*   Data loading only happens if trymigrate actually migrates *to* the target version. If the database is already at or above that version, the test fails. Use `@TrymigrateCleanBefore` when you need a guaranteed fresh baseline.
+*   Seeded SQL is executed directly through JDBC, outside Flyway's SQL script processing. Flyway placeholders and related script features are therefore not applied.
 
 *   **Initial Inventory (Baseline Data):** Seed representative, production-like records into version `1.0` to verify that your `1.1` migration script correctly handles data transformations (e.g., migrating a `JSON` blob into structured columns).
 *   **Scenario-based Testing:** Load specific datasets to test edge cases, such as very large tables or "dirty" data, before a `NOT NULL` or `UNIQUE` constraint is applied.
@@ -263,7 +284,7 @@ The database instance is reused for all test methods within a class. Data seeded
 
 ## 🧩 Plugin System
 
-`trymigrate` is a modular engine. Extend almost every aspect by implementing these interfaces:
+`trymigrate` is a modular engine. Extend almost every aspect through these public extension points:
 
 | Interface | Purpose |
 | :--- | :--- |
@@ -277,17 +298,19 @@ The database instance is reused for all test methods within a class. Data seeded
 
 ### Registration & Hierarchy
 
-Plugins can be registered in two ways, forming a clear hierarchy:
+Plugins can be registered in two ways:
 
-1.  **Local Registration (`@TrymigrateRegisterPlugin`):** Register plugins directly as fields within your test class. These have the **highest priority** and override any global settings.
-2.  **Global Registration (Java SPI):** Register plugins via the standard Java SPI mechanism (`META-INF/services/`). These are automatically discovered and applied to all tests.
+1.  **Local Registration (`@TrymigrateRegisterPlugin`):** Register a field directly in your test class. The field can implement one of the supported extension interfaces such as `TrymigrateFlywayCustomizer`, `TrymigrateDataLoader`, `TrymigrateLintsReporter`, `Callback`, or `JavaMigration`. Local registrations have the **highest priority**.
+2.  **Global Registration (Java SPI):** Register a class in `META-INF/services/io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin`. SPI-discovered plugins must implement `TrymigratePlugin` directly or through a database-specific marker interface such as `TrymigratePostgreSQLPlugin`.
 
 ### Discovery & Control
 
 Fine-tune how global plugins are discovered using `@TrymigrateDiscoverPlugins`:
 
-*   **Selective Loading:** Use `@TrymigrateDiscoverPlugins(origin = MyDatabasePlugin.class)` to only load plugins belonging to a specific hierarchy (e.g., only PostgreSQL-specific customizers).
+*   **Selective Loading:** Use `@TrymigrateDiscoverPlugins(origin = TrymigratePostgreSQLPlugin.class)` to only load plugins belonging to a specific hierarchy (for example, PostgreSQL-specific SPI plugins).
 *   **Exclusion:** Use `@TrymigrateDiscoverPlugins(exclude = {LegacyLinter.class, GenericReporter.class})` to explicitly block certain plugins or entire interface groups from being loaded.
+
+Database-specific marker interfaces such as `TrymigratePostgreSQLPlugin` or `TrymigrateH2Plugin` are primarily useful for SPI plugins. They let you group global plugins by database family and select them with `origin`.
 
 ---
 

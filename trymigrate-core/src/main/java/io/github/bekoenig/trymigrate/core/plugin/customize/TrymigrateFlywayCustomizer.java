@@ -22,8 +22,10 @@ import java.util.function.Supplier;
  * </ul>
  * <p>
  * <b>Registration:</b>
- * Register an implementation of this interface via {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}
- * or Java SPI.
+ * Register an implementation locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}. To use it via Java SPI,
+ * the implementation must also implement {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin}
+ * (directly or through a database-specific marker interface).
  * <p>
  * <b>Example:</b>
  * <pre>{@code

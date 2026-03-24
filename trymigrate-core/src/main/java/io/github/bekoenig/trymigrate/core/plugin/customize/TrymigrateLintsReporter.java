@@ -26,6 +26,10 @@ import schemacrawler.tools.lint.Lints;
  *     <li>Export findings to a security auditing tool or a Jira ticket.</li>
  *     <li>Integrate with custom quality dashboards.</li>
  * </ul>
+ * <p>
+ * Register a reporter locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it globally discoverable by
+ * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
  */
 public interface TrymigrateLintsReporter {
 
@@ -33,7 +37,8 @@ public interface TrymigrateLintsReporter {
      * Reports detected lints for a specific migration version.
      * <p>
      * <b>Note:</b> The {@code lints} parameter contains only <b>new</b> violations introduced
-     * by the current migration version (Smart Diffing).
+     * by the current migration version (smart diffing). This is different from the {@code Lints}
+     * test parameter injected into test methods, which represents the full current state.
      *
      * @param catalog          the analyzed database model
      * @param lints            the detected schema violations (delta since last version)

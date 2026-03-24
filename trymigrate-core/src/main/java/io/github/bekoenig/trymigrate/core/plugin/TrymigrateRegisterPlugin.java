@@ -2,15 +2,18 @@ package io.github.bekoenig.trymigrate.core.plugin;
 
 import java.lang.annotation.*;
 /**
- * Annotation used to register trymigrate plugins directly within a test class.
+ * Annotation used to register trymigrate extensions directly within a test class.
  * <p>
- * Apply this annotation to any field that implements one of the supported plugin interfaces
- * (see {@link TrymigratePlugin#SUPPORTED_TYPES}). Plugins registered this way have the
- * <b>highest priority</b> and override any globally discovered plugins via Java SPI.
+ * Apply this annotation to any field that implements one of the supported public extension interfaces
+ * (see {@link TrymigratePlugin#SUPPORTED_TYPES}), or to supported Flyway types such as
+ * {@code Callback} and {@code JavaMigration}. Registrations made this way have the
+ * <b>highest priority</b> and override globally discovered SPI plugins.
  * <p>
  * <b>Local Configuration:</b>
  * This is the primary way to provide test-specific configurations that shouldn't affect the
  * entire project. It allows for modular, granular control within a single test class.
+ * It is also the simplest option because the registered field does not need to implement
+ * {@link TrymigratePlugin}.
  * <p>
  * <b>Native Testcontainers Support:</b>
  * This annotation has special support for {@code org.testcontainers.containers.JdbcDatabaseContainer}.

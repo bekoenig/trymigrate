@@ -7,24 +7,29 @@ import org.flywaydb.core.api.migration.JavaMigration;
 import java.util.List;
 
 /**
- * Marker interface for all trymigrate plugins.
+ * Marker interface for globally discoverable trymigrate plugins.
  * <p>
- * This interface is the foundation of the extension's plugin system. Implementations of this interface
- * (or its sub-interfaces) can be registered to customize the migration, inspection, and reporting lifecycle.
+ * This interface is the root of trymigrate's SPI-based plugin system. Implementations of this interface
+ * (or of one of its sub-interfaces) can be discovered globally and used to customize the migration,
+ * inspection, and reporting lifecycle.
+ * <p>
+ * For test-local customization, you do <b>not</b> need to implement this interface. A field annotated with
+ * {@link TrymigrateRegisterPlugin} may implement any of the supported extension interfaces listed in
+ * {@link #SUPPORTED_TYPES}.
  * <p>
  * <b>Registration Mechanisms:</b>
  * <ol>
- *     <li><b>Manual Registration:</b> Using {@link TrymigrateRegisterPlugin} on a field within the test class.
- *     This is the most common way and has the highest priority.</li>
- *     <li><b>Automatic Discovery:</b> Using {@link java.util.ServiceLoader} (SPI). Plugins defined in
- *     {@code META-INF/services/io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} are automatically loaded.</li>
+ *     <li><b>Manual Registration:</b> Use {@link TrymigrateRegisterPlugin} on a field within the test class.
+ *     This is the most common approach and has the highest priority.</li>
+ *     <li><b>Automatic Discovery:</b> Use {@link java.util.ServiceLoader} (SPI). Classes listed in
+ *     {@code META-INF/services/io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} are loaded automatically.</li>
  * </ol>
  * <p>
  * <b>Priority Model:</b>
  * <ul>
  *     <li>Plugins registered via {@link TrymigrateRegisterPlugin} always take precedence.</li>
- *     <li>For SPI-discovered plugins, the priority is determined by the depth of the interface hierarchy.
- *     Database-specific plugins usually have higher priority than core plugins.</li>
+ *     <li>For SPI-discovered plugins, priority is determined by the depth of the plugin interface hierarchy.
+ *     Database-specific markers usually rank ahead of generic plugins.</li>
  * </ul>
  * <p>
  * <b>Supported Extension Points:</b>
@@ -46,7 +51,8 @@ import java.util.List;
 public interface TrymigratePlugin {
 
     /**
-     * List of all supported plugin interfaces that can be registered.
+     * List of public extension interfaces that may be registered locally via
+     * {@link TrymigrateRegisterPlugin}.
      */
     List<Class<?>> SUPPORTED_TYPES = List.of(
             TrymigrateCatalogCustomizer.class,

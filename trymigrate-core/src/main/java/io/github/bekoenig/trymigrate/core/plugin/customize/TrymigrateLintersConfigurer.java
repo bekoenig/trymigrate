@@ -13,8 +13,8 @@ import java.util.function.Consumer;
  * enable, disable, and fine-tune linters without needing to create {@code schemacrawler.config.properties}
  * or use Java SPI for every minor change.
  * <p>
- * By default, trymigrate applies a comprehensive set of SchemaCrawler linters as defined in
- * {@code CoreLinters.java}. You can provide custom implementations of this interface to
+ * By default, trymigrate enables a curated set of SchemaCrawler linters suitable for migration testing.
+ * You can provide custom implementations of this interface to
  * configure, disable, or enable specific linters, or to register custom linter providers.
  * <p>
  * <b>Important Notes:</b>
@@ -31,6 +31,10 @@ import java.util.function.Consumer;
  *     <li><b>Fine-grained Control:</b> Overwrite severity levels and filter by table or column patterns.</li>
  *     <li><b>Dynamic Configuration:</b> Pass custom key-value pairs to specific linters.</li>
  * </ul>
+ * <p>
+ * Register this configurer locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it globally discoverable by
+ * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
  * <p>
  * <b>Example:</b>
  * <pre>{@code
@@ -53,8 +57,8 @@ public interface TrymigrateLintersConfigurer extends Consumer<TrymigrateLintersC
     interface TrymigrateLintersConfiguration {
 
         /**
-         * Registers a new linter provider. This avoids the need for standard Java SPI discovery
-         * and allows direct registration of custom linters.
+         * Registers a new linter provider for the current test run. This avoids the need for
+         * standard Java SPI discovery and allows direct registration of custom linters.
          *
          * @param linterProvider the provider to register
          * @return the configuration root for further chaining

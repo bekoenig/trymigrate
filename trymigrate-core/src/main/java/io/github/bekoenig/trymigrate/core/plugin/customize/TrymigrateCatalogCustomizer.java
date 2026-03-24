@@ -19,8 +19,12 @@ import java.util.Map;
  *     <li><b>Schema Filtering:</b> Only load specific application schemas and exclude system schemas.</li>
  *     <li><b>Performance:</b> Restrict the lookup to certain table types or exclude metadata like views or
  *     procedures.</li>
- *     <li><b>Grepping:</b> Filter the catalog based on specific naming patterns.</li>
+ *     <li><b>Pattern-based Filtering:</b> Filter the catalog based on specific naming patterns.</li>
  * </ul>
+ * <p>
+ * Register this customizer locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or expose it as an SPI plugin by
+ * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
  * <p>
  * <b>Example:</b>
  * <pre>{@code

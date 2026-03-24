@@ -20,7 +20,7 @@ import java.lang.annotation.*;
  * <b>vendor-specific script enhancements</b> are NOT supported. SQL must be provided in
  * its final, executable form (e.g., using schema-qualified table names).
  * <p>
- * The value can be a resource path (e.g., "db/testdata/initial.sql") or a raw SQL string,
+ * The value can be a resource path (for example {@code "db/testdata/initial.sql"}) or a raw SQL string,
  * depending on the supported types of registered
  * {@link io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader} plugins.
  * <p>

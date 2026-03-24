@@ -19,6 +19,10 @@ import java.util.Optional;
  *     <li>A custom-managed container lifecycle.</li>
  *     <li>An in-memory database like H2 or HSQLDB.</li>
  * </ul>
+ * <p>
+ * Register a database locally via
+ * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it globally discoverable by
+ * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
  *
  * @see io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin
  */
