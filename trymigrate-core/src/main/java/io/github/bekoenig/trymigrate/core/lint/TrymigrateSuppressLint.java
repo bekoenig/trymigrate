@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * @TrymigrateSuppressLint(linterId = "LinterTableWithNoRemarks", objectName = "legacy_.*")
  * void should_MigrateLegacyTables(Catalog catalog, Lints lints) {
  *     // Lints for legacy_tables will not fail the test, but remain in 'lints'
- *     assertThat(catalog).table("legacy_user").exists();
+ *     SchemaCrawlerAssertions.assertThat(catalog).table("legacy_user").isNotNull();
  * }
  * }</pre>
  *

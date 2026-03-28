@@ -19,8 +19,9 @@ import java.util.function.Consumer;
  * <pre>{@code
  * @TrymigrateRegisterPlugin
  * private final TrymigrateLintOptionsCustomizer options = builder -> builder
- *     .withTitle("My Custom Schema Report")
- *     .showUnlintedObjects(true);
+ *     .showDatabaseInfo(true)
+ *     .showJdbcDriverInfo(true)
+ *     .showUnqualifiedNames(true);
  * }</pre>
  * <p>
  * Register this customizer locally via

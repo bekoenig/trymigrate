@@ -84,7 +84,7 @@ class MySchemaTest {
     @TrymigrateWhenTarget("1.0") // 3. Set the target version
     void should_HaveCorrectUserTable(Catalog catalog) {
         // 4. Assert your schema state
-        assertThat(catalog).table("public", "users").column("email").isNotNull();
+        SchemaCrawlerAssertions.assertThat(catalog).table("public", "users").column("email").isNotNull();
     }
 }
 ```
@@ -123,9 +123,9 @@ class SchemaEvolutionTest {
     @Test
     @TrymigrateWhenTarget("1.0")
     void should_EstablishBaseline(Catalog catalog) {
-        assertThat(catalog).table("app_schema", "users")
+        SchemaCrawlerAssertions.assertThat(catalog).table("app_schema", "users")
             .column("id").isPartOfPrimaryKey(true);
-        assertThat(catalog).table("app_schema", "users")
+        SchemaCrawlerAssertions.assertThat(catalog).table("app_schema", "users")
             .column("email").isNotNull();
     }
 
@@ -134,7 +134,7 @@ class SchemaEvolutionTest {
     @TrymigrateGivenData("INSERT INTO app_schema.users (id, email) VALUES (gen_random_uuid(), 'test@example.com');")
     void should_MigrateDataSafety(Catalog catalog, Lints lints) {
         // Verify migration 1.1 didn't break existing data or constraints
-        assertThat(catalog).table("app_schema", "users").column("last_login").isNotNull();
+        SchemaCrawlerAssertions.assertThat(catalog).table("app_schema", "users").column("last_login").isNotNull();
         assertThat(lints).isEmpty(); // No new regressions
     }
 }
@@ -150,7 +150,7 @@ Every migration version is automatically inspected for architectural anti-patter
 *   **Complete State Visibility:** While the quality gate focuses on the delta, the injected `Lints` parameter always provides the **full current state** (minus global excludes). This allows you to verify if existing violations were fixed or transformed.
 
 *   **Intermediate Reporting:** Even if a test method skips several migration versions (e.g., from `1.0` to `1.5`), `trymigrate` still performs linting and generates reports for every intermediate migration version. You can find these in `target/trymigrate-lint-reports/`.
-*   **The Gatekeeper:** Use `@TrymigrateVerifyLints` to fail tests if new violations (e.g., missing primary keys, bad naming) exceed your severity threshold. Supported levels are: `INFO`, `LOW`, `MEDIUM`, `HIGH`, `CRITICAL`.
+*   **The Gatekeeper:** Use `@TrymigrateVerifyLints` to fail tests if new violations (e.g., missing primary keys, bad naming) exceed your severity threshold. Supported levels are: `low`, `medium`, `high`, `critical`.
 *   **Multi-Test Efficiency:** If multiple tests target the same version, the quality gate is only checked for the **first test** (according to execution order). Subsequent tests for the same version do not need to repeat the check as the version has already been verified.
 
 ### Suppressing & Excluding
@@ -291,7 +291,7 @@ The database instance is reused for all test methods within a class. Data seeded
 | `TrymigrateFlywayCustomizer` | Configure Flyway (locations, placeholders, schemas). |
 | `TrymigrateLintersConfigurer` | Fluently configure SchemaCrawler linters (Severity, Regex). |
 | `TrymigrateCatalogCustomizer` | Customize the database crawl (filter types, schemas). |
-| `TrymigrateLintOptionsCustomizer` | Customize general linting options (e.g., report titles). |
+| `TrymigrateLintOptionsCustomizer` | Customize general SchemaCrawler text output options (for example database info, JDBC driver info, or unqualified names). |
 | `TrymigrateDataLoader` | Support custom data formats (CSV, JSON, etc.). |
 | `TrymigrateDatabase` | Abstraction for custom DB lifecycle/connection. |
 | `TrymigrateLintsReporter` | Send lint results to Slack, Jira, or custom tools. |
@@ -302,6 +302,8 @@ Plugins can be registered in two ways:
 
 1.  **Local Registration (`@TrymigrateRegisterPlugin`):** Register a field directly in your test class. The field can implement one of the supported extension interfaces such as `TrymigrateFlywayCustomizer`, `TrymigrateDataLoader`, `TrymigrateLintsReporter`, `Callback`, or `JavaMigration`. Local registrations have the **highest priority**.
 2.  **Global Registration (Java SPI):** Register a class in `META-INF/services/io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin`. SPI-discovered plugins must implement `TrymigratePlugin` directly or through a database-specific marker interface such as `TrymigratePostgreSQLPlugin`.
+
+Only one `TrymigrateDatabase` can be active for a test class. Registering multiple databases, whether locally, via SPI, or mixed, fails fast during plugin resolution.
 
 ### Discovery & Control
 

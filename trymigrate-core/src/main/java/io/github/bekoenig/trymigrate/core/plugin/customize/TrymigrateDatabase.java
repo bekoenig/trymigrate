@@ -23,6 +23,9 @@ import java.util.Optional;
  * Register a database locally via
  * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it globally discoverable by
  * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
+ * <p>
+ * <b>Constraint:</b> Exactly one database plugin may be active for a test class. trymigrate fails fast if
+ * multiple {@code TrymigrateDatabase} implementations are registered at the same time.
  *
  * @see io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin
  */

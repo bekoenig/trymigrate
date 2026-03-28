@@ -10,7 +10,10 @@
   - `TrymigrateFlywayCustomizer`: Configures Flyway (locations, schemas).
   - `TrymigrateLintersConfigurer`: Configures SchemaCrawler linters.
   - `TrymigrateCatalogCustomizer`: Customizes the database crawl (filters).
+  - `TrymigrateLintOptionsCustomizer`: Customizes general SchemaCrawler text output options.
   - `TrymigrateDataLoader`: Custom data seeding (SQL, CSV, etc.).
+  - `TrymigrateLintsReporter`: Reports new lint deltas after each analyzed migration.
+  - `TrymigrateDatabase`: Provides the test database lifecycle and connection details.
 
 ---
 
@@ -18,13 +21,8 @@
 
 ### 1. Comprehensive Schema Test (TDD Pattern)
 ```java
-import io.github.bekoenig.assertj.schemacrawler.api.SchemaCrawlerAssertions;
-import static java.util.function.Predicate.isEqual;
-
 @Trymigrate
 @TrymigrateVerifyLints(failOn = LintSeverity.medium) // 1. Set quality gate
-// 2. Isolate test from global SPI plugins if necessary
-@TrymigrateDiscoverPlugins(exclude = SomeGlobalPlugin.class)
 class UserSchemaTest {
 
     @TrymigrateRegisterPlugin
@@ -35,9 +33,11 @@ class UserSchemaTest {
     // Use resource paths OR raw Inline SQL:
     @TrymigrateGivenData({
         "db/testdata/initial_users.sql", 
-        "INSERT INTO user_mgmt.users (id, name) VALUES ('...', 'Inlined User')"
+        "INSERT INTO user_mgmt.users (id, name) VALUES ('user-1', 'Inlined User')"
     })
-    void should_HaveCorrectProfile(Catalog catalog) { /* ... */ }
+    void should_HaveCorrectProfile(Catalog catalog) {
+        SchemaCrawlerAssertions.assertThat(catalog).table("user_mgmt", "users").column("name").isNotNull();
+    }
 }
 ```
 
@@ -56,8 +56,8 @@ class UserSchemaTest {
 *   **Full Class Execution:** ALWAYS run the entire test class. Migrations build upon each other (1.0 -> 1.1 -> 1.2). Running a single method (e.g., via `-Dtest=Class#method`) skips earlier verifications and might hide issues in the migration path.
 *   **Database Lifecycle:** Within a test class, the **same database instance is reused** for all `@Test` methods. Data seeded in one method remains for the next. **ALWAYS use `@TrymigrateCleanBefore`** if you need a fresh state for a specific migration version or to avoid `DuplicateKeyException` when seeding data.
 *   **Static Containers:** A `static` container field keeps the database alive **beyond the current test class**, allowing other test classes to reuse it for better performance. Instance-level containers are stopped after the class.
+*   **Single Database Plugin:** Exactly one `TrymigrateDatabase` may be active per test class. Multiple registered databases fail during plugin resolution.
 *   **Scope:** The *Quality Gate* only checks the **difference** (delta) introduced by the current migration version.
-*   **Shared Containers:** Use `static` fields for containers to share them across tests. Use `@TrymigrateCleanBefore` if you need a fresh start.
 
 ## 🛠️ Development Rules
 - **Javadoc:** Mandatory for all public APIs (classes, annotations).
