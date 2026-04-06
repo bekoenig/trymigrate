@@ -60,7 +60,7 @@
         <assertj-schemacrawler.version>2.2.0</assertj-schemacrawler.version>
 
         <flyway.version>12.2.0</flyway.version>
-        <schemacrawler.version>17.9.0</schemacrawler.version>
+        <schemacrawler.version>17.10.0</schemacrawler.version>
 
         <db2.version>12.1.4.0</db2.version>
         <postgresql.version>42.7.10</postgresql.version>
