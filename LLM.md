@@ -13,7 +13,7 @@
   - `TrymigrateLintOptionsCustomizer`: Customizes general SchemaCrawler text output options.
   - `TrymigrateDataLoader`: Custom data seeding (SQL, CSV, etc.).
   - `TrymigrateLintsReporter`: Reports new lint deltas after each analyzed migration.
-  - `TrymigrateDatabase`: Provides the test database lifecycle and connection details.
+  - `TrymigrateDatabase`: Provides the test database lifecycle and connection details. Use `TrymigrateDatabase.of(...)` for static JDBC connections without a custom implementation.
 
 ---
 

@@ -293,8 +293,12 @@ The database instance is reused for all test methods within a class. Data seeded
 | `TrymigrateCatalogCustomizer` | Customize the database crawl (filter types, schemas). |
 | `TrymigrateLintOptionsCustomizer` | Customize general SchemaCrawler text output options (for example database info, JDBC driver info, or unqualified names). |
 | `TrymigrateDataLoader` | Support custom data formats (CSV, JSON, etc.). |
-| `TrymigrateDatabase` | Abstraction for custom DB lifecycle/connection. |
+| `TrymigrateDatabase` | Abstraction for custom DB lifecycle/connection. Also supports static JDBC details via `TrymigrateDatabase.of(...)`. |
 | `TrymigrateLintsReporter` | Send lint results to Slack, Jira, or custom tools. |
+
+`TrymigrateDatabase` provides Flyway's default `DataSource`. trymigrate takes the JDBC URL, username, and
+password from the active `TrymigrateDatabase` and applies them to Flyway automatically. A
+`TrymigrateFlywayCustomizer` can further customize or override that Flyway configuration.
 
 ### Registration & Hierarchy
 
@@ -304,6 +308,17 @@ Plugins can be registered in two ways:
 2.  **Global Registration (Java SPI):** Register a class in `META-INF/services/io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin`. SPI-discovered plugins must implement `TrymigratePlugin` directly or through a database-specific marker interface such as `TrymigratePostgreSQLPlugin`.
 
 Only one `TrymigrateDatabase` can be active for a test class. Registering multiple databases, whether locally, via SPI, or mixed, fails fast during plugin resolution.
+
+For lightweight setups without a custom lifecycle implementation, register a static connection directly:
+
+```java
+@TrymigrateRegisterPlugin
+private final TrymigrateDatabase database = TrymigrateDatabase.of(
+        "jdbc:h2:mem:testdb1;DB_CLOSE_DELAY=-1",
+        null,
+        null
+);
+```
 
 ### Discovery & Control
 

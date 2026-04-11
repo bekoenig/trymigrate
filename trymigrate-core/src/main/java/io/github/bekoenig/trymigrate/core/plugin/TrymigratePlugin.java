@@ -35,7 +35,8 @@ import java.util.List;
  * <b>Supported Extension Points:</b>
  * <ul>
  *     <li>{@link TrymigrateFlywayCustomizer}: Configure Flyway locations, schemas, and properties.</li>
- *     <li>{@link TrymigrateDatabase}: Provide custom database containers or connections.</li>
+ *     <li>{@link TrymigrateDatabase}: Provide custom database containers, static JDBC connections,
+ *     or connection lifecycle hooks.</li>
  *     <li>{@link TrymigrateDataLoader}: Load custom seed data formats.</li>
  *     <li>{@link TrymigrateLintersConfigurer}: Fluently configure SchemaCrawler linters.</li>
  *     <li>{@link TrymigrateCatalogCustomizer}: Customize the database catalog crawl.</li>

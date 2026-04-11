@@ -7,6 +7,9 @@ import java.util.Optional;
  * <p>
  * This interface provides trymigrate with the necessary connection details and lifecycle
  * hooks to manage the test database.
+ * trymigrate uses the JDBC URL, username, and password from a registered
+ * {@code TrymigrateDatabase} as Flyway's default {@code DataSource}.
+ * A {@link TrymigrateFlywayCustomizer} can further customize or override that Flyway configuration.
  * <p>
  * <b>Standard Implementation:</b>
  * The most common way to use this is through trymigrate's automatic wrapping of
@@ -30,6 +33,45 @@ import java.util.Optional;
  * @see io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin
  */
 public interface TrymigrateDatabase {
+
+    /**
+     * Creates a simple database adapter from static JDBC connection details.
+     * <p>
+     * This is a convenience factory for databases whose lifecycle is managed externally
+     * or does not require explicit setup and teardown. The returned implementation uses
+     * no-op lifecycle hooks for {@link #prepare()} and {@link #dispose()}.
+     *
+     * @param jdbcUrl  the JDBC connection string
+     * @param username the database username
+     * @param password the database password
+     * @return a {@link TrymigrateDatabase} backed by the provided connection details
+     */
+    static TrymigrateDatabase of(String jdbcUrl, String username, String password) {
+        return new TrymigrateDatabase() {
+            @Override
+            public void prepare() {
+            }
+
+            @Override
+            public String getJdbcUrl() {
+                return jdbcUrl;
+            }
+
+            @Override
+            public String getUsername() {
+                return username;
+            }
+
+            @Override
+            public String getPassword() {
+                return password;
+            }
+
+            @Override
+            public void dispose() {
+            }
+        };
+    }
 
     /**
      * Provides access to the underlying database instance if it matches the given type.
