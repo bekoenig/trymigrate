@@ -5,22 +5,21 @@ import java.lang.annotation.*;
 /**
  * Excludes specific lints globally for the entire test class.
  * <p>
- * Lints matching the criteria defined in this annotation are completely dropped. They will not appear
- * in HTML reports, will not be printed to the console, and will not trigger a quality gate failure.
+ * Matching lints are completely dropped from processing. They do not appear in HTML reports,
+ * are not printed to the console, do not trigger a quality gate failure, and are not present
+ * in the injected {@link schemacrawler.tools.lint.Lints} test parameter.
  * <p>
- * This is useful for ignoring persistent issues in legacy schemas or excluding specific rules that
+ * This is useful for ignoring persistent issues in legacy schemas or excluding rules that
  * are not relevant to your project's standards.
  * <p>
  * <b>Note:</b> Linting is restricted to Flyway-managed schemas. The Flyway migration history table is
- * explicitly excluded. Use this annotation to exclude additional application-specific objects.
+ * already excluded by default. Use this annotation to exclude additional application-specific objects.
  * <p>
  * <b>Regex Support:</b>
- * Both {@link #linterId()} and {@link #objectName()} support regular expressions, allowing you to
- * match multiple linters or objects with a single annotation.
+ * Both {@link #linterId()} and {@link #objectName()} support regular expressions.
  * <p>
  * <b>Example:</b>
  * <pre>{@code
- * // Exclude all "remarks" lints for any table starting with "TEMP_"
  * @TrymigrateExcludeLint(linterId = ".*remarks.*", objectName = "TEMP_.*")
  * class MySchemaTest { ... }
  * }</pre>
