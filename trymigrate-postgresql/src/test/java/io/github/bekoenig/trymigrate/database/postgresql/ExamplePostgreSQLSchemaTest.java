@@ -50,7 +50,7 @@ public class ExamplePostgreSQLSchemaTest {
 
     @TrymigrateRegisterPlugin
     private final PostgreSQLContainer containerDatabase = new PostgreSQLContainer(
-            DockerImageName.parse("postgres:18.0"));
+            DockerImageName.parse("postgres:18.3"));
 
     @TrymigrateRegisterPlugin
     private final NoopJavaMigration javaMigrations = new NoopJavaMigration("1.0.1");

@@ -26,7 +26,7 @@
 class UserSchemaTest {
 
     @TrymigrateRegisterPlugin
-    static final PostgreSQLContainer<?> db = new PostgreSQLContainer<>("postgres:16");
+    static final PostgreSQLContainer<?> db = new PostgreSQLContainer<>("postgres:18");
 
     @Test
     @TrymigrateWhenTarget("1.1.0")

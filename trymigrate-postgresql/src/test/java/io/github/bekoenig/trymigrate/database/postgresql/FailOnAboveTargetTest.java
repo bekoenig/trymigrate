@@ -32,7 +32,7 @@ public class FailOnAboveTargetTest implements TestInstancePostProcessor {
             .locations("classpath:db/migration/example/postgresql");
 
     @TrymigrateRegisterPlugin
-    private final PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:18.0"));
+    private final PostgreSQLContainer container = new PostgreSQLContainer(DockerImageName.parse("postgres:18.3"));
 
     private static ExtensionContext extensionContext;
 

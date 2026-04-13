@@ -78,7 +78,7 @@ class MySchemaTest {
 
     // 2. Register your database container
     @TrymigrateRegisterPlugin
-    final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+    final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
 
     @Test
     @TrymigrateWhenTarget("1.0") // 3. Set the target version
@@ -111,7 +111,7 @@ class SchemaEvolutionTest {
 
     // 1. Define your container (managed automatically)
     @TrymigrateRegisterPlugin
-    private final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+    private final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:18");
 
     // 2. Optional: Configure Flyway (schemas, locations, etc.)
     @TrymigrateRegisterPlugin
