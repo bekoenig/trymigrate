@@ -1,5 +1,6 @@
-package io.github.bekoenig.trymigrate.core.internal.container;
+package io.github.bekoenig.trymigrate.core.internal.database.container;
 
+import io.github.bekoenig.trymigrate.core.internal.database.container.StaticPortBinding;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;

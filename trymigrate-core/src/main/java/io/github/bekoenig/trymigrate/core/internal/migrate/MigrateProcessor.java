@@ -1,12 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.migrate;
 
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
+import io.github.bekoenig.trymigrate.core.internal.database.DatabaseDecorator;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintProcessor;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.SchemaLinter;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
-import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.MigrationVersion;
@@ -29,7 +29,7 @@ import static org.flywaydb.core.api.MigrationVersion.fromVersion;
 
     public class MigrateProcessor implements ExtensionContext.Store.CloseableResource, AutoCloseable {
 
-    private final TrymigrateDatabase database;
+    private final DatabaseDecorator database;
     private final List<TrymigrateFlywayCustomizer> flywayCustomizers;
     private final List<Callback> callbacks;
     private final List<JavaMigration> javaMigrations;
@@ -41,7 +41,7 @@ import static org.flywaydb.core.api.MigrationVersion.fromVersion;
     private Catalog catalog;
     private MigrationVersion currentTarget;
 
-    public MigrateProcessor(TrymigrateDatabase database,
+    public MigrateProcessor(DatabaseDecorator database,
                             List<TrymigrateFlywayCustomizer> flywayCustomizers, List<Callback> callbacks,
                             List<JavaMigration> javaMigrations, List<TrymigrateDataLoader> dataLoaders,
                             CatalogFactory catalogFactory, LintProcessor lintProcessor) {
@@ -57,9 +57,7 @@ import static org.flywaydb.core.api.MigrationVersion.fromVersion;
     }
 
     private void initialize() {
-        if (Objects.nonNull(database)) {
-            database.prepare();
-        }
+        database.prepare();
 
         Flyway flyway = getConfiguration().load();
         flyway.info();
@@ -71,13 +69,13 @@ import static org.flywaydb.core.api.MigrationVersion.fromVersion;
 
     private FluentConfiguration getConfiguration() {
         FluentConfiguration fluentConfiguration = new FluentConfiguration();
-        if (Objects.nonNull(database)) {
+        flywayCustomizers.forEach(x -> x.accept(fluentConfiguration));
+        if (database.isDefined()) {
             fluentConfiguration.dataSource(
                     database.getJdbcUrl(),
                     database.getUsername(),
                     database.getPassword());
         }
-        flywayCustomizers.forEach(x -> x.accept(fluentConfiguration));
         addCallbacks(fluentConfiguration, callbacks);
         addJavaMigrations(fluentConfiguration, javaMigrations);
         return fluentConfiguration;

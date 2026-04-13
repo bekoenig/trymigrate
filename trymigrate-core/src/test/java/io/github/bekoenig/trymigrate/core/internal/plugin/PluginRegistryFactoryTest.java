@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
-import io.github.bekoenig.trymigrate.core.internal.container.JdbcDatabaseContainerAdapter;
+import io.github.bekoenig.trymigrate.core.internal.database.container.JdbcDatabaseContainerAdapter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase;
@@ -73,6 +73,8 @@ class PluginRegistryFactoryTest {
         PluginRegistry registry = factory.create(testInstance, List.of());
 
         // THEN
+        // Note: We don't check for TrymigrateDatabaseOverride here because PluginRegistryFactory
+        // is just the factory for the PluginProviders. Wrapping happens in PluginRegistry.
         List<TrymigrateDatabase> databases = registry.all(TrymigrateDatabase.class);
         assertThat(databases).hasSize(1);
         assertThat(databases.get(0)).isInstanceOf(JdbcDatabaseContainerAdapter.class);

@@ -2,6 +2,7 @@ package io.github.bekoenig.trymigrate.core.internal.lifecycle;
 
 import io.github.bekoenig.trymigrate.core.internal.StoreSupport;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
+import io.github.bekoenig.trymigrate.core.internal.database.DatabaseDecorator;
 import io.github.bekoenig.trymigrate.core.internal.lint.*;
 import io.github.bekoenig.trymigrate.core.internal.migrate.MigrateProcessor;
 import io.github.bekoenig.trymigrate.core.internal.plugin.PluginDiscovery;
@@ -49,7 +50,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
         );
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
-                pluginRegistry.findOne(TrymigrateDatabase.class).orElse(null),
+                new DatabaseDecorator(pluginRegistry.findOne(TrymigrateDatabase.class).orElse(null)),
                 pluginRegistry.allReservedOrder(TrymigrateFlywayCustomizer.class),
                 pluginRegistry.all(Callback.class),
                 pluginRegistry.all(JavaMigration.class),

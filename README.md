@@ -335,9 +335,21 @@ Database-specific marker interfaces such as `TrymigratePostgreSQLPlugin` or `Try
 
 | JVM Property | Description | Default |
 | :--- | :--- | :--- |
+| `trymigrate.database.lifecycle.enabled` | If false, the database lifecycle (`prepare`/`dispose`) is not managed. | `true` |
+| `trymigrate.database.url` | Override JDBC URL. | - |
+| `trymigrate.database.user` | Override database username. | - |
+| `trymigrate.database.password` | Override database password. | - |
 | `trymigrate.container.db-port` | Pin host port for local debugging (e.g. `5432:5432`). | Random |
 | `trymigrate.lint.report.html.skip-empty` | Only generate HTML reports if lints are found. | `true` |
 | `trymigrate.lint.report.html.basedir` | Root directory for reports. | `target/` |
+
+### DataSource Priority
+
+If multiple sources provide database connection details, the following priority applies (highest to lowest):
+
+1. **JVM Properties:** `trymigrate.database.url`, `trymigrate.database.user`, and `trymigrate.database.password` always take precedence.
+2. **`TrymigrateDatabase` Plugin:** Details provided by a registered plugin (e.g., a Testcontainer or `TrymigrateDatabase.of(...)`).
+3. **`TrymigrateFlywayCustomizer`:** Calls to `configuration.dataSource(...)` within a customizer are overridden if a plugin or JVM properties are defined.
 
 ---
 

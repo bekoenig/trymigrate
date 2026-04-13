@@ -1,4 +1,4 @@
-package io.github.bekoenig.trymigrate.core.internal.container;
+package io.github.bekoenig.trymigrate.core.internal.database.container;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
 

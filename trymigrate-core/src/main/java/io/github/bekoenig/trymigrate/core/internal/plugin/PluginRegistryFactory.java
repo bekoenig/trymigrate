@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
-import io.github.bekoenig.trymigrate.core.internal.container.JdbcDatabaseContainerAdapter;
+import io.github.bekoenig.trymigrate.core.internal.database.container.JdbcDatabaseContainerAdapter;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDatabase;
 import org.junit.platform.commons.support.AnnotationSupport;
