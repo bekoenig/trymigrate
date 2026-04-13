@@ -63,3 +63,39 @@ class UserSchemaTest {
 - **Javadoc:** Mandatory for all public APIs (classes, annotations).
 - **Naming:** Annotations MUST start with `Trymigrate...`.
 - **Database Reuse:** Static containers enable sharing; `@TrymigrateCleanBefore` ensures isolation.
+
+---
+
+## 🚀 AI-Assisted Inner Loop (TDD Workflow)
+
+You can use **trymigrate** in a high-velocity "Inner Loop" where a local database container stays alive, and an AI agent (equipped with a **SchemaCrawler MCP server**) explores the schema to help you write migrations.
+
+### 1. Start a Persistent Sandbox
+Launch your database container manually (or via Docker Compose) to keep it alive between test runs:
+```bash
+docker run -d --name trymigrate-sandbox \
+  -p 5432:5432 \
+  -e POSTGRES_DB=testdb -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=secret \
+  postgres:18
+```
+
+### 2. Configure Your AI Agent (MCP)
+Point your AI's **SchemaCrawler MCP server** to this persistent sandbox. This allows the AI to "see" the tables, constraints, and lints in real-time.
+
+### 3. Run Tests with Overrides
+Use the **trymigrate JVM properties** to connect your JUnit tests to the running sandbox and **disable the lifecycle** (so trymigrate doesn't try to start/stop its own container):
+
+```bash
+mvn test -Dtest=MySchemaTest \
+  -Dtrymigrate.database.lifecycle.enabled=false \
+  -Dtrymigrate.database.url=jdbc:postgresql://localhost:5432/testdb \
+  -Dtrymigrate.database.user=admin \
+  -Dtrymigrate.database.password=secret
+```
+
+### 4. The Loop
+1.  **Code:** You write a failing test (e.g., `@TrymigrateWhenTarget("2.0")`). **Pro-Tip:** Apply `@TrymigrateCleanBefore` to the test method with the **lowest** `@TrymigrateWhenTarget` (e.g., your '1.0' migration). This ensures the persistent sandbox is reset once at the start of your test suite. **Note:** This requires `cleanDisabled(false)` in your `TrymigrateFlywayCustomizer`.
+2.  **Execute:** Run the test with the properties above. Flyway migrates the sandbox.
+3.  **Explore:** Ask the AI: *"Check the current schema in the sandbox. Why did my join fail?"*
+4.  **Fix:** The AI uses the MCP server to inspect the catalog, identifies a missing index or column, and proposes the next `.sql` migration.
+5.  **Repeat:** Save the migration and run the test again.
