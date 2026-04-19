@@ -15,9 +15,10 @@ Keep a database container running (e.g., via Docker Compose) to allow real-time 
   - `-Dtrymigrate.database.password=<password>`
 
 ### 3. The Interactive TDD Cycle
-**Preparation:** Run the test suite once to ensure the sandbox matches the current codebase state.
+**CRITICAL: Mandatory DB Warmup**
+Before starting, run the test suite once. This populates the sandbox with the current data model. **DO NOT** attempt to reverse-engineer the existing `.sql` files manually; always use the MCP tools to explore the actual database state.
 
-1.  **Explore (AI):** Scan `src/test/resources/db/migration` for existing files. Use MCP tools (`mcp_schemacrawler_diagram`, `list`) to understand the current sandbox state.
+1.  **Explore (AI):** Use MCP tools (`mcp_schemacrawler_diagram`, `list`) to understand the current sandbox state.
 2.  **Align (AI/Human):** Discuss the next requirement.
 3.  **Bootstrap (AI):** Create a new `@Test` method. Inject needed parameters: `Catalog` (structure), `DataSource` (data), and `Lints` (quality).
 4.  **Spec (AI):** Write **comprehensive assertions**.
