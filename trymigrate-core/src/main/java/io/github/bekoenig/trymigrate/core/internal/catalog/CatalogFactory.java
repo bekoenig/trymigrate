@@ -8,6 +8,7 @@ import schemacrawler.tools.options.Config;
 import schemacrawler.tools.options.ConfigUtility;
 import schemacrawler.tools.utility.DatabaseConnectorUtility;
 import schemacrawler.tools.utility.SchemaCrawlerUtility;
+import us.fatehi.utility.OptionsBuilder;
 import us.fatehi.utility.datasource.DatabaseConnectionSource;
 import us.fatehi.utility.datasource.DatabaseConnectionSources;
 
