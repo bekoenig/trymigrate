@@ -20,6 +20,15 @@ First off, thank you for considering contributing to **trymigrate**! It's people
 - `trymigrate-<db>`: Database-specific integration modules (Postgres, MySQL, etc.).
 - `internal` package: Please keep internal logic separated from the public API classes.
 
+## 📦 Adding a New Database Module
+
+To add support for a new database (e.g., `trymigrate-foo`):
+1.  **Create the module folder** and add a `pom.xml` inheriting from the parent.
+2.  **Add the JDBC driver** and corresponding **Testcontainers** dependency.
+3.  **Implement a `TrymigratePlugin`** (usually `TrymigrateDatabase`) using SPI if global discovery is desired.
+4.  **Create an Example Test**: See `trymigrate-postgresql` for a reference implementation.
+5.  **Register the SPI**: Add your plugin class to `src/main/resources/META-INF/services/io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin`.
+
 ## 📜 Coding Standards
 
 - **Java 17**: We use modern Java features.
