@@ -23,7 +23,7 @@ public record PluginRegistry(List<PluginProvider> pluginProviders) {
         return stream(clazz).toList();
     }
 
-    public <T> List<T> allReservedOrder(Class<T> clazz) {
+    public <T> List<T> allReversedOrder(Class<T> clazz) {
         List<T> values = new ArrayList<>(all(clazz));
         Collections.reverse(values);
         return values;

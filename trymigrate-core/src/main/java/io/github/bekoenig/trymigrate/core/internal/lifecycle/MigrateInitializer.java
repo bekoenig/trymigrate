@@ -35,14 +35,14 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 discoverPlugins.origin(), discoverPlugins.exclude()));
 
         CatalogFactory catalogFactory = new CatalogFactory(
-                pluginRegistry.allReservedOrder(TrymigrateCatalogCustomizer.class));
+                pluginRegistry.allReversedOrder(TrymigrateCatalogCustomizer.class));
 
         LintSeverity failOn = AnnotationSupport.findAnnotation(o.getClass(),
                 TrymigrateVerifyLints.class).map(TrymigrateVerifyLints::failOn).orElse(null);
 
         LintProcessor lintProcessor = new LintProcessor(
                 excludedLintPatterns(o.getClass()),
-                pluginRegistry.allReservedOrder(TrymigrateLintersConfigurer.class),
+                pluginRegistry.allReversedOrder(TrymigrateLintersConfigurer.class),
                 new LintsHistory(),
                 pluginRegistry.all(TrymigrateLintsReporter.class),
                 buildLintOptions(pluginRegistry.all(TrymigrateLintOptionsCustomizer.class)),
@@ -51,7 +51,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
 
         MigrateProcessor migrateProcessor = new MigrateProcessor(
                 new DatabaseDecorator(pluginRegistry.findOne(TrymigrateDatabase.class).orElse(null)),
-                pluginRegistry.allReservedOrder(TrymigrateFlywayCustomizer.class),
+                pluginRegistry.allReversedOrder(TrymigrateFlywayCustomizer.class),
                 pluginRegistry.all(Callback.class),
                 pluginRegistry.all(JavaMigration.class),
                 pluginRegistry.all(TrymigrateDataLoader.class),

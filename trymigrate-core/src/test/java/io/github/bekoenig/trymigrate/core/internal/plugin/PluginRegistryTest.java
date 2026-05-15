@@ -41,7 +41,7 @@ class PluginRegistryTest {
         PluginRegistry registry = new PluginRegistry(List.of(p1, p2));
 
         // WHEN
-        List<TrymigrateDataLoader> result = registry.allReservedOrder(TrymigrateDataLoader.class);
+        List<TrymigrateDataLoader> result = registry.allReversedOrder(TrymigrateDataLoader.class);
 
         // THEN
         assertThat(result).containsExactly(loader2, loader1);
