@@ -2,17 +2,14 @@ package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import java.util.function.Supplier;
 
-public class PluginProvider implements Comparable<PluginProvider> {
-
-    private final Class<?> type;
-    private final Supplier<Object> factory;
-    private final int rank;
-
-    public PluginProvider(Class<?> type, Supplier<Object> factory, int rank) {
-        this.type = type;
-        this.factory = factory;
-        this.rank = rank;
-    }
+/**
+ * Internal provider for a plugin instance.
+ *
+ * @param type    the specific type of the plugin
+ * @param factory the factory to create the plugin instance
+ * @param rank    the rank for prioritization (higher rank = higher priority)
+ */
+public record PluginProvider(Class<?> type, Supplier<Object> factory, int rank) implements Comparable<PluginProvider> {
 
     @Override
     public int compareTo(PluginProvider other) {
