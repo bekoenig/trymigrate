@@ -88,4 +88,12 @@ class DataLoaderTest {
                 .hasMessageContaining("Data was not be proceeded because schema is above version 1.0");
     }
 
+    @Test
+    @DisplayName("GIVEN data resources without target version WHEN creating DataLoader THEN throw exception")
+    void shouldFailOnMissingTargetVersion() {
+        assertThatThrownBy(() -> new DataLoader(database, List.of(customLoader), null, List.of("data.sql")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("target migration version");
+    }
+
 }

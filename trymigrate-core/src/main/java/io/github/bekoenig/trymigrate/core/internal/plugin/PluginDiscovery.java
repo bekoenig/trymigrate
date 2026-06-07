@@ -35,7 +35,7 @@ public class PluginDiscovery {
 
     protected static boolean hasCommonSuperinterface(Class<?> pluginType, Class<?> interfaceType) {
         // return true if any interface of the plugin type is a parent or a child of the specified interface type
-        return Stream.of(pluginType.getInterfaces())
+        return allInterfaces(pluginType)
                 .anyMatch(p -> p.isAssignableFrom(interfaceType) || interfaceType.isAssignableFrom(p));
     }
 
@@ -47,12 +47,27 @@ public class PluginDiscovery {
 
     @SuppressWarnings("unchecked")
     protected static int calculateRank(Class<? extends TrymigratePlugin> plugin) {
-        int incrementer = plugin.isInterface() ? 1 : 0;
-        return Stream.of(plugin.getInterfaces())
+        Stream<Class<?>> interfaces = plugin.isInterface()
+                ? Stream.of(plugin.getInterfaces())
+                : allInterfaces(plugin);
+
+        return interfaces
                 .filter(TrymigratePlugin.class::isAssignableFrom)
                 .map(i -> (Class<? extends TrymigratePlugin>) i)
-                .mapToInt(i -> incrementer + calculateRank(i))
+                .mapToInt(i -> (plugin.isInterface() ? 1 : 0) + calculateRank(i))
                 .max().orElse(0);
+    }
+
+    private static Stream<Class<?>> allInterfaces(Class<?> type) {
+        if (type == null) {
+            return Stream.empty();
+        }
+
+        return Stream.concat(
+                        Stream.of(type.getInterfaces())
+                                .flatMap(i -> Stream.concat(Stream.of(i), allInterfaces(i))),
+                        allInterfaces(type.getSuperclass()))
+                .distinct();
     }
 
 }

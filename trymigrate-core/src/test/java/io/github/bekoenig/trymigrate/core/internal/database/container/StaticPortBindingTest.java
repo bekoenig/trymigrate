@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.database.container;
 
-import io.github.bekoenig.trymigrate.core.internal.database.container.StaticPortBinding;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junitpioneer.jupiter.ClearSystemProperty;
@@ -71,6 +70,24 @@ class StaticPortBindingTest {
     }
 
     @Test
+    @DisplayName("GIVEN an empty port mapping WHEN accepting container THEN throw IllegalArgumentException")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "")
+    void accept_failOnEmptyMapping() {
+        JdbcDatabaseContainer<?> container = mock();
+
+        assertThatThrownBy(() -> customizer.accept(container)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("GIVEN an incomplete combined mapping WHEN accepting container THEN throw IllegalArgumentException")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = ":")
+    void accept_failOnIncompleteCombinedMapping() {
+        JdbcDatabaseContainer<?> container = mock();
+
+        assertThatThrownBy(() -> customizer.accept(container)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("GIVEN a host port property but no container port WHEN accepting container THEN throw IllegalStateException")
     @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "40000")
     void accept_failOnNonExposedPort() {
@@ -92,5 +109,47 @@ class StaticPortBindingTest {
 
         // WHEN
         assertThatThrownBy(() -> customizer.accept(container)).isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("GIVEN a port with leading/trailing whitespace WHEN accepting container THEN parse correctly after trim")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "  20000  ")
+    void accept_portWithWhitespace() {
+        // GIVEN
+        JdbcDatabaseContainer<?> container = mock();
+        when(container.getExposedPorts()).thenReturn(List.of(40000));
+
+        // WHEN
+        customizer.accept(container);
+
+        // THEN
+        verify(container).setPortBindings(List.of("20000:40000"));
+    }
+
+    @Test
+    @DisplayName("GIVEN a negative host port WHEN accepting container THEN throw IllegalArgumentException")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "-20000")
+    void accept_failOnNegativeHostPort() {
+        JdbcDatabaseContainer<?> container = mock();
+
+        assertThatThrownBy(() -> customizer.accept(container)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("GIVEN a negative container port WHEN accepting container THEN throw IllegalArgumentException")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "20000:-40000")
+    void accept_failOnNegativeContainerPort() {
+        JdbcDatabaseContainer<?> container = mock();
+
+        assertThatThrownBy(() -> customizer.accept(container)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("GIVEN a host port with invalid format suffix WHEN accepting container THEN throw IllegalArgumentException")
+    @SetSystemProperty(key = StaticPortBinding.PROPERTY_NAME, value = "20000:40000:50000")
+    void accept_failOnTooManyParts() {
+        JdbcDatabaseContainer<?> container = mock();
+
+        assertThatThrownBy(() -> customizer.accept(container)).isInstanceOf(IllegalArgumentException.class);
     }
 }

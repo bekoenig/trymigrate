@@ -13,19 +13,27 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.platform.commons.support.AnnotationSupport;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MigrateExecutor implements BeforeEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext extensionContext) {
+        Optional<TrymigrateGivenData> givenData = AnnotationSupport.findAnnotation(
+                extensionContext.getRequiredTestMethod(), TrymigrateGivenData.class);
+
         MigrationVersion target = AnnotationSupport.findAnnotation(
                         extensionContext.getRequiredTestMethod(), TrymigrateWhenTarget.class)
                 .map(TrymigrateWhenTarget::value)
                 .map(MigrationVersion::fromVersion)
                 .orElse(null);
 
-        List<String> resources = AnnotationSupport.findAnnotation(
-                        extensionContext.getRequiredTestMethod(), TrymigrateGivenData.class)
+        if (givenData.isPresent() && target == null) {
+            throw new IllegalArgumentException("@TrymigrateGivenData requires @TrymigrateWhenTarget on method "
+                    + extensionContext.getRequiredTestMethod().getName());
+        }
+
+        List<String> resources = givenData
                 .map(TrymigrateGivenData::value)
                 .map(List::of)
                 .orElse(List.of());

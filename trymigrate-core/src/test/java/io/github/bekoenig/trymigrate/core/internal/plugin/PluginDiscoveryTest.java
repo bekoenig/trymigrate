@@ -29,6 +29,12 @@ class PluginDiscoveryTest {
     static class P2Impl implements P2 {
     }
 
+    static class P2BaseImpl implements P2 {
+    }
+
+    static class P2InheritedImpl extends P2BaseImpl {
+    }
+
     static class P3Impl implements P3 {
     }
 
@@ -43,7 +49,7 @@ class PluginDiscoveryTest {
         assertThat(PluginDiscovery.hasCommonSuperinterface(P2Impl.class, P3.class)).isTrue();
         assertThat(PluginDiscovery.hasCommonSuperinterface(P1Impl.class, P3.class)).isTrue();
         assertThat(PluginDiscovery.hasCommonSuperinterface(P1Impl.class, O1.class)).isTrue();
-        assertThat(PluginDiscovery.hasCommonSuperinterface(P2Impl.class, O1.class)).isFalse();
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2Impl.class, O1.class)).isTrue();
 
         assertThat(PluginDiscovery.hasCommonSuperinterface(P1Impl.class, TrymigratePlugin.class)).isTrue();
         assertThat(PluginDiscovery.hasCommonSuperinterface(P2Impl.class, TrymigratePlugin.class)).isTrue();
@@ -51,7 +57,10 @@ class PluginDiscoveryTest {
         assertThat(PluginDiscovery.hasCommonSuperinterface(O1Impl.class, TrymigratePlugin.class)).isTrue();
         assertThat(PluginDiscovery.hasCommonSuperinterface(P3Impl.class, P2.class)).isTrue();
         assertThat(PluginDiscovery.hasCommonSuperinterface(O1Impl.class, P1.class)).isTrue();
-        assertThat(PluginDiscovery.hasCommonSuperinterface(O1Impl.class, P2.class)).isFalse();
+        assertThat(PluginDiscovery.hasCommonSuperinterface(O1Impl.class, P2.class)).isTrue();
+
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2InheritedImpl.class, P1.class)).isTrue();
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2InheritedImpl.class, O1.class)).isTrue();
     }
 
     @SuppressWarnings("unchecked")
@@ -85,6 +94,7 @@ class PluginDiscoveryTest {
         class P0Impl implements TrymigratePlugin {
         }
         assertThat(PluginDiscovery.calculateRank(P0Impl.class)).isEqualTo(0);
+        assertThat(PluginDiscovery.calculateRank(P2InheritedImpl.class)).isEqualTo(2);
 
         interface P12 extends P1, P2 {
         }
@@ -93,5 +103,16 @@ class PluginDiscoveryTest {
         interface P02 extends TrymigratePlugin, P2 {
         }
         assertThat(PluginDiscovery.calculateRank(P02.class)).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("GIVEN a plugin implementing an interface via superclass chain WHEN checking THEN correctly resolve the interface hierarchy")
+    void hasCommonSuperinterfaceViaSuperclassChain() {
+        // Verify P2InheritedImpl (extends P2BaseImpl which implements P2)
+        // can be discovered for P1, P2, P3 hierarchy
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2InheritedImpl.class, P1.class)).isTrue();
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2InheritedImpl.class, P2.class)).isTrue();
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2InheritedImpl.class, P3.class)).isTrue();
+        assertThat(PluginDiscovery.hasCommonSuperinterface(P2InheritedImpl.class, TrymigratePlugin.class)).isTrue();
     }
 }

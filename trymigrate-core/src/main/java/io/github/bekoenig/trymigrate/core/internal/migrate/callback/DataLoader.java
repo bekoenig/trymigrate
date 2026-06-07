@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class DataLoader implements Callback {
@@ -25,6 +26,10 @@ public class DataLoader implements Callback {
 
     public DataLoader(TrymigrateDatabase database, List<TrymigrateDataLoader> dataLoaders, MigrationVersion target,
                       List<String> resources) {
+        if (!resources.isEmpty() && Objects.isNull(target)) {
+            throw new IllegalArgumentException("Data resources require a target migration version.");
+        }
+
         this.database = database;
         this.dataLoaders = dataLoaders;
         this.target = target;

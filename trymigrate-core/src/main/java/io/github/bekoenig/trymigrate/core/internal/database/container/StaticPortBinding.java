@@ -36,7 +36,9 @@ public class StaticPortBinding implements Consumer<JdbcDatabaseContainer<?>> {
             return;
         }
 
-        if (!dbPort.matches("\\d*(:\\d*)?")) {
+        dbPort = dbPort.trim();
+
+        if (!dbPort.matches("\\d+(?::\\d+)?")) {
             throw new IllegalArgumentException("Invalid port mapping " + dbPort +
                     ". Format is [host_port] or [host_port]:[container_port].");
         }
@@ -49,12 +51,20 @@ public class StaticPortBinding implements Consumer<JdbcDatabaseContainer<?>> {
     }
 
     private int getHostPort(String[] ports) {
-        return Integer.parseInt(ports[0]);
+        try {
+            return Integer.parseInt(ports[0]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Host port must be a valid integer, got: " + ports[0], e);
+        }
     }
 
     private int getContainerPort(JdbcDatabaseContainer<?> jdbcDatabaseContainer, String[] ports) {
         if (ports.length > 1) {
-            return Integer.parseInt(ports[1]);
+            try {
+                return Integer.parseInt(ports[1]);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Container port must be a valid integer, got: " + ports[1], e);
+            }
         }
 
         List<Integer> exposedPorts = jdbcDatabaseContainer.getExposedPorts();
