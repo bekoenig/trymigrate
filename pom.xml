@@ -62,7 +62,7 @@
         <flyway.version>12.8.1</flyway.version>
         <schemacrawler.version>17.11.4</schemacrawler.version>
 
-        <db2.version>12.1.4.0</db2.version>
+        <db2.version>12.1.5.0</db2.version>
         <postgresql.version>42.7.11</postgresql.version>
         <mysql.version>9.7.0</mysql.version>
         <mariadb.version>3.5.9</mariadb.version>
