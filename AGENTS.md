@@ -140,3 +140,150 @@ Use these terms consistently in code, docs, and commit messages.
 | **Global Plugin (SPI)** | Plugin discovered via ServiceLoader from `META-INF/services/...TrymigratePlugin`. |
 | **Database Lifecycle** | The `prepare`/`dispose` cycle for the test database, managed automatically for Testcontainers. |
 | **Customizer** | A functional interface plugin that modifies configuration before execution. |
+
+---
+
+## 🔄 Agent Harness: Feedback Loop
+
+The harness must allow agents to verify their own work immediately after making changes, with structured retry on failure.
+
+### Verification Commands by Task Type
+
+| Task Type | Verification Command | Fail-fast? |
+|-----------|---------------------|------------|
+| Any code change | `mvn compile -pl <module>` | Yes |
+| New lint rule | `mvn test -pl trymigrate-core` | No |
+| New DB module | `mvn test -pl trymigrate-<db>` | No |
+| POM changes | `mvn validate` | Yes |
+| Public API change | `mvn javadoc:javadoc -pl <module>` | No |
+
+### Retry Protocol
+
+1. Agent completes a task and signals "done".
+2. Harness runs the verification command(s) for the task type.
+3. On failure:
+   - Feed **exit code**, **stdout** (last 50 lines), and **stderr** (last 50 lines) back to the agent.
+   - Increment retry counter.
+   - Agent must fix the issue and signal "done" again.
+4. **Retry budget**: 3 attempts. After exhaustion, mark the task as failed and report to the user.
+5. On success: mark task as verified and proceed.
+
+### Graduated Verification Order
+
+```
+1. mvn compile -pl <module>        → fast, catches syntax/type errors
+2. mvn test-compile -pl <module>   → catches test compilation issues
+3. mvn test -pl <module>           → full correctness check
+```
+
+Abort at the first failing stage — do not run integration tests if compilation fails.
+
+---
+
+## 🧩 Agent Harness: Task Decomposition
+
+Agents must not rely on ad-hoc planning. The harness provides structured task graphs for common workflows.
+
+### Task Templates
+
+#### Template: `add-db-module`
+```yaml
+name: add-db-module
+params: [db_name]
+steps:
+  - id: create-submodule
+    action: "Create trymigrate-{db_name} module with POM inheriting from parent"
+    verify: "mvn validate -pl trymigrate-{db_name}"
+  - id: implement-marker
+    depends_on: [create-submodule]
+    action: "Create Trymigrate{Db}Plugin marker interface extending TrymigratePlugin"
+    verify: "mvn compile -pl trymigrate-{db_name}"
+  - id: implement-database
+    depends_on: [implement-marker]
+    action: "Implement TrymigrateDatabase with Testcontainers lifecycle"
+    verify: "mvn compile -pl trymigrate-{db_name}"
+  - id: register-spi
+    depends_on: [implement-database]
+    action: "Add META-INF/services entry for the plugin"
+    verify: "mvn compile -pl trymigrate-{db_name}"
+  - id: write-example-test
+    depends_on: [register-spi]
+    action: "Create Example{Db}SchemaTest.java with migration + lint verification"
+    verify: "mvn test -pl trymigrate-{db_name}"
+```
+
+#### Template: `add-lint-rule`
+```yaml
+name: add-lint-rule
+params: [rule_name, severity]
+steps:
+  - id: implement-linter
+    action: "Create LinterProvider implementation for {rule_name}"
+    verify: "mvn compile -pl trymigrate-core"
+  - id: register-linter
+    depends_on: [implement-linter]
+    action: "Register in default linter configuration"
+    verify: "mvn compile -pl trymigrate-core"
+  - id: write-test
+    depends_on: [register-linter]
+    action: "Add test case verifying the lint triggers correctly"
+    verify: "mvn test -pl trymigrate-core"
+  - id: document
+    depends_on: [write-test]
+    action: "Add Javadoc and update glossary if needed"
+    verify: "mvn javadoc:javadoc -pl trymigrate-core"
+```
+
+### Decomposition Rules
+
+- **Checkpoints**: After each step verifies successfully, the harness persists the state. On later failure, resume from the last passing checkpoint.
+- **Parallelism**: Steps without `depends_on` relationships may execute concurrently.
+- **Scope locking**: Once a template is instantiated, new discovered work becomes a separate task — never expand a running step's scope.
+- **Max steps per task**: 8. If decomposition exceeds this, split into multiple tasks.
+
+---
+
+## 🛡️ Agent Harness: Guard Rails & Assertion Hooks
+
+Structural enforcement of project conventions. These run automatically before any agent output is accepted.
+
+### File Permission Model
+
+| Path Pattern | Permission | Notes |
+|-------------|-----------|-------|
+| `pom.xml` (any module) | `require-approval` | Version/dependency changes need human review |
+| `META-INF/services/*` | `write` | But must match an existing plugin interface |
+| `src/main/**/internal/**` | `write` | Internal implementation, no API constraints |
+| `src/main/**` (non-internal) | `guarded` | Public API — triggers assertion hooks below |
+| `.github/**` | `read-only` | CI config is off-limits |
+
+### Assertion Hooks
+
+These checks run on every file the agent modifies, **before** verification commands:
+
+#### 1. Public API Assertions (triggered on `guarded` paths)
+- [ ] New public classes/interfaces have `@since` Javadoc tag
+- [ ] New public methods have Javadoc with `@param` and `@return`
+- [ ] No implementation details (private helpers, utility methods) in public packages
+
+#### 2. SPI Consistency
+- [ ] If a class implements `TrymigratePlugin`, a corresponding `META-INF/services` entry exists
+- [ ] Only one `TrymigrateDatabase` implementation per module
+
+#### 3. Naming Conventions
+- [ ] Test classes match `*Test.java` or `Example*Test.java`
+- [ ] Plugin classes match `Trymigrate*Plugin.java` or `*Customizer.java`
+- [ ] Database modules named `trymigrate-<lowercase-db>`
+
+#### 4. Structural Limits
+- [ ] **Max files modified per task**: 12 — exceeding this suggests wrong approach
+- [ ] **Max lines added per file**: 300 — large additions likely need decomposition
+- [ ] **No deletions of public API** without explicit user approval
+
+### Hook Failure Protocol
+
+When an assertion hook fails:
+1. Block the commit/output.
+2. Report which assertion(s) failed with specific file and line references.
+3. Agent must fix violations before re-attempting.
+4. Hook failures do **not** consume the retry budget (they are pre-verification).
