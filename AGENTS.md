@@ -78,6 +78,59 @@ Always compile and test using the system `mvn` command directly:
 
 ---
 
+## 📋 Git & PR Conventions
+
+- **Branch naming**: `feat/`, `fix/`, `docs/`, `refactor/` prefixes.
+- **Commit messages**: Conventional Commits format — `<type>(<scope>): <summary>` (e.g., `feat(core): add new lint rule`).
+- **CI**: PRs to `main` run `mvn clean verify` on JDK 17 (Temurin). Pushes to `main` deploy snapshots.
+
+---
+
 ## ⚠️ Troubleshooting Core Tests
 - **Cached Test Resources**: Maven can keep stale Flyway migration files or test classes in the `target/` directories. Always run `mvn clean` if migrations are behaving unexpectedly.
 - **Classpath Replacer**: In `trymigrate-core`, some tests verify plugin discovery by dynamically modifying classpaths. Ensure the `classpath-replacer` test dependency is not broken during build upgrades.
+
+---
+
+## 📖 Glossary (Ubiquitous Language)
+
+Use these terms consistently in code, docs, and commit messages.
+
+### Annotations
+| Term | Meaning |
+|------|---------|
+| `@Trymigrate` | Class-level annotation activating the JUnit 5 extension for migration testing. |
+| `@TrymigrateWhenTarget` | Sets the Flyway migration version a test method migrates to (e.g., `"1.0"`, `"latest"`). |
+| `@TrymigrateGivenData` | Seeds SQL data or loads a classpath resource before the target migration executes. |
+| `@TrymigrateCleanBefore` | Triggers `flyway clean` before the test for a fresh database state. |
+| `@TrymigrateVerifyLints` | Configures the lint quality gate severity threshold (`low`, `medium`, `high`, `critical`). |
+| `@TrymigrateExcludeLint` | Globally drops specific linters from reports and quality gate. |
+| `@TrymigrateSuppressLint` | Locally allows specific lints for one version (visible in reports, ignored by quality gate). |
+| `@TrymigrateRegisterPlugin` | Field-level annotation registering a local plugin in the test class. |
+| `@TrymigrateDiscoverPlugins` | Controls SPI plugin discovery via `origin` (marker interface filter) and `exclude`. |
+
+### Plugin Interfaces
+| Term | Meaning |
+|------|---------|
+| `TrymigratePlugin` | Root SPI interface for Java ServiceLoader discovery. |
+| `TrymigrateDatabase` | Provides database connection and lifecycle (`prepare`/`dispose`). Only one active per test. |
+| `TrymigrateFlywayCustomizer` | Configures Flyway options (schemas, locations, placeholders, etc.). |
+| `TrymigrateCatalogCustomizer` | Customizes SchemaCrawler crawl scope via `LimitOptionsBuilder`. |
+| `TrymigrateLintersConfigurer` | Configures linter rules: severity, inclusion patterns, custom `LinterProvider` instances. |
+| `TrymigrateLintOptionsCustomizer` | Customizes SchemaCrawler text output options. |
+| `TrymigrateDataLoader` | Custom data loading (CSV, JSON, bulk). Implements `supports()` and `load()`. |
+| `TrymigrateLintsReporter` | Sends lint results to external systems (files, Slack, Jira, etc.). |
+
+### Domain Concepts
+| Term | Meaning |
+|------|---------|
+| **Catalog** | SchemaCrawler `Catalog` object representing the full crawled database structure at the current migration state. |
+| **Lints** | Collection of schema quality violations detected by linter rules at the current migration step. |
+| **Quality Gate** | Automated mechanism that fails a test if new lints exceed the configured severity threshold. |
+| **Verification Point** | A test method targeting a migration version. The quality gate reports only *new* lints since the previous verification point (via smart diffing). |
+| **Smart Diffing** | The mechanism that compares lints between consecutive verification points, so only *newly introduced* violations trigger the quality gate — pre-existing lints are ignored. |
+| **Intermediate Reporting** | Even when jumping versions, lint reports are generated for every intermediate migration in `target/trymigrate-lint-reports/`. |
+| **Local Plugin** | Plugin registered via `@TrymigrateRegisterPlugin` on a test class field. Highest priority. |
+| **Global Plugin (SPI)** | Plugin discovered via ServiceLoader from `META-INF/services/...TrymigratePlugin`. |
+| **Database Lifecycle** | The `prepare`/`dispose` cycle for the test database, managed automatically for Testcontainers. |
+| **Customizer** | A functional interface plugin that modifies configuration before execution. |
