@@ -90,9 +90,6 @@ class PackageStructureTest {
     /** Internal: SQL/resource data loading. */
     static final String PKG_INTERNAL_DATA = ROOT + ".internal.data";
 
-    /** Internal: near-zero-downtime compatibility contracts. */
-    static final String PKG_INTERNAL_COMPATIBILITY = ROOT + ".internal.compatibility";
-
     /** Internal: lint engine, linter config, and reporters. */
     static final String PKG_INTERNAL_LINT = ROOT + ".internal.lint..";
 
@@ -182,16 +179,6 @@ class PackageStructureTest {
     // ── Internal engine dependency-direction rules ────────────────────────────
 
     @Test
-    @DisplayName("GIVEN [internal-compatibility] WHEN checking dependencies THEN it must not depend on other internal packages")
-    void internalCompatibilityMustBeIndependent() {
-        ArchRule rule = ArchRuleDefinition
-                .noClasses().that().resideInAPackage(PKG_INTERNAL_COMPATIBILITY)
-                .should().dependOnClassesThat().resideInAPackage(PKG_INTERNAL + "..")
-                .as("[internal-compatibility] must be self-contained and not depend on other internal packages");
-        rule.check(classes);
-    }
-
-    @Test
     @DisplayName("GIVEN [internal-catalog] WHEN checking dependencies THEN it must not depend on other internal packages")
     void internalCatalogMustNotDependOnOtherInternalPackages() {
         ArchRule rule = ArchRuleDefinition
@@ -225,7 +212,6 @@ class PackageStructureTest {
                         PKG_INTERNAL_DATABASE,
                         PKG_INTERNAL_CATALOG,
                         PKG_INTERNAL_DATA,
-                        PKG_INTERNAL_COMPATIBILITY,
                         PKG_INTERNAL_CALLBACK,
                         PKG_INTERNAL_MIGRATE,
                         PKG_INTERNAL_LIFECYCLE,
@@ -247,7 +233,6 @@ class PackageStructureTest {
                         PKG_INTERNAL_PLUGIN,
                         PKG_INTERNAL_CATALOG,
                         PKG_INTERNAL_DATA,
-                        PKG_INTERNAL_COMPATIBILITY,
                         PKG_INTERNAL_LINT,
                         PKG_INTERNAL_CALLBACK,
                         PKG_INTERNAL_MIGRATE,
@@ -290,7 +275,6 @@ class PackageStructureTest {
                         PKG_INTERNAL,
                         PKG_INTERNAL_CATALOG,
                         PKG_INTERNAL_DATA,
-                        PKG_INTERNAL_COMPATIBILITY,
                         PKG_INTERNAL_LINT,
                         PKG_INTERNAL_CALLBACK,
                         PKG_INTERNAL_MIGRATE,
@@ -326,7 +310,6 @@ class PackageStructureTest {
                         PKG_INTERNAL_DATABASE,
                         PKG_INTERNAL_CATALOG,
                         PKG_INTERNAL_DATA,
-                        PKG_INTERNAL_COMPATIBILITY,
                         PKG_INTERNAL_LINT,
                         PKG_INTERNAL_CALLBACK,
                         PKG_INTERNAL_LIFECYCLE)
