@@ -1,8 +1,9 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
+import io.github.bekoenig.trymigrate.core.TrymigrateCatalogAttributes;
+import io.github.bekoenig.trymigrate.core.internal.OutputPathResolver;
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
-import org.flywaydb.core.api.MigrationVersion;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.IdentifiersBuilder;
 import schemacrawler.tools.command.lint.options.LintOptions;
@@ -12,25 +13,26 @@ import schemacrawler.tools.lint.formatter.LintReportTextFormatter;
 import schemacrawler.tools.lint.formatter.LintReportTextGenerator;
 import schemacrawler.tools.options.OutputOptionsBuilder;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
 
 public class LintsHtmlReporter implements TrymigrateLintsReporter, TrymigratePlugin {
 
     public static final String PROPERTY_NAME_SKIP_EMPTY = "trymigrate.lint.report.html.skip-empty";
     public static final String PROPERTY_NAME = "trymigrate.lint.report.html.basedir";
 
-    public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion,
-                       LintOptions lintOptions) {
+    private final OutputPathResolver pathResolver = new OutputPathResolver(PROPERTY_NAME, "trymigrate-lint-reports");
+
+    @Override
+    public void report(Catalog catalog, Lints lints, LintOptions lintOptions) {
         if (lints.isEmpty() && skipEmpty()) {
             return;
         }
 
-        Path outputFile = resolve(schema, migrationVersion);
+        String defaultSchema = catalog.getAttribute(TrymigrateCatalogAttributes.DEFAULT_SCHEMA);
+        String migrationVersion = catalog.getAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION);
+
+        Path outputFile = resolve(defaultSchema, migrationVersion);
 
         LintReportTextFormatter lintReportTextFormatter = new LintReportTextFormatter(
                 lintOptions,
@@ -51,39 +53,12 @@ public class LintsHtmlReporter implements TrymigrateLintsReporter, TrymigratePlu
         return Boolean.parseBoolean(System.getProperty(PROPERTY_NAME_SKIP_EMPTY, Boolean.TRUE.toString()));
     }
 
-    protected Path resolve(String schema, MigrationVersion migrationVersion) {
-        Path reportFolder = getBaseDir()
-                .resolve("trymigrate-lint-reports")
-                .resolve(Objects.requireNonNullElse(schema, "schema-undefined"));
-
-        try {
-            Files.createDirectories(reportFolder);
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to create folder", e);
-        }
-
-        return reportFolder.resolve(getReportFileName(migrationVersion));
+    protected Path resolve(String schema, String migrationVersion) {
+        return pathResolver.resolve(schema, getReportFileName(migrationVersion));
     }
 
-    private Path getBaseDir() {
-        String property = System.getProperty(PROPERTY_NAME);
-        if (property != null) {
-            return Path.of(property);
-        }
-        return getTargetFolder();
-    }
-
-    private Path getTargetFolder() {
-        try {
-            // target folder is parent of system resource folder
-            return Path.of(Objects.requireNonNull(ClassLoader.getSystemResource("./")).toURI()).getParent();
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException("Failed to get root uri for system resources of class loader", e);
-        }
-    }
-
-    private String getReportFileName(MigrationVersion migrationVersion) {
-        return migrationVersion.getVersion().replaceAll("\\.", "_") + ".html";
+    private String getReportFileName(String migrationVersion) {
+        return migrationVersion.replaceAll("\\.", "_") + ".html";
     }
 
 }

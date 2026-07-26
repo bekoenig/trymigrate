@@ -1,6 +1,5 @@
 package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
-import org.flywaydb.core.api.MigrationVersion;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -19,7 +18,7 @@ class LintsHtmlReporterTest {
     void resolve_defaultBaseDir() {
         // GIVEN
         String schema = "MY_SCHEMA";
-        MigrationVersion migrationVersion = MigrationVersion.fromVersion("1.0");
+        String migrationVersion = "1.0";
 
         // WHEN
         Path path = resolver.resolve(schema, migrationVersion);
@@ -36,7 +35,7 @@ class LintsHtmlReporterTest {
 
         // GIVEN
         String schema = "MY_SCHEMA";
-        MigrationVersion migrationVersion = MigrationVersion.fromVersion("1.0");
+        String migrationVersion = "1.0";
 
         // WHEN
         Path path = resolver.resolve(schema, migrationVersion);

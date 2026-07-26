@@ -38,6 +38,14 @@
             <groupId>us.fatehi</groupId>
             <artifactId>schemacrawler-text</artifactId>
         </dependency>
+        <dependency>
+            <groupId>us.fatehi</groupId>
+            <artifactId>schemacrawler-scribe</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
 
         <!-- optional -->
         <dependency>

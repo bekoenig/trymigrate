@@ -2,7 +2,6 @@ package io.github.bekoenig.trymigrate.core.internal.lint.report;
 
 import io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
-import org.flywaydb.core.api.MigrationVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import schemacrawler.schema.Catalog;
@@ -20,8 +19,8 @@ public class LintsLogReporter implements TrymigrateLintsReporter, TrymigratePlug
 
     private final Logger logger = LoggerFactory.getLogger(LintsLogReporter.class);
 
-    public void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion,
-                       LintOptions lintOptions) {
+    @Override
+    public void report(Catalog catalog, Lints lints, LintOptions lintOptions) {
         logger.atInfo().setMessage(() -> createTextReport(catalog, lints, lintOptions)).log();
     }
 

@@ -61,7 +61,8 @@
         <assertj-schemacrawler.version>2.3.0</assertj-schemacrawler.version>
 
         <flyway.version>12.11.0</flyway.version>
-        <schemacrawler.version>17.11.4</schemacrawler.version>
+        <schemacrawler.version>17.12.2</schemacrawler.version>
+        <freemarker.version>2.3.34</freemarker.version>
 
         <db2.version>12.1.5.0</db2.version>
         <postgresql.version>42.7.13</postgresql.version>
@@ -160,6 +161,13 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-database-db2</artifactId>
                 <version>${flyway.version}</version>
+            </dependency>
+
+            <!-- freemarker (required by schemacrawler-scribe) -->
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version>${freemarker.version}</version>
             </dependency>
 
             <!-- drivers -->

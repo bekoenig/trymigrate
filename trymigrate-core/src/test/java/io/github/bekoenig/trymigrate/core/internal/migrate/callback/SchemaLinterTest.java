@@ -70,7 +70,7 @@ class SchemaLinterTest {
 
         // THEN
         verify(catalogCache).accept(catalog);
-        verify(lintProcessor).lint(eq(connection), any(), eq(catalog), eq(version), any(RestrictedPattern.class));
+        verify(lintProcessor).lint(eq(connection), eq(catalog), any(RestrictedPattern.class));
     }
 
 }

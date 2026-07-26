@@ -6,6 +6,7 @@ import io.github.bekoenig.trymigrate.core.internal.lint.LintPatterns;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintProcessor;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.DataLoader;
 import io.github.bekoenig.trymigrate.core.internal.migrate.callback.SchemaLinter;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogExporter;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateDataLoader;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlywayCustomizer;
 import org.flywaydb.core.Flyway;
@@ -27,13 +28,14 @@ import static io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateFlyw
 import static org.flywaydb.core.api.MigrationVersion.EMPTY;
 import static org.flywaydb.core.api.MigrationVersion.fromVersion;
 
-    public class MigrateProcessor implements ExtensionContext.Store.CloseableResource, AutoCloseable {
+public class MigrateProcessor implements ExtensionContext.Store.CloseableResource, AutoCloseable {
 
     private final DatabaseDecorator database;
     private final List<TrymigrateFlywayCustomizer> flywayCustomizers;
     private final List<Callback> callbacks;
     private final List<JavaMigration> javaMigrations;
     private final List<TrymigrateDataLoader> dataLoaders;
+    private final List<TrymigrateCatalogExporter> catalogExporters;
     private final CatalogFactory catalogFactory;
     private final LintProcessor lintProcessor;
 
@@ -44,12 +46,14 @@ import static org.flywaydb.core.api.MigrationVersion.fromVersion;
     public MigrateProcessor(DatabaseDecorator database,
                             List<TrymigrateFlywayCustomizer> flywayCustomizers, List<Callback> callbacks,
                             List<JavaMigration> javaMigrations, List<TrymigrateDataLoader> dataLoaders,
+                            List<TrymigrateCatalogExporter> catalogExporters,
                             CatalogFactory catalogFactory, LintProcessor lintProcessor) {
         this.database = database;
         this.flywayCustomizers = flywayCustomizers;
         this.callbacks = callbacks;
         this.javaMigrations = javaMigrations;
         this.dataLoaders = dataLoaders;
+        this.catalogExporters = catalogExporters;
         this.catalogFactory = catalogFactory;
         this.lintProcessor = lintProcessor;
 
@@ -134,6 +138,10 @@ import static org.flywaydb.core.api.MigrationVersion.fromVersion;
     }
 
     public void close() {
+        if (catalog != null) {
+            catalogExporters.forEach(exporter -> exporter.export(catalog));
+        }
+
         if (Objects.nonNull(database)) {
             database.dispose();
         }

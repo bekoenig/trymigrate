@@ -1,10 +1,12 @@
 package io.github.bekoenig.trymigrate.core.internal.plugin;
 
 import cr.Classpath;
+import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateCatalogExporter;
 import org.flywaydb.core.api.migration.JavaMigration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
+import schemacrawler.schema.Catalog;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,6 +17,19 @@ class PluginTypesValidatorTest {
     void isSupportedType_trueOnSubclass() {
         // GIVEN
         Class<?> clazz = MyJavaMigration.class;
+
+        // WHEN
+        boolean actual = PluginTypesValidator.isSupportedType(clazz);
+
+        // THEN
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("GIVEN TrymigrateCatalogExporter implementation WHEN checked THEN return true")
+    void isSupportedType_trueOnCatalogExporter() {
+        // GIVEN
+        Class<?> clazz = MyCatalogExporter.class;
 
         // WHEN
         boolean actual = PluginTypesValidator.isSupportedType(clazz);
@@ -51,6 +66,13 @@ class PluginTypesValidatorTest {
     }
 
     abstract static class MyJavaMigration implements JavaMigration {
+    }
+
+    static class MyCatalogExporter implements TrymigrateCatalogExporter {
+        @Override
+        public void export(Catalog catalog) {
+            // Test implementation
+        }
     }
 
 }

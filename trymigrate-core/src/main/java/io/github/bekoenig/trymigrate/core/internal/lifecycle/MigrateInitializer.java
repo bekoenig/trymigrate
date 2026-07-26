@@ -55,6 +55,7 @@ public class MigrateInitializer implements TestInstancePostProcessor {
                 pluginRegistry.all(Callback.class),
                 pluginRegistry.all(JavaMigration.class),
                 pluginRegistry.all(TrymigrateDataLoader.class),
+                pluginRegistry.all(TrymigrateCatalogExporter.class),
                 catalogFactory,
                 lintProcessor);
         StoreSupport.putMigrateProcessor(extensionContext, migrateProcessor);

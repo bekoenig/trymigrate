@@ -1,6 +1,6 @@
 package io.github.bekoenig.trymigrate.core.plugin.customize;
 
-import org.flywaydb.core.api.MigrationVersion;
+import io.github.bekoenig.trymigrate.core.TrymigrateCatalogAttributes;
 import schemacrawler.schema.Catalog;
 import schemacrawler.tools.command.lint.options.LintOptions;
 import schemacrawler.tools.lint.Lints;
@@ -27,9 +27,18 @@ import schemacrawler.tools.lint.Lints;
  *     <li>Integrate with custom quality dashboards.</li>
  * </ul>
  * <p>
+ * <b>Accessing Migration Context:</b>
+ * The migration version and default schema are available as catalog attributes:
+ * <pre>{@code
+ * String migrationVersion = catalog.getAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION);
+ * String defaultSchema = catalog.getAttribute(TrymigrateCatalogAttributes.DEFAULT_SCHEMA);
+ * }</pre>
+ * <p>
  * Register a reporter locally via
  * {@link io.github.bekoenig.trymigrate.core.plugin.TrymigrateRegisterPlugin}, or make it globally discoverable by
  * implementing {@link io.github.bekoenig.trymigrate.core.plugin.TrymigratePlugin} as well.
+ *
+ * @see TrymigrateCatalogAttributes
  */
 public interface TrymigrateLintsReporter {
 
@@ -39,13 +48,14 @@ public interface TrymigrateLintsReporter {
      * <b>Note:</b> The {@code lints} parameter contains only <b>new</b> violations introduced
      * by the current migration version (smart diffing). This is different from the {@code Lints}
      * test parameter injected into test methods, which represents the full current state.
+     * <p>
+     * Migration context (version and schema) is available via catalog attributes.
      *
-     * @param catalog          the analyzed database model
-     * @param lints            the detected schema violations (delta since last version)
-     * @param schema           the name of the schema being analyzed
-     * @param migrationVersion the current Flyway migration version
-     * @param lintOptions      the configuration options used for linting
+     * @param catalog     the analyzed database model (includes migration context as attributes)
+     * @param lints       the detected schema violations (delta since last version)
+     * @param lintOptions the configuration options used for linting
+     * @see TrymigrateCatalogAttributes
      */
-    void report(Catalog catalog, Lints lints, String schema, MigrationVersion migrationVersion, LintOptions lintOptions);
+    void report(Catalog catalog, Lints lints, LintOptions lintOptions);
 
 }

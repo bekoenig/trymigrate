@@ -292,6 +292,7 @@ The database instance is reused for all test methods within a class. Data seeded
 | `TrymigrateLintersConfigurer` | Fluently configure SchemaCrawler linters (Severity, Regex). |
 | `TrymigrateCatalogCustomizer` | Customize the database crawl (filter types, schemas). |
 | `TrymigrateLintOptionsCustomizer` | Customize general SchemaCrawler text output options (for example database info, JDBC driver info, or unqualified names). |
+| `TrymigrateCatalogExporter` | Export the final catalog (e.g., Markdown docs via SchemaCrawler Scribe). |
 | `TrymigrateDataLoader` | Support custom data formats (CSV, JSON, etc.). |
 | `TrymigrateDatabase` | Abstraction for custom DB lifecycle/connection. Also supports static JDBC details via `TrymigrateDatabase.of(...)`. |
 | `TrymigrateLintsReporter` | Send lint results to Slack, Jira, or custom tools. |
@@ -341,7 +342,8 @@ Database-specific marker interfaces such as `TrymigratePostgreSQLPlugin` or `Try
 | `trymigrate.database.password` | Override database password. | - |
 | `trymigrate.container.db-port` | Pin host port for local debugging (e.g. `5432:5432`). | Random |
 | `trymigrate.lint.report.html.skip-empty` | Only generate HTML reports if lints are found. | `true` |
-| `trymigrate.lint.report.html.basedir` | Root directory for reports. | `target/` |
+| `trymigrate.lint.report.html.basedir` | Root directory for lint reports. | `target/` |
+| `trymigrate.scribe.basedir` | Root directory for SchemaCrawler Scribe documentation export. | `target/` |
 
 ### DataSource Priority
 

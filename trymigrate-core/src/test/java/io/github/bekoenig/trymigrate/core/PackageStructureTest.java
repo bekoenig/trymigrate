@@ -203,11 +203,11 @@ class PackageStructureTest {
     void internalLintMustNotDependOnOtherInternalPackages() {
         // The lint subsystem (lint, lint.config, lint.report) is cohesive;
         // its sub-packages may reference each other. No external internal deps.
+        // The root [internal] package contains shared utilities and is allowed.
         ArchRule rule = ArchRuleDefinition
                 .noClasses().that().resideInAPackage(PKG_INTERNAL_LINT)
                 .should().dependOnClassesThat()
                 .resideInAnyPackage(
-                        PKG_INTERNAL,
                         PKG_INTERNAL_PLUGIN,
                         PKG_INTERNAL_DATABASE,
                         PKG_INTERNAL_CATALOG,

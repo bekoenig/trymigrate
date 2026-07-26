@@ -40,6 +40,7 @@ import java.util.List;
  *     <li>{@link TrymigrateDataLoader}: Load custom seed data formats.</li>
  *     <li>{@link TrymigrateLintersConfigurer}: Fluently configure SchemaCrawler linters.</li>
  *     <li>{@link TrymigrateCatalogCustomizer}: Customize the database catalog crawl.</li>
+ *     <li>{@link TrymigrateCatalogExporter}: Export the final catalog after migrations.</li>
  *     <li>{@link TrymigrateLintsReporter}: Add custom reporting (e.g., to external tools).</li>
  *     <li>{@link TrymigrateLintOptionsCustomizer}: Fine-tune general linting options.</li>
  *     <li>{@link Callback}: Register native Flyway callbacks.</li>
@@ -57,6 +58,7 @@ public interface TrymigratePlugin {
      */
     List<Class<?>> SUPPORTED_TYPES = List.of(
             TrymigrateCatalogCustomizer.class,
+            TrymigrateCatalogExporter.class,
             TrymigrateDataLoader.class,
             TrymigrateFlywayCustomizer.class,
             TrymigrateLintersConfigurer.class,

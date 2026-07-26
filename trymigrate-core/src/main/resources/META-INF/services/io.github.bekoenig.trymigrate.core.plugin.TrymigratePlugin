@@ -2,3 +2,4 @@ io.github.bekoenig.trymigrate.core.internal.data.SqlDataLoader
 io.github.bekoenig.trymigrate.core.internal.lint.config.CoreLinters
 io.github.bekoenig.trymigrate.core.internal.lint.report.LintsHtmlReporter
 io.github.bekoenig.trymigrate.core.internal.lint.report.LintsLogReporter
+io.github.bekoenig.trymigrate.core.internal.catalog.export.ScribeOkfExporter

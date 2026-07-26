@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint;
 
+import io.github.bekoenig.trymigrate.core.TrymigrateCatalogAttributes;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.RestrictedPattern;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintsReporter;
@@ -75,6 +76,7 @@ class LintProcessorTest {
         Connection connection = mock();
         when(connection.isValid(anyInt())).thenReturn(true);
         Catalog catalog = mock();
+        when(catalog.getAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION)).thenReturn("1.0");
         MigrationVersion version = MigrationVersion.fromVersion("1.0");
         RestrictedPattern pattern = new RestrictedPattern(".*", "");
 
@@ -82,11 +84,11 @@ class LintProcessorTest {
         when(history.diffNewLints(eq(version), any())).thenAnswer(i -> i.getArgument(1));
 
         // WHEN
-        processor.lint(connection, "schema", catalog, version, pattern);
+        processor.lint(connection, catalog, pattern);
 
         // THEN
         verify(configurer).accept(any());
-        verify(reporter).report(eq(catalog), any(), eq("schema"), eq(version), eq(options));
+        verify(reporter).report(eq(catalog), any(), eq(options));
     }
 
     @Test

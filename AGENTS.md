@@ -122,6 +122,7 @@ Use these terms consistently in code, docs, and commit messages.
 | `TrymigrateDatabase` | Provides database connection and lifecycle (`prepare`/`dispose`). Only one active per test. |
 | `TrymigrateFlywayCustomizer` | Configures Flyway options (schemas, locations, placeholders, etc.). |
 | `TrymigrateCatalogCustomizer` | Customizes SchemaCrawler crawl scope via `LimitOptionsBuilder`. |
+| `TrymigrateCatalogExporter` | Exports the final catalog after migrations (e.g., Markdown docs via SchemaCrawler Scribe). |
 | `TrymigrateLintersConfigurer` | Configures linter rules: severity, inclusion patterns, custom `LinterProvider` instances. |
 | `TrymigrateLintOptionsCustomizer` | Customizes SchemaCrawler text output options. |
 | `TrymigrateDataLoader` | Custom data loading (CSV, JSON, bulk). Implements `supports()` and `load()`. |
@@ -131,6 +132,8 @@ Use these terms consistently in code, docs, and commit messages.
 | Term | Meaning |
 |------|---------|
 | **Catalog** | SchemaCrawler `Catalog` object representing the full crawled database structure at the current migration state. |
+| **Catalog Attributes** | Migration context stored on the `Catalog` via `TrymigrateCatalogAttributes` (e.g., `MIGRATION_VERSION`, `DEFAULT_SCHEMA`). |
+| **Catalog Export** | Generation of documentation artifacts from the final catalog (e.g., OKF Markdown via `ScribeOkfExporter` to `target/trymigrate-scribe/`). |
 | **Lints** | Collection of schema quality violations detected by linter rules at the current migration step. |
 | **Quality Gate** | Automated mechanism that fails a test if new lints exceed the configured severity threshold. |
 | **Verification Point** | A test method targeting a migration version. The quality gate reports only *new* lints since the previous verification point (via smart diffing). |

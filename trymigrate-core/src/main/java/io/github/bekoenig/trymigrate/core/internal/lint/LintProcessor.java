@@ -1,5 +1,6 @@
 package io.github.bekoenig.trymigrate.core.internal.lint;
 
+import io.github.bekoenig.trymigrate.core.TrymigrateCatalogAttributes;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.RestrictedPattern;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.LintersBuilder;
 import io.github.bekoenig.trymigrate.core.plugin.customize.TrymigrateLintersConfigurer;
@@ -37,8 +38,7 @@ public class LintProcessor {
         this.lintsVerifier = lintsVerifier;
     }
 
-    public void lint(Connection connection, String schema, Catalog catalog, MigrationVersion migrationVersion,
-                     RestrictedPattern tablePattern) {
+    public void lint(Connection connection, Catalog catalog, RestrictedPattern tablePattern) {
         LintersBuilder lintersBuilder = LintersBuilder.builder(tablePattern);
         lintersConfigurers.forEach(x -> x.accept(lintersBuilder));
 
@@ -48,8 +48,10 @@ public class LintProcessor {
         linters.lint();
         Lints currentLints = new Lints(excludedLintPatterns.dropMatching(linters.getLints().stream()).toList());
 
-        Lints newLints = lintsHistory.diffNewLints(migrationVersion, currentLints);
-        lintsReporters.forEach(x -> x.report(catalog, newLints, schema, migrationVersion, lintOptions));
+        Lints newLints = lintsHistory.diffNewLints(
+                MigrationVersion.fromVersion(catalog.getAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION)),
+                currentLints);
+        lintsReporters.forEach(x -> x.report(catalog, newLints, lintOptions));
     }
 
     public boolean isAnalysed(MigrationVersion migrationVersion) {

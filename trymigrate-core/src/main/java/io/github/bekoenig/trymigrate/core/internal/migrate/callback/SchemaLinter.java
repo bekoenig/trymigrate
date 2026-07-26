@@ -3,6 +3,7 @@ package io.github.bekoenig.trymigrate.core.internal.migrate.callback;
 import io.github.bekoenig.trymigrate.core.internal.catalog.CatalogFactory;
 import io.github.bekoenig.trymigrate.core.internal.lint.LintProcessor;
 import io.github.bekoenig.trymigrate.core.internal.lint.config.RestrictedPattern;
+import io.github.bekoenig.trymigrate.core.TrymigrateCatalogAttributes;
 import org.flywaydb.core.api.callback.Callback;
 import org.flywaydb.core.api.callback.Context;
 import org.flywaydb.core.api.callback.Event;
@@ -43,6 +44,10 @@ public class SchemaLinter implements Callback {
         schemas.add(defaultSchema);
 
         Catalog catalog = catalogFactory.crawl(context.getConnection(), schemas);
+        catalog.setAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION,
+                context.getMigrationInfo().getVersion().getVersion());
+        catalog.setAttribute(TrymigrateCatalogAttributes.DEFAULT_SCHEMA, defaultSchema);
+
         catalogCache.accept(catalog);
 
         RestrictedPattern tablePattern = new RestrictedPattern(
@@ -52,8 +57,7 @@ public class SchemaLinter implements Callback {
                 "(.*\\.)?" + defaultSchema + "\\." + context.getConfiguration().getTable()
         );
 
-        lintProcessor.lint(context.getConnection(), defaultSchema, catalog,
-                context.getMigrationInfo().getVersion(), tablePattern);
+        lintProcessor.lint(context.getConnection(), catalog, tablePattern);
     }
 
     @Override

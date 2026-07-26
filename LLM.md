@@ -142,8 +142,9 @@ Register custom configurations locally in test classes using `@TrymigrateRegiste
         .disable("schemacrawler.tools.linter.LinterTableSql");
     ```
 3.  **`TrymigrateCatalogCustomizer`**: Customize the database catalog crawl limit options (e.g., filter schemas using regular expressions).
-4.  **`TrymigrateDataLoader`**: Handle custom test data formats (e.g., CSV, JSON) or DBMS-specific fast loading hooks.
-5.  **`TrymigrateDatabase`**: Provide static JDBC credentials when avoiding automatic lifecycle management:
+4.  **`TrymigrateCatalogExporter`**: Export the final catalog after migrations complete. The built-in `ScribeOkfExporter` generates Markdown documentation with ER diagrams to `target/trymigrate-scribe/{schema}/`.
+5.  **`TrymigrateDataLoader`**: Handle custom test data formats (e.g., CSV, JSON) or DBMS-specific fast loading hooks.
+6.  **`TrymigrateDatabase`**: Provide static JDBC credentials when avoiding automatic lifecycle management:
     ```java
     @TrymigrateRegisterPlugin
     private final TrymigrateDatabase database = TrymigrateDatabase.of(
