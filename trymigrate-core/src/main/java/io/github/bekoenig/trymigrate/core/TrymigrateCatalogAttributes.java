@@ -11,7 +11,7 @@ package io.github.bekoenig.trymigrate.core;
  * Catalog catalog = getCatalog();
  * String migrationVersion = catalog.getAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION);
  * String defaultSchema = catalog.getAttribute(TrymigrateCatalogAttributes.DEFAULT_SCHEMA);
- * </pre>
+ * }</pre>
  */
 public final class TrymigrateCatalogAttributes {
 
