@@ -60,7 +60,7 @@
         <assertj.version>3.27.7</assertj.version>
         <assertj-schemacrawler.version>2.3.0</assertj-schemacrawler.version>
 
-        <flyway.version>12.11.0</flyway.version>
+        <flyway.version>13.0.0</flyway.version>
         <schemacrawler.version>17.12.2</schemacrawler.version>
         <freemarker.version>2.3.34</freemarker.version>
 
