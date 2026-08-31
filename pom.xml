@@ -62,7 +62,7 @@
 
         <flyway.version>13.3.0</flyway.version>
         <schemacrawler.version>17.12.2</schemacrawler.version>
-        <freemarker.version>2.3.34</freemarker.version>
+        <freemarker.version>2.3.35</freemarker.version>
 
         <db2.version>12.1.5.0</db2.version>
         <postgresql.version>42.7.13</postgresql.version>
