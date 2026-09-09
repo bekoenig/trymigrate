@@ -61,7 +61,7 @@
         <assertj-schemacrawler.version>2.3.0</assertj-schemacrawler.version>
 
         <flyway.version>13.5.0</flyway.version>
-        <schemacrawler.version>17.12.2</schemacrawler.version>
+        <schemacrawler.version>17.14.1</schemacrawler.version>
         <freemarker.version>2.3.35</freemarker.version>
 
         <db2.version>12.1.5.0</db2.version>
