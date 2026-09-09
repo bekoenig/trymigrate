@@ -16,7 +16,7 @@ public class CompositeLinterRegistry implements LinterInitializer {
     @Override
     public Set<String> getRegisteredLinters() {
         HashSet<String> linterIds = new HashSet<>(linterProviders.keySet());
-        linterIds.addAll(LinterRegistry.getLinterRegistry().getRegisteredLinters());
+        linterIds.addAll(LinterRegistry.getRegistry().getRegisteredLinters());
         return linterIds;
     }
 
@@ -26,6 +26,6 @@ public class CompositeLinterRegistry implements LinterInitializer {
         if (Objects.nonNull(linterProvider)) {
             return linterProvider.newLinter(lintCollector);
         }
-        return LinterRegistry.getLinterRegistry().newLinter(linterId, lintCollector);
+        return LinterRegistry.getRegistry().newLinter(linterId, lintCollector);
     }
 }
