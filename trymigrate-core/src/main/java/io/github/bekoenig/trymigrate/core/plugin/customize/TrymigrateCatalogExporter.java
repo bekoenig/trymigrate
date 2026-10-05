@@ -12,7 +12,10 @@ import schemacrawler.schema.Catalog;
  * <b>Built-in Exporters:</b>
  * <ul>
  *     <li><b>OKF (Open Knowledge Framework):</b> Generates Markdown documentation
- *         using SchemaCrawler Scribe. Output is written to {@code target/trymigrate-scribe/{schema}/}.
+ *         using SchemaCrawler Scribe. Output is written to {@code target/trymigrate-scribe/{schema}/{version}/}
+ *         by default, so each migration version is exported into its own folder (enabling diffs between versions).
+ *         The version segment can be disabled via system property {@code trymigrate.scribe.versioned=false},
+ *         yielding a stable {@code target/trymigrate-scribe/{schema}/} path.
  *         The base directory can be customized via system property {@code trymigrate.scribe.basedir}.</li>
  * </ul>
  * <p>

@@ -20,7 +20,10 @@ import java.util.logging.Logger;
  * Generates expandable Markdown documentation with ER diagrams suitable for
  * Obsidian, MkDocs, or similar documentation systems.
  * <p>
- * Output is written to {@code target/trymigrate-scribe/{schema}/} by default.
+ * Output is written to {@code target/trymigrate-scribe/{schema}/{version}/} by default,
+ * exporting each migration version into its own folder so that diffs between versions are possible.
+ * The version segment can be disabled via the system property {@link ScribeOkfExporter#PROPERTY_VERSIONED}
+ * (set to {@code false}), which yields a stable {@code target/trymigrate-scribe/{schema}/} path.
  * The base directory can be customized via the system property {@link ScribeOkfExporter#PROPERTY_BASEDIR}.
  *
  * @since 1.4.2
@@ -31,12 +34,19 @@ public class ScribeOkfExporter implements TrymigrateCatalogExporter, TrymigrateP
 
     public static final String PROPERTY_BASEDIR = "trymigrate.scribe.basedir";
 
+    /**
+     * System property to toggle version-based output folders. Defaults to {@code true};
+     * set to {@code false} to omit the migration version segment from the output path.
+     *
+     * @since 1.4.3
+     */
+    public static final String PROPERTY_VERSIONED = "trymigrate.scribe.versioned";
+
     private final OutputPathResolver pathResolver = new OutputPathResolver(PROPERTY_BASEDIR, "trymigrate-scribe");
 
     @Override
     public void export(Catalog catalog) {
-        String defaultSchema = catalog.getAttribute(TrymigrateCatalogAttributes.DEFAULT_SCHEMA);
-        Path outputPath = pathResolver.resolve(defaultSchema);
+        Path outputPath = resolveOutputPath(catalog);
 
         Config config = ConfigUtility.newConfig();
         config.put("schemacrawler.scribe.expanded-output", true);
@@ -55,6 +65,21 @@ public class ScribeOkfExporter implements TrymigrateCatalogExporter, TrymigrateP
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Failed to export catalog to " + outputPath, e);
         }
+    }
+
+    Path resolveOutputPath(Catalog catalog) {
+        String defaultSchema = catalog.getAttribute(TrymigrateCatalogAttributes.DEFAULT_SCHEMA);
+
+        if (isVersioned()) {
+            String migrationVersion = catalog.getAttribute(TrymigrateCatalogAttributes.MIGRATION_VERSION);
+            return pathResolver.resolveNested(defaultSchema, migrationVersion);
+        }
+
+        return pathResolver.resolve(defaultSchema);
+    }
+
+    private boolean isVersioned() {
+        return !"false".equalsIgnoreCase(System.getProperty(PROPERTY_VERSIONED));
     }
 
 }

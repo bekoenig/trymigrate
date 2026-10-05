@@ -59,6 +59,32 @@ public final class OutputPathResolver {
         return resolve(schema).resolve(filename);
     }
 
+    /**
+     * Resolves a nested output folder path for the given schema and additional segments.
+     * <p>
+     * Each segment is appended as a subfolder below the schema folder. {@code null} segments
+     * are replaced with the fallback name {@code "segment-undefined"}. The resulting folder
+     * is created if it does not yet exist.
+     *
+     * @param schema   the schema name
+     * @param segments additional path segments appended below the schema folder (nullable entries)
+     * @return the resolved output folder path
+     */
+    public Path resolveNested(String schema, String... segments) {
+        Path outputFolder = resolve(schema);
+        for (String segment : segments) {
+            outputFolder = outputFolder.resolve(Objects.requireNonNullElse(segment, "segment-undefined"));
+        }
+
+        try {
+            Files.createDirectories(outputFolder);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to create folder: " + outputFolder, e);
+        }
+
+        return outputFolder;
+    }
+
     private Path getBaseDir() {
         if (baseDirProperty != null) {
             String property = System.getProperty(baseDirProperty);
